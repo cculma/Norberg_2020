@@ -12,3 +12,6 @@ a3 <- inner_join(a1, a2, by = c("Location", "Block", "Position", "ID", "Treatmen
 str(a3)
 lev1 <- append(colnames(a1), c("Year", "Cut"))
 a3[,lev1] <- lapply(a3[,lev1], factor)
+summary(a3)
+
+write.csv(a3, "Y_PH_FD1.csv", row.names = F, quote = F)
