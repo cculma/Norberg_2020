@@ -21,7 +21,7 @@ for (i in 1:length(data_MSC)) {
 }
 names(MSC_1) <- list_1
 MSC_2 <-rbindlist(MSC_1, use.names=TRUE, fill=TRUE, idcol="merged")
-write.csv(MSC_2, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/MSC_1stage.csv", row.names = F, quote = F)
+write.csv(MSC_2, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/1_MSC_1stage.csv", row.names = F, quote = F)
 
 #################
 # DM
@@ -38,7 +38,7 @@ for (i in 1:length(data_DM)) {
 }
 names(DM_1) <- list_2
 DM_2 <-rbindlist(DM_1, use.names=TRUE, fill=TRUE, idcol="merged")
-write.csv(DM_2, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/DM_1stage.csv", row.names = F, quote = F)
+write.csv(DM_2, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/2_DM_1stage.csv", row.names = F, quote = F)
 
 #################
 # Height
@@ -55,7 +55,7 @@ for (i in 1:length(data_Height)) {
 }
 names(Height_1) <- list_3
 Height_2 <-rbindlist(Height_1, use.names=TRUE, fill=TRUE, idcol="merged")
-write.csv(Height_1, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/Height_1stage.csv", row.names = F, quote = F)
+write.csv(Height_2, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/3_Height_1stage.csv", row.names = F, quote = F)
 
 #################
 # Yield
@@ -72,7 +72,7 @@ for (i in 1:length(data_Yield)) {
 }
 names(Yield_1) <- list_4
 Yield_2 <-rbindlist(Yield_1, use.names=TRUE, fill=TRUE, idcol="merged")
-write.csv(Yield_2, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/Yield_1stage.csv", row.names = F, quote = F)
+write.csv(Yield_2, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/4_Yield_1stage.csv", row.names = F, quote = F)
 
 #################
 # FD
@@ -89,7 +89,7 @@ for (i in 1:length(data_FD)) {
 }
 names(FD_1) <- list_2
 FD_2 <-rbindlist(FD_1, use.names=TRUE, fill=TRUE, idcol="merged")
-write.csv(FD_2, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/FD_1stage.csv", row.names = F, quote = F)
+write.csv(FD_2, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/5_FD_1stage.csv", row.names = F, quote = F)
 
 #################
 # end
