@@ -26,50 +26,61 @@ b2 <- b2 %>% rownames_to_column(var = "gen")
 # 2 stage results (six measures)
 
 setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/4_Yield/2_stage/")
-data_2st <- list.files(pattern = "mrbean.csv", full.names = T)
-list_4 <- gsub(".csv", "", gsub("./", "", data_2st))
+data_2st <- list.files(pattern = ".csv", full.names = T)
+list_4 <- gsub(".csv", "", gsub("./", "ST2_", data_2st))
 
 c1 <- list()
 for (i in 1:length(data_2st)) {
   data <- read.csv(data_2st[i])
-  data <- data[,c(1:3)]
+  data <- data[,c(3,1)]
   c1[[length(c1)+1]] = data
 }
 names(c1) <- list_4
-c1 <-rbindlist(c1, use.names=TRUE, fill=TRUE, idcol="merged")
-c2 <- c1 %>% dplyr::select(2:4) %>% spread(trial, predicted.value) %>% remove_rownames() %>% column_to_rownames(var = "gen")
-list_7 <- gsub("BLUE_", "ST2_", colnames(c2))
-colnames(c2) <- list_7
+c1 <-rbindlist(c1, use.names=TRUE, fill=TRUE, idcol="trial")
+c2 <- c1 %>% spread(trial, score) %>% remove_rownames() %>% column_to_rownames(var = "gen")
 c2 <- c2 %>% rownames_to_column(var = "gen")
 
 ################
 # 3 stage results (three locations)
 
 setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/4_Yield/3_stage/")
-data_3st <- list.files(pattern = "mrbean.csv", full.names = T)
-list_4 <- gsub(".csv", "", gsub("./", "", data_3st))
+data_3st <- list.files(pattern = ".csv", full.names = T)
+list_4 <- gsub(".csv", "", gsub("./", "ST3_", data_3st))
 
 d1 <- list()
 for (i in 1:length(data_3st)) {
   data <- read.csv(data_3st[i])
-  data <- data[,c(1:3)]
+  data <- data[,c(3,1)]
   d1[[length(d1)+1]] = data
 }
 names(d1) <- list_4
-d1 <-rbindlist(d1, use.names=TRUE, fill=TRUE, idcol="merged")
-d2 <- d1 %>% dplyr::select(2:4) %>% spread(trial, predicted.value) %>% remove_rownames() %>% column_to_rownames(var = "gen")
-list_8 <- gsub("BLUE_", "ST3_", colnames(d2))
-colnames(d2) <- list_8
+d1 <-rbindlist(d1, use.names=TRUE, fill=TRUE, idcol="trial")
+d2 <- d1 %>% spread(trial, score) %>% remove_rownames() %>% column_to_rownames(var = "gen")
 d2 <- d2 %>% rownames_to_column(var = "gen")
 
 ################
 
-e1 <- inner_join(b2, a2, by = "gen") %>% inner_join(., c2, by = "gen") %>% inner_join(., d2, by = "gen") %>% remove_rownames() %>% column_to_rownames(var = "gen")
-colnames(e1)
-e2 <- e1[,c(22,44,66,88)]
-e2 <- e1[,c(1,23,45,67)]
+# 4 stage results (all yield)
+
+e1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/4_Yield/4_stage/Overall_predictions_2stage.csv")
+# e2 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/4_Yield/4_stage/FA_scores_mrbean.csv")
+
+e1 <- e1 %>% dplyr::select(1,2) %>% remove_rownames() %>% column_to_rownames(var = "gen")
+# e2 <- e2 %>% dplyr::select(1:3) %>% spread(component, score) %>% remove_rownames() %>% column_to_rownames(var = "gen")
+colnames(e1) <- "ST4_Overall"
+# colnames(e2) <- c("ST4_FA1", "ST4_FA2")
+
+e1 <- e1 %>% rownames_to_column(var = "gen")
+# e2 <- e2 %>% rownames_to_column(var = "gen")
+
+################
+
+f1 <- inner_join(a2, c2, by = "gen") %>% inner_join(., d2, by = "gen") %>% inner_join(., e1, by = "gen") %>% remove_rownames() %>% column_to_rownames(var = "gen")
+colnames(f1)
+f2 <- f1[,c(23:32)]
 
 library(corrplot)
-e2 <- cor(e2, use = "complete.obs")
-corrplot(e2, type="upper", method = 'number')
+f2 <- cor(f2, use = "complete.obs")
+corrplot(f2, type="upper", method = 'number')
+
 
