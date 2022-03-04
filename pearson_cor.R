@@ -5,23 +5,30 @@ library(tidyverse)
 library(data.table)
 
 #################
-# 1 stage
 
-setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/4_Yield/1_stage/")
-data_Yield <- list.files(pattern = ".csv", full.names = T)
-list_4 <- gsub(".csv", "", gsub("./", "", data_Yield))
+# 1 stage results
 
-Yield_1 <- list()
-for (i in 1:length(data_Yield)) {
-  data <- read.csv(data_Yield[i])
+a1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/4_Yield/1_stage/predictions_2stage_ASReml_mrbean.csv")
+a2 <- a1 %>% dplyr::select(1:3) %>% spread(trial, predicted.value) %>% remove_rownames() %>% column_to_rownames(var = "gen")
+list_5 <- gsub("BLUE_", "ST1_", colnames(a2))
+colnames(a2) <- list_5
+
+# Augmented results
+
+b1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/4_Yield_1stage.csv")
+b2 <- b1 %>% dplyr::select(1:3) %>% spread(merged, predicted.value) %>% remove_rownames() %>% column_to_rownames(var = "gen")
+list_6 <- gsub("BLUE_", "AUG_", colnames(b2))
+colnames(b2) <- list_6
+
+# 2 stage results (six measures)
+
+setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/4_Yield/2_stage/")
+data_2st <- list.files(pattern = "mrbean.csv", full.names = T)
+list_4 <- gsub(".csv", "", gsub("./", "", data_2st))
+
+Yield_2 <- list()
+for (i in 1:length(data_2st)) {
+  data <- read.csv(data_2st[i])
   data <- data[,c(1:3)]
-  Yield_1[[length(Yield_1)+1]] = data
+  Yield_2[[length(Yield_2)+1]] = data
 }
-
-a1 <- read.csv("predictions_2stage_ASReml_mrbean.csv")
-a1 <- a1[,c(1:3)]
-spread()
-
-names(Yield_1) <- list_4
-Yield_2 <-rbindlist(Yield_1, use.names=TRUE, fill=TRUE, idcol="merged")
-write.csv(Yield_2, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/Yield_1stage.csv", row.names = F, quote = F)
