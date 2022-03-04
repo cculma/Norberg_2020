@@ -26,9 +26,15 @@ setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/4_Yield/2_stage/")
 data_2st <- list.files(pattern = "mrbean.csv", full.names = T)
 list_4 <- gsub(".csv", "", gsub("./", "", data_2st))
 
-Yield_2 <- list()
+c1 <- list()
 for (i in 1:length(data_2st)) {
   data <- read.csv(data_2st[i])
   data <- data[,c(1:3)]
-  Yield_2[[length(Yield_2)+1]] = data
+  c1[[length(c1)+1]] = data
 }
+names(c1) <- list_4
+c1 <-rbindlist(c1, use.names=TRUE, fill=TRUE, idcol="merged")
+
+c2 <- c1 %>% dplyr::select(2:4) %>% spread(trial, predicted.value) %>% remove_rownames() %>% column_to_rownames(var = "gen")
+list_7 <- gsub("BLUE_", "ST2_", colnames(c2))
+colnames(c2) <- list_7
