@@ -52,7 +52,7 @@ QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T)
 
 # save(data_3, file = "~/Documents/Cesar/git/big_files/data_3.RData")
 # load("~/Documents/Cesar/git/big_files/data_3.RData")
-# load("~/Documents/Cesar/git/big_files/data_4.RData")
+load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_4.RData")
 ################
 QTL_03 <- QTL_01 %>% group_by(Marker) %>% top_n(1, abs(Score)) %>% dplyr::select(Marker, Score)%>% distinct(Marker, .keep_all = TRUE)
 QTL_04 <- QTL_01 %>% group_by(Marker) %>% summarise(Trait = paste(Trait, collapse = ";")) 
