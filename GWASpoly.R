@@ -2,7 +2,6 @@ rm(list = ls()) # clean Global Environment
 # setwd("~/Documents/Cesar/blup_data/Roza2019/Analysis_2021/GWAS/")
 # setwd("~/OneDrive - Washington State University (email.wsu.edu)/Roza_2019/git/Roza2019/")
 library(GWASpoly)
-
 library(tidyverse)
 library(vcfR)
 library(GenomicRanges)
