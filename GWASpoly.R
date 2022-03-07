@@ -2,13 +2,14 @@ rm(list = ls()) # clean Global Environment
 # setwd("~/Documents/Cesar/blup_data/Roza2019/Analysis_2021/GWAS/")
 # setwd("~/OneDrive - Washington State University (email.wsu.edu)/Roza_2019/git/Roza2019/")
 library(GWASpoly)
-
 library(tidyverse)
 library(vcfR)
 library(GenomicRanges)
 library(genomation)
 library(plyranges)
 library(Repitools)
+library(data.table)
+
 
 library(parallel)
 library(doParallel)
@@ -19,7 +20,7 @@ library(devtools)
 library(sommer)
 library(ggplot2)
 library(ggpubr)
-library(data.table)
+
 library(ggthemes)
 library(hrbrthemes)
 library(VennDiagram)
@@ -43,14 +44,13 @@ data_2 <- set.K(data = data_1, LOCO = F, n.core = 32)
 data_3 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 30)
 # data_3 <- GWASpoly(data = data_2, models = models_1, traits = "ST4_Overall", params = params, n.core = 32)
 
-data_5 <- set.threshold(data_3, method= "Bonferroni", level=0.1)
+data_5 <- set.threshold(data_3, method= "Bonferroni", level=0.05)
 data_5 <- set.threshold(data_3, method= "FDR", level=0.05, n.core = 30)
-?set.threshold
 
 QTL_01 <- get.QTL(data_5)
 QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
 
-save(data_3, file = "~/Documents/Cesar/git/big_files/data_3.RData")
+# save(data_3, file = "~/Documents/Cesar/git/big_files/data_3.RData")
 # load("~/Documents/Cesar/git/big_files/data_3.RData")
 
 ################
@@ -68,11 +68,9 @@ S1 <- dcast(S1, formula = Marker ~ Model, fun.aggregate = length)
 S2 <- QTL_01 %>% dplyr::select(1,4) %>% distinct(Marker, Trait, .keep_all = T) 
 S2 <- dcast(S2, formula = Marker ~ Trait, fun.aggregate = length)
 colnames(S2)
-
-S4 <- S2[,c(1,11,9,7,2,22,12,10,8,3,23,18,17,16,19,13,14,5,15,20,21,6,4)]
 S3 <- inner_join(QTL_06, S1, by = "Marker") %>% inner_join(., S2, by = "Marker")
 
-write.table(S3, "~/Documents/Cesar/git/big_files/markers1.tsv", row.names = F, quote = F, sep = "\t")
+# write.table(S3, "~/Documents/Cesar/git/big_files/markers1.tsv", row.names = F, quote = F, sep = "\t")
 
 ##############
 # To annotate markers
@@ -100,7 +98,6 @@ df2 <- unite(data = df2, col = "Marker1", 1:2, sep = "_", remove = F) %>% distin
 head(df2)
 df3 <- df2 %>% separate(5, col_headings_1, sep = ";", remove = TRUE, convert = FALSE, extra = "warn") %>% separate(5, col_headings_2, sep = "\\.", remove = TRUE, convert = FALSE, extra = "warn") %>% dplyr::select(1,5,7) %>% inner_join(., i_5.2.8, by = "gene_id")
 
-
 QTL_08 <- inner_join(QTL_06, QTL_04, by = "Marker") %>% inner_join(., QTL_05, by = "Marker") %>% left_join(., df3, by = "Marker1") 
 
 nrow(QTL_08 %>% distinct(gene_id, .keep_all = TRUE))
@@ -114,13 +111,12 @@ QTL_10 <- inner_join(QTL_09, QTL_10, by = "gene_id")
 QTL_10 <- na.omit(QTL_10)
 head(QTL_10)
 write.table(QTL_10, "~/Documents/Cesar/git/big_files/markers2.tsv", row.names = F, quote = F, sep = "\t")
-#######
-# end
 
+###########
+# end
+save.image(file = "~/Documents/Cesar/git/big_files/data_4.RData")
 
 # %>% dplyr::select(-1)
-
-
 # to generate frequency of markers shared by trait
 S2 <- QTL_01 %>% filter(Trait != "MET_all") %>% dplyr::select(1,4) %>% distinct(Marker, Trait, .keep_all = T) 
 
