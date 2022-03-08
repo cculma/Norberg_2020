@@ -9,7 +9,7 @@ library(genomation)
 library(plyranges)
 library(Repitools)
 library(data.table)
-
+library(plotly)
 
 library(parallel)
 library(doParallel)
@@ -24,9 +24,13 @@ library(ggpubr)
 library(ggthemes)
 library(hrbrthemes)
 library(VennDiagram)
-library(plotly)
 
+
+# workstation
 setwd("~/Documents/Cesar/git/big_files/")
+# mac
+setwd("~/Documents/git/Norberg_2020/GWAS_results/")
+
 pheno <- read.csv("~/Documents/Cesar/git/big_files/pheno.csv", row.names = 1)
 head(pheno)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
@@ -148,6 +152,6 @@ fig <- plot_ly(
   x = cc1$n,
   y = cc1$nn,
   name = "freq Markers",
-  type = "bar", text = cc1$nn, textposition = 'auto') %>% layout(xaxis = list(autotypenumbers = 'strict', title = 'Trait'), yaxis = list(title = 'Freq')) %>% config(toImageButtonOptions = list(format = "svg",filename = "fig", width = 600, height = 300))
+  type = "bar", text = cc1$nn, textposition = 'auto') %>% layout(xaxis = list(autotypenumbers = 'strict', title = 'Trait'), yaxis = list(title = 'Markers')) %>% config(toImageButtonOptions = list(format = "svg",filename = "fig", width = 600, height = 300))
 
-orca(fig, "bar1.svg", width = 5 * 96, height = 4 * 96)
+orca(fig, "~/Documents/git/Norberg_2020/GWAS_results/Figures/count_markers.svg", width = 5 * 96, height = 4 * 96)

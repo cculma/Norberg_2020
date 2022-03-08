@@ -1,0 +1,18 @@
+# augmented model
+
+asreml::asreml(fixed = resp ~ 1 + gen, random = ~+block, residual = ~id(row):ar1(col), 						
+    data = df, na.action = list(x = "include", y = "include")) 						
+						
+Variance Component Estimates:                    component std.error  z.ratio bound %ch						
+block           1.073927e-06        NA       NA     B   0						
+row:col!R       6.712045e-01 0.2122535 3.162278     P   0						
+row:col!col!cor 9.800000e-01        NA       NA     F   0 						
+						
+						
+asreml::asreml(fixed = resp ~ 1 + gen, random = ~+block, residual = ~ar1(row):id(col), 						
+    data = df, na.action = list(x = "include", y = "include"))						
+Variance Component Estimates:						
+component  std.error   z.ratio bound %ch						
+block           0.1023871 0.06213518  1.647812     P 0.2						
+row:col!R       0.1106876 0.05370586  2.060997     P 0.0						
+row:col!row!cor 0.9191428 0.05854930 15.698614     U 0.0 						
