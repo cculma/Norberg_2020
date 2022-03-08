@@ -46,11 +46,25 @@ a5 <- a5 %>% rownames_to_column(var = "gen")
 
 
 ################
-# 2 stage results (six measures)
+# 2 stage results (six measures) year: 2018, 2019, 2020
+
+setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/1_MSC/2_stage/")
+data_2st <- list.files(pattern = "2stage.csv", full.names = T)
+list_4 <- c("ST2_MS_WA_2019", "ST2_MS_WA_2020")
+
+c1 <- list()
+for (i in 1:length(data_2st)) {
+  data <- read.csv(data_2st[i])
+  data <- data[,c(1,2)]
+  c1[[length(c1)+1]] = data
+}
+names(c1) <- list_4
+c1 <-rbindlist(c1, use.names=TRUE, fill=TRUE, idcol="trial")
+c1 <- c1 %>% spread(trial, predicted.value) %>% remove_rownames() %>% column_to_rownames(var = "gen") %>% rownames_to_column(var = "gen")
 
 setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/3_Height/2_stage/")
 data_2st <- list.files(pattern = "2stage.csv", full.names = T)
-list_4 <- c("ST2_He_OR_2018", "ST2_He_OR_2019", "ST2_He_WA_2018", "ST2_He_WA_2019")
+list_4 <- c("ST2_He_OR_2018", "ST2_He_OR_2019", "ST2_He_OR_2020", "ST2_He_WA_2018", "ST2_He_WA_2019", "ST2_He_WA_2020")
 
 c3 <- list()
 for (i in 1:length(data_2st)) {
@@ -65,7 +79,7 @@ c3 <- c3 %>% spread(trial, predicted.value) %>% remove_rownames() %>% column_to_
 setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/4_Yield/2_stage/")
 data_2st <- list.files(pattern = "2stage.csv", full.names = T)
 # list_4 <- gsub(".csv", "", gsub("./", "ST2_", data_2st))
-list_4 <- c("ST2_Yi_ID_2018", "ST2_Yi_ID_2019", "ST2_Yi_OR_2018", "ST2_Yi_OR_2019", "ST2_Yi_WA_2018", "ST2_Yi_WA_2019")
+list_4 <- c("ST2_Yi_ID_2018", "ST2_Yi_ID_2019", "ST2_Yi_OR_2018", "ST2_Yi_OR_2019", "ST2_Yi_OR_2020", "ST2_Yi_WA_2018", "ST2_Yi_WA_2019", "ST2_Yi_WA_2020")
 
 c4 <- list()
 for (i in 1:length(data_2st)) {
@@ -172,6 +186,7 @@ PCA <- PCA[,c(1,34:36)]
 colnames(PCA)
 PCA$gen <- as.character(PCA$gen)
 str(PCA)
+str(e1)
 
 f1 <- inner_join(a2, c2, by = "gen") %>% inner_join(., d2, by = "gen") %>% inner_join(., e1, by = "gen") %>% remove_rownames() %>% column_to_rownames(var = "gen")
 

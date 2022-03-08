@@ -10,6 +10,8 @@ colnames(a2)
 
 lev3 <- c("Location", "Block", "Position", "ID", "Treatment")
 a1[,lev3] <- lapply(a1[,lev3], factor)
+a2[,lev3] <- lapply(a2[,lev3], factor)
+str(a1)
 
 a3 <- inner_join(a1, a2, by = c("Location", "Block", "Position", "ID", "Treatment"))
 str(a3)
@@ -18,24 +20,20 @@ a3[,lev1] <- lapply(a3[,lev1], factor)
 summary(a3)
 colnames(a3)
 
-b1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/original_data/Guojie_2020_MSC.csv")
-b2 <- read.csv("~/Documents/Cesar/git/Norberg_2020/original_data/Guojie_2020_Yield.csv")
+b1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/original_data/Guojie_2020.csv")
 colnames(b1)
-colnames(b2)
-b3 <- right_join(b1, b2, by = c("Location", "Year", "Cut", "Block", "Position", "ID", "Treatment"))
 lev2 <- c("Location", "Year", "Cut", "Block", "Position", "ID", "Treatment")
-b3[,lev2] <- lapply(b3[,lev2], factor)
-str(b3)
+b1[,lev2] <- lapply(b1[,lev2], factor)
+str(b1)
 
-c1 <- inner_join(a1, b3, by = c("Location", "Block", "Position", "ID", "Treatment"))
+
+c1 <- inner_join(a1, b1, by = c("Location", "Block", "Position", "ID", "Treatment"))
 str(c1)
 
-write.csv(a3, "Y_PH_FD1.csv", row.names = F, quote = F)
+# write.csv(a3, "Y_PH_FD1.csv", row.names = F, quote = F)
 
 
-str(a3)
-N_list <- as.factor(c(a3$Location, a3$Year, a3$Cut))
-length(N_list)
+
 a4 <- a3 %>% unite("merged", c(Location, Year, Cut), sep = "_", remove = F)
 a4$merged <- as.factor(a4$merged)
 str(a4)

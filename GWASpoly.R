@@ -41,7 +41,7 @@ data_1 <- read.GWASpoly(ploidy=4,
                         format="ACGT", n.traits=length(trait1), delim=",")
 
 data_2 <- set.K(data = data_1, LOCO = F, n.core = 32)
-data_3 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 30)
+# data_3 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 30)
 # data_3 <- GWASpoly(data = data_2, models = models_1, traits = "ST4_Overall", params = params, n.core = 32)
 
 data_5 <- set.threshold(data_3, method= "Bonferroni", level=0.05)
@@ -49,6 +49,14 @@ data_5 <- set.threshold(data_3, method= "FDR", level=0.05, n.core = 30)
 
 QTL_01 <- get.QTL(data_5)
 QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
+
+############
+# this allows to run GWASpoly in traits 2020
+trait2 <- trait1[c(5,9,10,11,12,13,18,21,29,30,31,39,40,41,42,43,58,59,60,61,70,71,72,73,74,78:83, 86:91, 93,94,96:99,101:106)]
+trait2
+data_3.1 <- GWASpoly(data = data_2, models = models_1, traits = trait2, params = params, n.core = 32)
+save(data_3.1, file = "~/Documents/Cesar/git/big_files/data_3.1.RData")
+###########
 
 # save(data_3, file = "~/Documents/Cesar/git/big_files/data_3.RData")
 # load("~/Documents/Cesar/git/big_files/data_3.RData")
