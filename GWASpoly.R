@@ -45,23 +45,33 @@ data_2 <- set.K(data = data_1, LOCO = F, n.core = 32)
 # data_3 <- GWASpoly(data = data_2, models = models_1, traits = "ST4_Overall", params = params, n.core = 32)
 
 data_5 <- set.threshold(data_3, method= "Bonferroni", level=0.05)
-data_5 <- set.threshold(data_3, method= "FDR", level=0.05, n.core = 30)
-
 QTL_01 <- get.QTL(data_5)
 QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
 
 ############
 # this allows to run GWASpoly in traits 2020
-trait2 <- trait1[c(5,9,10,11,12,13,18,21,29,30,31,39,40,41,42,43,58,59,60,61,70,71,72,73,74,78:83, 86:91, 93,94,96:99,101:106)]
+trait2 <- trait1[c(5,9,10,11,12,13,18,21,29,30,31,39,40,41,42,43,58,59,60,61,70,71,72,73,74,80,83,88,91,93,94,96:99,101:106)]
 trait2
 data_3.1 <- GWASpoly(data = data_2, models = models_1, traits = trait2, params = params, n.core = 32)
-save(data_3.1, file = "~/Documents/Cesar/git/big_files/data_3.1.RData")
-###########
+# save(data_3.1, file = "~/Documents/Cesar/git/big_files/data_3.1.RData")
+load("~/Documents/Cesar/git/big_files/data_3.1.RData")
+load("~/Documents/Cesar/git/big_files/data_3.RData")
 
+data_5.0 <- set.threshold(data_3, method= "Bonferroni", level=0.05)
+data_5.1 <- set.threshold(data_3.1, method= "Bonferroni", level=0.05)
+
+data_6.0 <- get.QTL(data_5.0)
+data_6.1 <- get.QTL(data_5.1)
+QTL_01 <- rbind(data_6.0, data_6.1)
+
+QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
+
+###########
 # save(data_3, file = "~/Documents/Cesar/git/big_files/data_3.RData")
 # load("~/Documents/Cesar/git/big_files/data_3.RData")
-load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_4.RData")
+load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_5.RData")
 ################
+
 QTL_03 <- QTL_01 %>% group_by(Marker) %>% top_n(1, abs(Score)) %>% dplyr::select(Marker, Score)%>% distinct(Marker, .keep_all = TRUE)
 QTL_04 <- QTL_01 %>% group_by(Marker) %>% summarise(Trait = paste(Trait, collapse = ";")) 
 QTL_05 <- QTL_01 %>% group_by(Marker) %>% summarise(Model = paste(Model, collapse = ";")) 
@@ -78,7 +88,7 @@ S2 <- dcast(S2, formula = Marker ~ Trait, fun.aggregate = length)
 colnames(S2)
 S3 <- inner_join(QTL_06, S1, by = "Marker") %>% inner_join(., S2, by = "Marker")
 
-# write.table(S3, "~/Documents/Cesar/git/big_files/markers1.tsv", row.names = F, quote = F, sep = "\t")
+write.table(S3, "~/Documents/Cesar/git/big_files/markers1.tsv", row.names = F, quote = F, sep = "\t")
 
 ##############
 # To annotate markers
@@ -109,10 +119,10 @@ df3 <- df2 %>% separate(5, col_headings_1, sep = ";", remove = TRUE, convert = F
 QTL_08 <- inner_join(QTL_06, QTL_04, by = "Marker") %>% inner_join(., QTL_05, by = "Marker") %>% left_join(., df3, by = "Marker1") 
 
 nrow(QTL_08 %>% distinct(gene_id, .keep_all = TRUE))
-sum(!is.na(QTL_08$gene_id)) # 26
+sum(!is.na(QTL_08$gene_id)) # 38 annotated in Uniprot
+colnames(QTL_08)
 
 QTL_09 <- QTL_08 %>% group_by(gene_id) %>% summarise(Marker1 = paste(Marker1, collapse = ";")) 
-colnames(QTL_08)
 QTL_10 <- QTL_08 %>% distinct(gene_id, .keep_all = TRUE) %>% dplyr::select(7:9)
 
 QTL_10 <- inner_join(QTL_09, QTL_10, by = "gene_id")
@@ -120,14 +130,17 @@ QTL_10 <- na.omit(QTL_10)
 head(QTL_10)
 write.table(QTL_10, "~/Documents/Cesar/git/big_files/markers2.tsv", row.names = F, quote = F, sep = "\t")
 
+# save image 
+save.image(file = "~/Documents/Cesar/git/big_files/data_4.RData")
+# data_4.RData is big (1.6 GB) I will reduce the size removing data_1, data_2, data_3, data_3.1
+rm(list = c("data_1", "data_2", "data_3", "data_3.1", "data_5"))
+save.image(file = "~/Documents/Cesar/git/big_files/data_5.RData")
 ###########
 # end
-save.image(file = "~/Documents/Cesar/git/big_files/data_4.RData")
 
-# %>% dplyr::select(-1)
+
 # to generate frequency of markers shared by trait
-S2 <- QTL_01 %>% filter(Trait != "MET_all") %>% dplyr::select(1,4) %>% distinct(Marker, Trait, .keep_all = T) 
-
+S2 <- QTL_01 %>% dplyr::select(1,4) %>% distinct(Marker, Trait, .keep_all = T) 
 cc <- count(S2, Marker)
 cc1 <- count(cc, n)
 
