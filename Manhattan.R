@@ -13,13 +13,16 @@ load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD
 trait1
 trait2
 trait3 <- c("ST4_MS_Overall", "ST4_DM_Overall", "ST4_He_Overall", "ST4_Yi_Overall")
+trait4 <- c("ST1_FD_WA_2018_3", "ST1_FD_ID_2019_4",	"ST1_FD_WA_2019_5", "ST4_FD_Overall")
 
 # manhattan.plot(data = data_5, traits="may_21_1stage", chrom = "Chr1") + theme_classic(base_family = "Arial", base_size = 12) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
 
 P1 <- manhattan.plot(data = data_5.1, traits = trait3) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
 
-P2 <- manhattan.plot(data = data_5, traits=c ("jun_20_1stage")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
+P2 <- manhattan.plot(data = data_5.0, traits= trait4) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
+ggsave(filename = "~/Documents/git/Norberg_2020/figs/FD_manhattan.jpg", plot = P2, width = 8, height = 8)
 
+#~~~~~~~~~
 P3 <- manhattan.plot(data = data_5, traits=c ("jul_20_1stage")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
 
 P4 <- manhattan.plot(data = data_5, traits=c ("aug_20_1stage")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())

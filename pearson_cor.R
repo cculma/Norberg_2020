@@ -44,7 +44,6 @@ list_5 <- gsub("BLUE_", "ST1_FD_", colnames(a5))
 colnames(a5) <- list_5
 a5 <- a5 %>% rownames_to_column(var = "gen")
 
-
 ################
 # 2 stage results (six measures) year: 2018, 2019, 2020
 
@@ -180,15 +179,21 @@ e5 <- e5 %>% dplyr::select(1,2) %>% remove_rownames() %>% column_to_rownames(var
 colnames(e5)[2] <- "ST4_FD_Overall"
 
 rm(data)
-################
-PCA <- read.csv("~/Documents/Cesar/git/big_files/yield.csv")
-PCA <- PCA[,c(1,34:36)]
-colnames(PCA)
-PCA$gen <- as.character(PCA$gen)
-str(PCA)
-str(e1)
 
-f1 <- inner_join(a2, c2, by = "gen") %>% inner_join(., d2, by = "gen") %>% inner_join(., e1, by = "gen") %>% remove_rownames() %>% column_to_rownames(var = "gen")
+##~~~~~~~~~~~~~
+f1 <- inner_join(a1, a2, by = "gen") %>% inner_join(., a3, by = "gen") %>% inner_join(., a4, by = "gen") %>% inner_join(., a5, by = "gen") %>% inner_join(., c3, by = "gen") %>% inner_join(., c4, by = "gen") %>% inner_join(., d1, by = "gen") %>% inner_join(., d2, by = "gen") %>% inner_join(., d3, by = "gen")%>% inner_join(., d4, by = "gen") %>% inner_join(., e1, by = "gen") %>% inner_join(., e2, by = "gen") %>% inner_join(., e3, by = "gen") %>% inner_join(., e4, by = "gen") %>% inner_join(., e5, by = "gen") %>% inner_join(., PCA, by = "gen")
+colnames(f1)
+write.csv(f1, "~/Documents/Cesar/git/big_files/pheno.csv", quote = F, row.names = F)
+##~~~~~~~~~~~~~
+# pearson correlation
+
+PCA <- read.csv("~/Documents/git/Norberg_2020/spatial_distribution/pheno.csv")
+colnames(PCA)
+f1 <- PCA %>% dplyr::select(-c(109:111)) %>% remove_rownames() %>% column_to_rownames(var = "gen")
+colnames(f1)
+f2 <- f1[,c(92:107)]
+f2 <- cor(f2, use = "complete.obs")
+corrplot(f2, type="upper", method = 'number')
 
 colnames(f1)
 f2 <- f1[,c(23:32)]
@@ -200,9 +205,4 @@ f3 <- cor(f1, use = "complete.obs")
 corrplot(f3, type="upper", method = 'number')
 str(PCA)
 str(a1)
-
-f1 <- inner_join(a1, a2, by = "gen") %>% inner_join(., a3, by = "gen") %>% inner_join(., a4, by = "gen") %>% inner_join(., a5, by = "gen") %>% inner_join(., c3, by = "gen") %>% inner_join(., c4, by = "gen") %>% inner_join(., d1, by = "gen") %>% inner_join(., d2, by = "gen") %>% inner_join(., d3, by = "gen")%>% inner_join(., d4, by = "gen") %>% inner_join(., e1, by = "gen") %>% inner_join(., e2, by = "gen") %>% inner_join(., e3, by = "gen") %>% inner_join(., e4, by = "gen") %>% inner_join(., e5, by = "gen") %>% inner_join(., PCA, by = "gen")
-colnames(f1)
-write.csv(f1, "~/Documents/Cesar/git/big_files/pheno.csv", quote = F, row.names = F)
-
 
