@@ -60,21 +60,34 @@ data_3.1 <- GWASpoly(data = data_2, models = models_1, traits = trait2, params =
 # save(data_3.1, file = "~/Documents/Cesar/git/big_files/data_3.1.RData")
 ############
 # I have to re run all yield because dataset BLUE_OR_2020_2 was different
-trait3 <- trait1[c(5,9,10,11,12,13,18,21,29,30,31,39,40,41,42,43,58,59,60,61,70,71,72,73,74,80,83,88,91,93,94,96:99,101:106)]
 trait3 <- trait1[c(59,88,101,106)]
 trait3 
 data_4 <- GWASpoly(data = data_2, models = models_1, traits = trait3, params = params, n.core = 32)
-
-
-load("~/Documents/Cesar/git/big_files/data_3.1.RData")
+save(data_4, file = "~/Documents/Cesar/git/big_files/data_4.RData")
+############
 load("~/Documents/Cesar/git/big_files/data_3.RData")
+load("~/Documents/Cesar/git/big_files/data_3.1.RData")
+load("~/Documents/Cesar/git/big_files/data_4.RData")
+
 
 data_5.0 <- set.threshold(data_3, method= "Bonferroni", level=0.05)
 data_5.1 <- set.threshold(data_3.1, method= "Bonferroni", level=0.05)
+data_5.2 <- set.threshold(data_4, method= "Bonferroni", level=0.05)
 
 data_6.0 <- get.QTL(data_5.0)
 data_6.1 <- get.QTL(data_5.1)
+data_6.2 <- get.QTL(data_5.2)
+
+t_6.0 <- c("ST3_Yi_OR", "ST4_Yi_Overall")
+t_6.1 <- c("ST1_Yi_OR_2020_2", "ST2_Yi_OR_2020", "ST3_Yi_OR", "ST4_Yi_Overall")
+
+data_6.0 <- data_6.0 %>% dplyr::filter(!Trait %in% t_6.0)
+data_6.1 <- data_6.1 %>% dplyr::filter(!Trait %in% t_6.1)
+
 QTL_01 <- rbind(data_6.0, data_6.1)
+t_6.3 <- c("ST4_MS_Overall", "ST4_DM_Overall", "ST4_He_Overall", "ST4_Yi_Overall", "ST4_FD_Overall")
+data_6.3 <- QTL_01 %>% dplyr::filter(Trait %in% t_6.3) %>% distinct(Marker, .keep_all = T) 
+data_6.3$Marker
 
 QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
 
