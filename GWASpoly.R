@@ -58,6 +58,10 @@ trait2 <- trait1[c(5,9,10,11,12,13,18,21,29,30,31,39,40,41,42,43,58,59,60,61,70,
 trait2
 data_3.1 <- GWASpoly(data = data_2, models = models_1, traits = trait2, params = params, n.core = 32)
 # save(data_3.1, file = "~/Documents/Cesar/git/big_files/data_3.1.RData")
+############
+# I have to re run all yield because dataset BLUE_OR_2020_2 was different
+
+
 load("~/Documents/Cesar/git/big_files/data_3.1.RData")
 load("~/Documents/Cesar/git/big_files/data_3.RData")
 
