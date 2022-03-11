@@ -16,3 +16,19 @@ component  std.error   z.ratio bound %ch
 block           0.1023871 0.06213518  1.647812     P 0.2						
 row:col!R       0.1106876 0.05370586  2.060997     P 0.0						
 row:col!row!cor 0.9191428 0.05854930 15.698614     U 0.0 						
+
+####
+MET ASReml model
+
+1_FA
+asreml::asreml(fixed = resp ~ 1, random = ~+trial + fa(trial, 
+    1):gen, G.param = mod.ref$G.param, R.param = mod.ref$R.param, 
+    data = df, na.action = list(x = "include", y = "include"), 
+    weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+
+2_FA
+asreml::asreml(fixed = resp ~ 1, random = ~+trial + fa(trial, 
+    2):gen, G.param = mod.ref$G.param, R.param = mod.ref$R.param, 
+    data = df, na.action = list(x = "include", y = "include"), 
+    weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+
