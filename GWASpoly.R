@@ -116,9 +116,7 @@ S3 <- inner_join(QTL_06, S1, by = "Marker") %>% inner_join(., S2, by = "Marker")
 write.table(S3, "~/Documents/Cesar/git/big_files/markers1.tsv", row.names = F, quote = F, sep = "\t")
 
 S2 <- dcast(S2, formula = Marker ~ Trait, fun.aggregate = length)
-
 col_headings_3 <- c("stage", "trait", "loc", "year", "cut")
-
 S4 <- as.data.frame(colnames(S2)) %>% separate(1, col_headings_3, sep = "_", remove = TRUE, convert = FALSE, extra = "warn") %>% dplyr::filter(!row_number() %in% c(1))
 write.table(S4, "~/Documents/git/Norberg_2020/spatial_distribution/markers3.tsv", row.names = F, quote = F, sep = "\t")
 
@@ -170,16 +168,3 @@ save.image(file = "~/Documents/Cesar/git/big_files/data_5.RData")
 ###########
 # end
 
-
-# to generate frequency of markers shared by trait
-S2 <- QTL_01 %>% dplyr::select(1,4) %>% distinct(Marker, Trait, .keep_all = T) 
-cc <- count(S2, Marker)
-cc1 <- count(cc, n)
-
-fig <- plot_ly(
-  x = cc1$n,
-  y = cc1$nn,
-  name = "freq Markers",
-  type = "bar", text = cc1$nn, textposition = 'auto') %>% layout(xaxis = list(autotypenumbers = 'strict', title = 'Trait'), yaxis = list(title = 'Markers')) %>% config(toImageButtonOptions = list(format = "svg",filename = "fig", width = 600, height = 300))
-
-orca(fig, "~/Documents/git/Norberg_2020/GWAS_results/Figures/count_markers.svg", width = 5 * 96, height = 4 * 96)
