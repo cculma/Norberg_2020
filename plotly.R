@@ -39,14 +39,15 @@ data_6.3$Marker
 QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
 
 ##################
-qtl <- get.QTL(data=data_5.0)
-qtl <- get.QTL(data=data_5.0, traits = "ST4_He_Overall", models = c("additive"))
-qtl <- get.QTL(data=data_5.0, traits = "ST1_FD_ID_2019_4", models = c("general"))
+trait1
 
-knitr::kable(qtl)
+models_1
+qtl <- get.QTL(data=data_5.0)
+qtl <- get.QTL(data=data_5.0, traits = "ST4_He_Overall", models = c("additive", "general"))
+qtl <- get.QTL(data=data_5.0, traits = "ST4_He_Overall", models = models_1)
 
 fit.ans <- fit.QTL(data=data_5.0,
-                   qtl=qtl[,c("Marker","Model")], trait = "ST1_FD_ID_2019_4",
+                   qtl=qtl[,c("Marker","Model")], trait = "ST4_He_Overall",
                    fixed= NULL)
 
 knitr::kable(fit.ans,digits=3)

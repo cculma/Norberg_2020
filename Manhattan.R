@@ -1,5 +1,4 @@
 # figure manhattan Norberg
-
 # generate manhattan plot by trait
 
 rm(list = ls(all = T))
@@ -14,11 +13,44 @@ trait1
 trait2
 trait3 <- c("ST4_MS_Overall", "ST4_DM_Overall", "ST4_He_Overall", "ST4_Yi_Overall")
 trait4 <- c("ST1_FD_WA_2018_3", "ST1_FD_ID_2019_4",	"ST1_FD_WA_2019_5", "ST4_FD_Overall")
+trait5 <- c("ST1_DM_ID_2019_1", "ST3_DM_WA", "ST4_DM_Overall")
 
-# manhattan.plot(data = data_5, traits="may_21_1stage", chrom = "Chr1") + theme_classic(base_family = "Arial", base_size = 12) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
+############### 
 
-P1 <- manhattan.plot(data = data_5.1, traits = trait3) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
+load("~/Documents/Cesar/git/big_files/data_3.RData")
+load("~/Documents/Cesar/git/big_files/data_3.1.RData")
+load("~/Documents/Cesar/git/big_files/data_4.RData")
 
+load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.RData")
+
+data_5.0 <- set.threshold(data_3, method= "Bonferroni", level=0.05)
+data_5.1 <- set.threshold(data_3.1, method= "Bonferroni", level=0.05)
+data_5.2 <- set.threshold(data_4, method= "Bonferroni", level=0.05)
+
+data_6.0 <- get.QTL(data_5.0)
+data_6.1 <- get.QTL(data_5.1)
+data_6.2 <- get.QTL(data_5.2)
+
+t_6.0 <- c("ST3_Yi_OR", "ST4_Yi_Overall")
+t_6.1 <- c("ST1_Yi_OR_2020_2", "ST2_Yi_OR_2020", "ST3_Yi_OR", "ST4_Yi_Overall")
+
+data_6.0 <- data_6.0 %>% dplyr::filter(!Trait %in% t_6.0)
+data_6.1 <- data_6.1 %>% dplyr::filter(!Trait %in% t_6.1)
+
+QTL_01 <- rbind(data_6.0, data_6.1)
+t_6.3 <- c("ST4_MS_Overall", "ST4_DM_Overall", "ST4_He_Overall", "ST4_Yi_Overall", "ST4_FD_Overall")
+data_6.3 <- QTL_01 %>% dplyr::filter(Trait %in% t_6.3) %>% distinct(Marker, .keep_all = T) 
+data_6.3$Marker
+
+QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
+
+
+###############
+
+
+# DM Manhattan plot
+P1 <- manhattan.plot(data = data_5.0, traits = trait5) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
+# FD Manhattan plot
 P2 <- manhattan.plot(data = data_5.0, traits= trait4) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
 ggsave(filename = "~/Documents/git/Norberg_2020/figs/FD_manhattan.jpg", plot = P2, width = 8, height = 8)
 
