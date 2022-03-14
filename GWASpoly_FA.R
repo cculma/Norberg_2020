@@ -1,4 +1,6 @@
 # GWASpoly using FA scores
+# GWASpoly using corrected values by biplot
+
 rm(list = ls()) # clean Global Environment
 # setwd("~/Documents/Cesar/blup_data/Roza2019/Analysis_2021/GWAS/")
 # setwd("~/OneDrive - Washington State University (email.wsu.edu)/Roza_2019/git/Roza2019/")

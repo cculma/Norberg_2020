@@ -190,28 +190,9 @@ PCA$gen <- as.character(PCA$gen)
 f1 <- inner_join(a1, a2, by = "gen") %>% inner_join(., a3, by = "gen") %>% inner_join(., a4, by = "gen") %>% inner_join(., a5, by = "gen") %>% inner_join(., c3, by = "gen") %>% inner_join(., c4, by = "gen") %>% inner_join(., d1, by = "gen") %>% inner_join(., d2, by = "gen") %>% inner_join(., d3, by = "gen")%>% inner_join(., d4, by = "gen") %>% inner_join(., e1, by = "gen") %>% inner_join(., e2, by = "gen") %>% inner_join(., e3, by = "gen") %>% inner_join(., e4, by = "gen") %>% inner_join(., e5, by = "gen") %>% inner_join(., PCA, by = "gen")
 colnames(f1)
 write.csv(f1, "~/Documents/Cesar/git/big_files/pheno.csv", quote = F, row.names = F)
-##~~~~~~~~~~~~~
-rm(data_3st)
-setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/7_FA_scores/4_stage/")
-data_FA4 <- list.files(pattern = ".csv", full.names = T)
-list_5 <- c("FA_MS", "FA_DM", "FA_He", "FA_Yi", "FA_FD")
-FA_4 <- list()
-for (i in 1:length(data_FA4)) {
-  data <- read.csv(data_FA4[i])
-  data <- data[,c(3,1)]
-  FA_4[[length(FA_4)+1]] = data
-}
-names(FA_4) <- list_5
-FA_4 <-rbindlist(FA_4, use.names=TRUE, fill=TRUE, idcol="trial")
-FA_4 <- FA_4 %>% spread(trial, score) %>% remove_rownames() %>% column_to_rownames(var = "gen") %>% rownames_to_column(var = "gen")
 
-f2 <- inner_join(FA_4, PCA, by = "gen")
-write.csv(f2, "~/Documents/Cesar/git/big_files/pheno_fa.csv", quote = F, row.names = F)
-####################
-PCA <- PCA %>% dplyr::select(c(109:111)) %>% remove_rownames() %>% column_to_rownames(var = "gen")
-colnames(f1)
-f2 <- f1[,c(92:107)]
-f2 <- cor(f2, use = "complete.obs")
-corrplot(f2, type="upper", method = 'number')
+
+##~~~~~~~~~~~~~
+
 
 
