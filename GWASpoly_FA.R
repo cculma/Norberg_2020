@@ -21,6 +21,8 @@ pheno <- read.csv("~/Documents/Cesar/git/big_files/pheno_fa.csv", row.names = 1)
 head(pheno)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
 trait1
+trait2 <- c("FA1_He_ID_2019_1","FA3_He_ID_2019_1","ST3_He_OR","ST3_He_OR1")
+trait2 <- c("FA1_He_ID_2019_1","FA3_He_ID_2019_1")
 params <- set.params(fixed=c("PC1","PC2","PC3"),
                      fixed.type=rep("numeric",3), n.PC = 3)
 models_1 <- c("general", "additive", "1-dom", "2-dom",  "diplo-additive", "diplo-general")
@@ -30,9 +32,17 @@ data_1 <- read.GWASpoly(ploidy=4,
                         geno.file="AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt", 
                         format="ACGT", n.traits=length(trait1), delim=",")
 data_2 <- set.K(data = data_1, LOCO = F, n.core = 32)
-data_4.1 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 32)
+# data_4.1 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 32)
+data_4.1 <- GWASpoly(data = data_2, models = models_1, traits = "BLUE_He_ID_2019_1", params = params, n.core = 32)
 save(data_4.1, file = "~/Documents/Cesar/git/big_files/data_4.1.RData")
-data_5.3 <- set.threshold(data_4.1, method= "Bonferroni", level=0.05)
+data_5.3 <- set.threshold(data_4.1, method= "Bonferroni", level=0.2)
 data_6.4 <- get.QTL(data_5.3) 
 data_6.4 %>% distinct(Marker, .keep_all = T) 
 data_6.4$Marker
+hist(pheno$FA1_He_ID_2019_1)
+hist(pheno$FA3_He_ID_2019_1)
+cor(pheno$FA1_He_ID_2019_1, pheno$FA3_He_ID_2019_1)
+colnames(pheno)
+pheno[,c(1,11)]
+var(pheno$FA1_He_ID_2019_1)
+var(pheno$FA3_He_ID_2019_1)

@@ -10,7 +10,8 @@ row:col!col!cor 9.800000e-01        NA       NA     F   0
 						
 						
 asreml::asreml(fixed = resp ~ 1 + gen, random = ~+block, residual = ~ar1(row):id(col), 						
-    data = df, na.action = list(x = "include", y = "include"))						
+    data = df, na.action = list(x = "include", y = "include"))
+						
 Variance Component Estimates:						
 component  std.error   z.ratio bound %ch						
 block           0.1023871 0.06213518  1.647812     P 0.2						
@@ -32,3 +33,13 @@ asreml::asreml(fixed = resp ~ 1, random = ~+trial + fa(trial,
     data = df, na.action = list(x = "include", y = "include"), 
     weights = weight, family = asreml::asr_gaussian(dispersion = 1))
 
+
+asreml::asreml(fixed = resp ~ 1 + cov, random = ~+block + gen, 
+    residual = ~ar1(row):ar1(col), data = df, na.action = list(x = "include", 
+        y = "include"))
+
+asreml::asreml(	fixed = resp ~ 1 + cov1 + cov2 + lin(col), 
+		random = ~+block + block:row + spl(col) + gen, 
+		residual = ~ar1(row):ar1v(col), 
+		data = df, 
+		na.action = list(x = "include", y = "include"))
