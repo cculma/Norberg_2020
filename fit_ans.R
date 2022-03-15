@@ -1,3 +1,11 @@
+library(tidyverse)
+library(GWASpoly)
+library(data.table)
+###########
+# save(data_3, file = "~/Documents/Cesar/git/big_files/data_3.RData")
+# load("~/Documents/Cesar/git/big_files/data_3.RData")
+load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_5.RData")
+
 data_5.0 <- set.threshold(data_3, method= "Bonferroni", level=0.05)
 data_5.1 <- set.threshold(data_3.1, method= "Bonferroni", level=0.05)
 data_5.2 <- set.threshold(data_4, method= "Bonferroni", level=0.05)
@@ -6,107 +14,74 @@ data_6.0 <- get.QTL(data_5.0)
 data_6.1 <- get.QTL(data_5.1)
 data_6.2 <- get.QTL(data_5.2)
 
-data_6.0 <- data_6.0 %>% distinct(Marker, .keep_all = T) 
+# data_6.0 <- data_6.0 %>% distinct(Marker, .keep_all = T) 
 
 trait4 <- levels(as.factor(data_6.0$Trait))
-trait5 <- levels(as.factor(data_6.0$Model))
+trait4
 
 data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_DM_ID_2019_1")) 
-
-data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_FD_ID_2019_4")) %>% dplyr::filter(Model %in% c("general"))
 trait4.2 <- levels(as.factor(data_7.0$Trait))
 fit.ans <- fit.QTL(data=data_5.0, trait = trait4.2,
                    qtl=data_7.0[,c("Marker","Model")],
                    fixed = NULL)
-class(fit.ans)
-fit.ans <- knitr::kable(fit.ans,digits=3)
-write.csv(fit.ans, "~/Documents/git/fit.ans.FD.csv", row.names = F, quote = F)
+fit.ans$trait <- trait4.2
 
-
-
-data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_FD_WA_2018_3")) #
-
-data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_FD_WA_2019_5")) #
-
-data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_He_OR_2018_1"))
-
-data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_He_OR_2018_3"))
-data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_He_OR_2019_3"))
-data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_He_OR_2019_4"))
-data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_He_WA_2019_1"))
-data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_He_WA_2019_2"))
-data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_He_WA_2019_4"))
-data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_MS_OR_2019_1"))
-data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_MS_WA_2019_2"))
-data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_Yi_OR_2019_4"))
-
-data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% c("ST1_FD_ID_2019_4")) %>% dplyr::filter(Model %in% c("general"))
-                                   
-data_7.0 <- data_6.0 %>% dplyr::filter(Model %in% c("general"))
-
-data_7.0 <- data_6.0 %>% dplyr::filter(Model %in% c("1-dom-alt", "1-dom-ref", "2-dom-alt", "2-dom-ref", "additive", "general"))
-trait4.1 <- levels(as.factor(data_7.0$Trait))
-trait5.1 <- levels(as.factor(data_7.0$Model))
-data_8.0 <- data_7.0
-data_8.0 <- data_7.0 %>% dplyr::filter(Trait %in% c("ST4_FD_Overall"))
-
-trait4.2 <- levels(as.factor(data_8.0$Trait))
-fit.ans <- fit.QTL(data=data_5.0, trait = trait4.2,
-                   qtl=data_8.0[,c("Marker","Model")],
-                   fixed = NULL)
-# fit.ans_1 <- fit.ans
-fit.ans_2 <- rbind(fit.ans_1, fit.ans)
-
-
-
-
-fit.ans_5.0 <- list()
-for (i in trait4.1) {
-  data_8.0 <- data_7.0 %>% dplyr::filter(Trait %in% trait4.1[i])
-  trait5 <- levels(as.factor(data_8.0$Trait))
-  fit.ans <- fit.QTL(data=data_5.0, trait = trait5,
-                     qtl=data_8.0[,c("Marker","Model")],
-                     fixed = NULL)
-}
-
-trait4 <- levels(as.factor(data_7.0$Trait))
-fit.ans <- fit.QTL(data=data_5.0, trait = trait4,
-                   qtl=data_7.0[,c("Marker","Model")],
-                   fixed = NULL)
 
 knitr::kable(fit.ans,digits=3)
 
-trait4 <- levels(as.factor(data_6.0$Trait))
-trait5 <- levels(as.factor(data_6.0$Model))
+data_7.0 <- data_6.1 %>% dplyr::filter(Trait %in% "ST3_Yi_OR")
 
-rm(fit.ans)
+
+
+
+
+
+
+
 
 trait4 <- levels(as.factor(data_6.0$Trait))
+trait4
+
+
 fit.ans_5.0 <- list()
-for (i in 1:length(trait4)) {
-  data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% trait4[i])
-  data <- fit.QTL(data=data_5.0, trait = trait4[i],
+for (i in 1:(length(trait4))) {
+  data_7.0 <- data_6.0 %>% dplyr::filter(Trait %in% trait4[i]) %>% dplyr::filter(!Model %in% c("diplo-general", "diplo-additive"))
+  trait4.2 <- levels(as.factor(data_7.0$Trait))
+  fit.ans <- fit.QTL(data=data_5.0, trait = trait4.2,
                      qtl=data_7.0[,c("Marker","Model")],
                      fixed = NULL)
-  fit.ans_5.0[[length(fit.ans_5.0)+1]] = data
+  fit.ans_5.0[[length(fit.ans_5.0)+1]] = fit.ans
 }
 names(fit.ans_5.0) <- trait4
 fit.ans_5.0 <-rbindlist(fit.ans_5.0, use.names=TRUE, fill=TRUE, idcol="trait")
 
 
 trait5 <- levels(as.factor(data_6.1$Trait))
+trait5
+
+data_7.0 <- data_6.1 %>% dplyr::filter(Trait %in% "ST3_MS_OR") %>% dplyr::filter(!Model %in% c("diplo-general", "diplo-additive"))
+
 fit.ans_5.1 <- list()
-for (i in 1:length(trait5)) {
-  data <- fit.QTL(data=data_5.1, trait = trait5[i],
-                  qtl=data_6.1[,c("Marker","Model")],
-                  fixed = NULL)
-  fit.ans_5.1[[length(fit.ans_5.1)+1]] = data
+for (i in 1:(length(trait5))) {
+  data_7.0 <- data_6.1 %>% dplyr::filter(Trait %in% trait5[i]) %>% dplyr::filter(!Model %in% c("diplo-general", "diplo-additive"))
+  trait4.2 <- levels(as.factor(data_7.0$Trait))
+  fit.ans <- fit.QTL(data=data_5.1, trait = trait4.2,
+                     qtl=data_7.0[,c("Marker","Model")],
+                     fixed = NULL)
+  fit.ans_5.1[[length(fit.ans_5.1)+1]] = fit.ans
 }
 names(fit.ans_5.1) <- trait5
 fit.ans_5.1 <-rbindlist(fit.ans_5.1, use.names=TRUE, fill=TRUE, idcol="trait")
+fit.ans_5.2 <- rbind(fit.ans_5.0, fit.ans_5.1)
+fit.ans_5.2$pct <- fit.ans_5.2$R2 *100
+fit.ans_5.2$R2 <- round(fit.ans_5.2$R2, digits=3)
+fit.ans_5.2$pval <- round(fit.ans_5.2$pval, digits=3)
+fit.ans_5.2$pct <- round(fit.ans_5.2$pct, digits=3)
 
-# write.csv(fit.ans, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/1_MSC_1stage.csv", row.names = F, quote = F)
+fit.ans_5.2 <- fit.ans_5.2 %>% unite(col = "Marker1", 3:4, sep = "_", remove = T) 
 
+write.csv(fit.ans_5.2, "~/Documents/git/fit.ans.csv", row.names = F, quote = F)
+knitr::kable(fit.ans_5.2,digits=3)
 
 #################
 # end
