@@ -4,7 +4,7 @@ library(StageWise)
 library(asreml)
 
 
-P1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/4_Yield_1stage.csv")
+P1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/ID_2019_1.csv")
 P1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/ID_2018_1.csv")
 P2 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/ID_2018_2.csv")
 P3 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/ID_2018_3.csv")
@@ -101,5 +101,64 @@ cor(pheno$ST2_Yi_ID_2018, pheno$BV, use = "complete.obs")
 plot(x = pheno$ST2_Yi_ID_2018, y = pheno$BV)
 var(pheno$ST2_Yi_ID_2018, use = "complete.obs")
 var(pheno$BV)
+
+##########################
+
+head(P1)
+P1.1 <- P1[,c(3,6,7,8,13,16,17)]
+head(P1.1)
+colnames(P1.1) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
+str(P1.1)
+P1.1$block <- as.factor(P1.1$block)
+P1.1$col <- as.factor(P1.1$col)
+P1.1$row <- as.factor(P1.1$row)
+P1.1$gen <- as.factor(P1.1$gen)
+P1.1$resp <- as.numeric(P1.1$resp)
+P1.1$cov1 <- as.numeric(P1.1$cov1)
+P1.1$cov2 <- as.numeric(P1.1$cov2)
+P1.1 <- P1.1[order(P1.1$row, P1.1$col), ] 
+
+# BLUP
+m1 <- asreml::asreml(fixed = resp ~ 1 + cov1 + cov2, 
+                     random = ~+block + gen, residual = ~ar1(row):ar1(col), 
+                     data = P1.1, na.action = list(x = "include", y = "include"))
+# BLUE
+m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
+                     random = ~+block, residual = ~ar1(row):ar1(col), 
+                     data = P1.1, na.action = list(x = "include", y = "include"))
+
+
+ls(m1)
+summary(m1)$bic
+summary(m2)$bic
+
+BLUP <- summary(m2, coef = T)$linear.predictors
+BLUE <- summary(m2, coef = T)$coef.fixed
+class(BLUE)
+BLUE <- BLUE[-c(1,2,203),]
+hist(BLUE[,1])
+
+m2$linear.predictors
+
+preds <- predict(m2, classify='gen', vcov=TRUE)
+vcov <- as.matrix(preds$vcov)
+
+preds[["pvals"]][["gen"]]
+preds[["pvals"]][["predicted.value"]]
+
+BLUE1 <- data.frame(gen = preds[["pvals"]][["gen"]],
+                    BLUE = preds[["pvals"]][["predicted.value"]])
+hist(BLUE1$BLUE)
+hist(P1.1$resp)
+dim(P1.1)
+dim(vcov)
+
+# Adding Weights
+pvals <- preds$pvals
+vcov <- as.matrix(preds$vcov)
+sel <- matrix(1, ncol=1, nrow=length(pvals$predicted.value))
+sel[is.na(pvals$predicted.value),] <- 0
+vcov <- vcov[sel==1,sel==1]
+pvals$weight[sel==1] <- diag(solve(vcov)) 
 
 
