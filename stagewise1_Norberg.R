@@ -160,5 +160,6 @@ cor(fa1$BLUE_He_ID_2019_1, pvals$predicted.value, use = "complete.obs")
 # model in for loop
 setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/")
 data_ar1 <- list.files(pattern = ".csv", full.names = T)
+data_ar2 <- data_ar1[c(4,8,10:14,16,19,21:31)]
 list_5 <- c("FA_MS", "FA_DM", "FA_He", "FA_Yi", "FA_FD")
 
