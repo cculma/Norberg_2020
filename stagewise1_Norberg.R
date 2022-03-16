@@ -61,7 +61,6 @@ stage1.2.blue <- stage1.2.blue[,-4]
 stage1.2.blue$env <- gsub("BLUE_", "", stage1.2.blue$env)
 
 
-
 directory1 <- "~/Documents/Cesar/git/big_files"
 G1 <- file.path(directory1, "Norberg_1.txt")
 geno1 <- read_geno(filename=G1, ploidy=4, map=TRUE, min.minor.allele=5)
@@ -105,6 +104,8 @@ var(pheno$BV)
 ##########################
 
 head(P1)
+dim(P1)
+colnames(P1)
 P1.1 <- P1[,c(3,6,7,8,13,16,17)]
 head(P1.1)
 colnames(P1.1) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
@@ -128,8 +129,6 @@ m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2,
                      data = P1.1, na.action = list(x = "include", y = "include"))
 
 
-ls(m1)
-summary(m1)$bic
 summary(m2)$bic
 
 BLUP <- summary(m2, coef = T)$linear.predictors
@@ -141,17 +140,7 @@ hist(BLUE[,1])
 m2$linear.predictors
 
 preds <- predict(m2, classify='gen', vcov=TRUE)
-vcov <- as.matrix(preds$vcov)
-
-preds[["pvals"]][["gen"]]
-preds[["pvals"]][["predicted.value"]]
-
-BLUE1 <- data.frame(gen = preds[["pvals"]][["gen"]],
-                    BLUE = preds[["pvals"]][["predicted.value"]])
-hist(BLUE1$BLUE)
-hist(P1.1$resp)
-dim(P1.1)
-dim(vcov)
+vcov1 <- as.matrix(preds$vcov)
 
 # Adding Weights
 pvals <- preds$pvals
@@ -160,5 +149,16 @@ sel <- matrix(1, ncol=1, nrow=length(pvals$predicted.value))
 sel[is.na(pvals$predicted.value),] <- 0
 vcov <- vcov[sel==1,sel==1]
 pvals$weight[sel==1] <- diag(solve(vcov)) 
+colnames(pvals)
+str(pvals)
+fa1 <- pvals[,c(1,2)]
+fa1$gen <- as.character(fa1$gen)
+cor(fa1$BLUE_He_ID_2019_1, pvals$predicted.value, use = "complete.obs")
 
+###################
+
+# model in for loop
+setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/")
+data_ar1 <- list.files(pattern = ".csv", full.names = T)
+list_5 <- c("FA_MS", "FA_DM", "FA_He", "FA_Yi", "FA_FD")
 

@@ -76,6 +76,7 @@ colnames(PCA)
 PCA <- PCA %>% dplyr::select(c(1,109:111))
 str(PCA)
 PCA$gen <- as.character(PCA$gen)
+f1 <- inner_join(fa1, PCA, by = "gen") 
 
 f1 <- inner_join(fa1, fa3, by = "gen") %>% inner_join(., a_1_4, by = "gen") %>% inner_join(., a_1_5, by = "gen") %>% inner_join(., PCA, by = "gen")
 colnames(f1)
