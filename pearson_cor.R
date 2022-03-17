@@ -16,31 +16,31 @@ library(corrplot)
 # start
 a1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/1_MSC/1_stage/predictions_2stage_ASReml_mrbean.csv")
 a1 <- a1 %>% dplyr::select(1:3) %>% spread(trial, predicted.value) %>% remove_rownames() %>% column_to_rownames(var = "gen")
-list_5 <- gsub("BLUE_", "ST1_MS_", colnames(a1))
+list_5 <- gsub("^", "ST1_MS_", colnames(a1))
 colnames(a1) <- list_5
 a1 <- a1 %>% rownames_to_column(var = "gen")
 
 a2 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/2_DM/1_stage/predictions_2stage_ASReml_mrbean.csv")
 a2 <- a2 %>% dplyr::select(1:3) %>% spread(trial, predicted.value) %>% remove_rownames() %>% column_to_rownames(var = "gen")
-list_5 <- gsub("BLUE_", "ST1_DM_", colnames(a2))
+list_5 <- gsub("^", "ST1_DM_", colnames(a2))
 colnames(a2) <- list_5
 a2 <- a2 %>% rownames_to_column(var = "gen")
 
 a3 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/3_Height/1_stage/predictions_2stage_ASReml_mrbean.csv")
 a3 <- a3 %>% dplyr::select(1:3) %>% spread(trial, predicted.value) %>% remove_rownames() %>% column_to_rownames(var = "gen")
-list_5 <- gsub("BLUE_", "ST1_He_", colnames(a3))
+list_5 <- gsub("^", "ST1_He_", colnames(a3))
 colnames(a3) <- list_5
 a3 <- a3 %>% rownames_to_column(var = "gen")
 
 a4 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/4_Yield/1_stage/predictions_2stage_ASReml_mrbean.csv")
 a4 <- a4 %>% dplyr::select(1:3) %>% spread(trial, predicted.value) %>% remove_rownames() %>% column_to_rownames(var = "gen")
-list_5 <- gsub("BLUE_", "ST1_Yi_", colnames(a4))
+list_5 <- gsub("^", "ST1_Yi_", colnames(a4))
 colnames(a4) <- list_5
 a4 <- a4 %>% rownames_to_column(var = "gen")
 
 a5 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA/5_FD/1_stage/predictions_2stage_ASReml_mrbean.csv")
 a5 <- a5 %>% dplyr::select(1:3) %>% spread(trial, predicted.value) %>% remove_rownames() %>% column_to_rownames(var = "gen")
-list_5 <- gsub("BLUE_", "ST1_FD_", colnames(a5))
+list_5 <- gsub("^", "ST1_FD_", colnames(a5))
 colnames(a5) <- list_5
 a5 <- a5 %>% rownames_to_column(var = "gen")
 
@@ -189,7 +189,11 @@ PCA$gen <- as.character(PCA$gen)
 
 f1 <- inner_join(a1, a2, by = "gen") %>% inner_join(., a3, by = "gen") %>% inner_join(., a4, by = "gen") %>% inner_join(., a5, by = "gen") %>% inner_join(., c3, by = "gen") %>% inner_join(., c4, by = "gen") %>% inner_join(., d1, by = "gen") %>% inner_join(., d2, by = "gen") %>% inner_join(., d3, by = "gen")%>% inner_join(., d4, by = "gen") %>% inner_join(., e1, by = "gen") %>% inner_join(., e2, by = "gen") %>% inner_join(., e3, by = "gen") %>% inner_join(., e4, by = "gen") %>% inner_join(., e5, by = "gen") %>% inner_join(., PCA, by = "gen")
 colnames(f1)
-write.csv(f1, "~/Documents/Cesar/git/big_files/pheno.csv", quote = F, row.names = F)
+
+f1 <- inner_join(a1, a2, by = "gen") %>% inner_join(., a3, by = "gen") %>% inner_join(., a4, by = "gen") %>% inner_join(., a5, by = "gen") %>% inner_join(., d1, by = "gen") %>% inner_join(., d2, by = "gen") %>% inner_join(., d3, by = "gen")%>% inner_join(., d4, by = "gen") %>% inner_join(., e1, by = "gen") %>% inner_join(., e2, by = "gen") %>% inner_join(., e3, by = "gen") %>% inner_join(., e4, by = "gen") %>% inner_join(., e5, by = "gen") %>% inner_join(., PCA, by = "gen")
+colnames(f1)
+
+write.csv(f1, "~/Documents/Cesar/git/big_files/pheno_fa.csv", quote = F, row.names = F)
 
 
 ##~~~~~~~~~~~~~

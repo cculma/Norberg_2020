@@ -102,14 +102,19 @@ var(pheno$ST2_Yi_ID_2018, use = "complete.obs")
 var(pheno$BV)
 
 ##########################
-
-head(P1)
 dim(P1)
+head(P1)
 colnames(P1)
-P1.1 <- P1[,c(3,6,7,8,13,16,17)]
+P1.1 <- P1[,c(3,6,7,8,13,18,23)]
 head(P1.1)
 colnames(P1.1) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
+# P1.1 <- P1.1 %>% dplyr::filter(!gen %in% c(201, 202))
 str(P1.1)
+
+P1.1[,lev1] <- lapply(P1.1[,lev1], factor)
+data[,lev2] <- lapply(data[,lev2], numeric)
+P1.1[lev2] <- sapply(P1.1[lev2], numeric)
+str(data)
 P1.1$block <- as.factor(P1.1$block)
 P1.1$col <- as.factor(P1.1$col)
 P1.1$row <- as.factor(P1.1$row)
@@ -118,6 +123,7 @@ P1.1$resp <- as.numeric(P1.1$resp)
 P1.1$cov1 <- as.numeric(P1.1$cov1)
 P1.1$cov2 <- as.numeric(P1.1$cov2)
 P1.1 <- P1.1[order(P1.1$row, P1.1$col), ] 
+
 
 # BLUP
 m1 <- asreml::asreml(fixed = resp ~ 1 + cov1 + cov2, 
@@ -131,14 +137,6 @@ m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2,
 
 summary(m2)$bic
 
-BLUP <- summary(m2, coef = T)$linear.predictors
-BLUE <- summary(m2, coef = T)$coef.fixed
-class(BLUE)
-BLUE <- BLUE[-c(1,2,203),]
-hist(BLUE[,1])
-
-m2$linear.predictors
-
 preds <- predict(m2, classify='gen', vcov=TRUE)
 vcov1 <- as.matrix(preds$vcov)
 
@@ -149,6 +147,7 @@ sel <- matrix(1, ncol=1, nrow=length(pvals$predicted.value))
 sel[is.na(pvals$predicted.value),] <- 0
 vcov <- vcov[sel==1,sel==1]
 pvals$weight[sel==1] <- diag(solve(vcov)) 
+
 colnames(pvals)
 str(pvals)
 fa1 <- pvals[,c(1,2)]
@@ -157,9 +156,217 @@ cor(fa1$BLUE_He_ID_2019_1, pvals$predicted.value, use = "complete.obs")
 
 ###################
 
+#################
+# 1 stage results
+# MS = 1_MSC
+# DM = 2_DM
+# He = 3_Height
+# Yi = 4_Yield
+# FD = 5_FD
+
 # model in for loop
 setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/")
-data_ar1 <- list.files(pattern = ".csv", full.names = T)
-data_ar2 <- data_ar1[c(4,8,10:14,16,19,21:31)]
-list_5 <- c("FA_MS", "FA_DM", "FA_He", "FA_Yi", "FA_FD")
+data_ar <- list.files(pattern = ".csv", full.names = T)
+data_ar1 <- data_ar[c(1,4,8,11,15,19,22,23,27:31)] # 1_MSC
+data_ar2 <- data_ar[c(1,4,8,11,15,19,22,27)] # 2_DM
+data_ar3 <- data_ar[c(4,8,10:14,16:19,21:31)] # 3_Height
+data_ar4 <- data_ar # 4_Yield
+data_ar5 <- data_ar[c(7,21,26)] # 5_FD
 
+list_1 <- gsub(".csv", "", gsub("./", "", data_ar1))
+list_2 <- gsub(".csv", "", gsub("./", "", data_ar2))
+list_3 <- gsub(".csv", "", gsub("./", "", data_ar3))
+list_4 <- gsub(".csv", "", gsub("./", "", data_ar4))
+list_5 <- gsub(".csv", "", gsub("./", "", data_ar5))
+
+lev1 <- c("block", "gen", "row", "col")
+lev2 <- c("resp", "cov1", "cov2")
+
+
+#################
+# 1_MSC
+
+MSC_BLUE <- list()
+MSC_vcov <- list()
+for (i in 1:length(data_ar1)) {
+  data <- read.csv(data_ar1[i])
+  data <- data[,c(3,6,7,8,11,16,21)]
+  colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
+  data[,lev1] <- lapply(data[,lev1], factor)
+  data <- data[order(data$row, data$col), ]
+  m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
+                       random = ~+block, residual = ~ar1(row):ar1(col), 
+                       data = data, 
+                       na.action = list(x = "include", y = "include"))
+  
+  preds <- predict(m2, classify='gen', vcov=TRUE)
+  vcov1 <- as.matrix(preds$vcov)
+  
+  # Adding Weights
+  pvals <- preds$pvals
+  vcov <- as.matrix(preds$vcov)
+  sel <- matrix(1, ncol=1, nrow=length(pvals$predicted.value))
+  sel[is.na(pvals$predicted.value),] <- 0
+  vcov <- vcov[sel==1,sel==1]
+  pvals$weight[sel==1] <- diag(solve(vcov)) 
+  MSC_BLUE[[length(MSC_BLUE)+1]] = pvals
+  MSC_vcov[[length(MSC_vcov)+1]] = vcov1
+}
+
+names(MSC_BLUE) <- list_1
+names(MSC_vcov) <- list_1
+
+MSC_BLUE <-rbindlist(MSC_BLUE, use.names=TRUE, fill=TRUE, idcol="env")
+MSC_BLUE <- MSC_BLUE %>% dplyr::filter(!gen %in% c(201, 202))
+write.csv(MSC_BLUE, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/1_MSC_1stage.csv", row.names = F, quote = F)
+
+#################
+# 2_DM
+
+DM_BLUE <- list()
+DM_vcov <- list()
+for (i in 1:length(data_ar2)) {
+  data <- read.csv(data_ar2[i])
+  data <- data[,c(3,6,7,8,12,17,22)]
+  colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
+  data[,lev1] <- lapply(data[,lev1], factor)
+  data <- data[order(data$row, data$col), ]
+  m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
+                       random = ~+block, residual = ~ar1(row):ar1(col), 
+                       data = data, 
+                       na.action = list(x = "include", y = "include"))
+  
+  preds <- predict(m2, classify='gen', vcov=TRUE)
+  vcov1 <- as.matrix(preds$vcov)
+  
+  # Adding Weights
+  pvals <- preds$pvals
+  vcov <- as.matrix(preds$vcov)
+  sel <- matrix(1, ncol=1, nrow=length(pvals$predicted.value))
+  sel[is.na(pvals$predicted.value),] <- 0
+  vcov <- vcov[sel==1,sel==1]
+  pvals$weight[sel==1] <- diag(solve(vcov)) 
+  DM_BLUE[[length(DM_BLUE)+1]] = pvals
+  DM_vcov[[length(DM_vcov)+1]] = vcov1
+}
+
+names(DM_BLUE) <- list_2
+names(DM_vcov) <- list_2
+
+DM_BLUE <-rbindlist(DM_BLUE, use.names=TRUE, fill=TRUE, idcol="env")
+DM_BLUE <- DM_BLUE %>% dplyr::filter(!gen %in% c(201, 202))
+write.csv(DM_BLUE, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/2_DM_1stage.csv", row.names = F, quote = F)
+
+#################
+# 3_Height
+
+Height_BLUE <- list()
+Height_vcov <- list()
+for (i in 1:length(data_ar3)) {
+  data <- read.csv(data_ar3[i])
+  data <- data[,c(3,6,7,8,13,18,23)]
+  colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
+  data[,lev1] <- lapply(data[,lev1], factor)
+  data <- data[order(data$row, data$col), ]
+  m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
+                       random = ~+block, residual = ~ar1(row):ar1(col), 
+                       data = data, 
+                       na.action = list(x = "include", y = "include"))
+  
+  preds <- predict(m2, classify='gen', vcov=TRUE)
+  vcov1 <- as.matrix(preds$vcov)
+  
+  # Adding Weights
+  pvals <- preds$pvals
+  vcov <- as.matrix(preds$vcov)
+  sel <- matrix(1, ncol=1, nrow=length(pvals$predicted.value))
+  sel[is.na(pvals$predicted.value),] <- 0
+  vcov <- vcov[sel==1,sel==1]
+  pvals$weight[sel==1] <- diag(solve(vcov)) 
+  Height_BLUE[[length(Height_BLUE)+1]] = pvals
+  Height_vcov[[length(Height_vcov)+1]] = vcov1
+}
+
+names(Height_BLUE) <- list_3
+names(Height_vcov) <- list_3
+
+Height_BLUE <-rbindlist(Height_BLUE, use.names=TRUE, fill=TRUE, idcol="env")
+Height_BLUE <- Height_BLUE %>% dplyr::filter(!gen %in% c(201, 202))
+write.csv(Height_BLUE, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/3_Height_1stage.csv", row.names = F, quote = F)
+
+#################
+# 4_Yield
+
+Yield_BLUE <- list()
+Yield_vcov <- list()
+for (i in 1:length(data_ar4)) {
+  data <- read.csv(data_ar4[i])
+  data <- data[,c(3,6,7,8,14,19,24)]
+  colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
+  data[,lev1] <- lapply(data[,lev1], factor)
+  data <- data[order(data$row, data$col), ]
+  m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
+                       random = ~+block, residual = ~ar1(row):ar1(col), 
+                       data = data, 
+                       na.action = list(x = "include", y = "include"))
+  
+  preds <- predict(m2, classify='gen', vcov=TRUE)
+  vcov1 <- as.matrix(preds$vcov)
+  
+  # Adding Weights
+  pvals <- preds$pvals
+  vcov <- as.matrix(preds$vcov)
+  sel <- matrix(1, ncol=1, nrow=length(pvals$predicted.value))
+  sel[is.na(pvals$predicted.value),] <- 0
+  vcov <- vcov[sel==1,sel==1]
+  pvals$weight[sel==1] <- diag(solve(vcov)) 
+  Yield_BLUE[[length(Yield_BLUE)+1]] = pvals
+  Yield_vcov[[length(Yield_vcov)+1]] = vcov1
+}
+
+names(Yield_BLUE) <- list_4
+names(Yield_vcov) <- list_4
+
+Yield_BLUE <-rbindlist(Yield_BLUE, use.names=TRUE, fill=TRUE, idcol="env")
+Yield_BLUE <- Yield_BLUE %>% dplyr::filter(!gen %in% c(201, 202))
+write.csv(Yield_BLUE, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/4_Yield_1stage.csv", row.names = F, quote = F)
+
+#################
+# 5_FD
+
+FD_BLUE <- list()
+FD_vcov <- list()
+for (i in 1:length(data_ar5)) {
+  data <- read.csv(data_ar5[i])
+  data <- data[,c(3,6,7,8,15,20,25)]
+  colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
+  data[,lev1] <- lapply(data[,lev1], factor)
+  data <- data[order(data$row, data$col), ]
+  m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
+                       random = ~+block, residual = ~ar1(row):ar1(col), 
+                       data = data, 
+                       na.action = list(x = "include", y = "include"))
+  
+  preds <- predict(m2, classify='gen', vcov=TRUE)
+  vcov1 <- as.matrix(preds$vcov)
+  
+  # Adding Weights
+  pvals <- preds$pvals
+  vcov <- as.matrix(preds$vcov)
+  sel <- matrix(1, ncol=1, nrow=length(pvals$predicted.value))
+  sel[is.na(pvals$predicted.value),] <- 0
+  vcov <- vcov[sel==1,sel==1]
+  pvals$weight[sel==1] <- diag(solve(vcov)) 
+  FD_BLUE[[length(FD_BLUE)+1]] = pvals
+  FD_vcov[[length(FD_vcov)+1]] = vcov1
+}
+
+names(FD_BLUE) <- list_5
+names(FD_vcov) <- list_5
+
+FD_BLUE <-rbindlist(FD_BLUE, use.names=TRUE, fill=TRUE, idcol="env")
+FD_BLUE <- FD_BLUE %>% dplyr::filter(!gen %in% c(201, 202))
+write.csv(FD_BLUE, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/5_FD_1stage.csv", row.names = F, quote = F)
+
+#################
+# end

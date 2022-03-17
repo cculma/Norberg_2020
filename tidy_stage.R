@@ -63,8 +63,9 @@ a_1_5 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE3_ar/ST3_O
 a_1_5 <- a_1_5 %>% dplyr::select(1,2) %>% remove_rownames() %>% column_to_rownames(var = "gen") %>% rownames_to_column(var = "gen")
 colnames(a_1_5)[2] <- "ST3_He_OR1"
 
-fa1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE3_ar/3_Height_1stage.csv")
-fa1 <- fa1 %>% dplyr::select(1:3) %>% spread(merged, predicted.value) %>% remove_rownames() %>% column_to_rownames(var = "gen")
+fa1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE3_ar/3_Height_1stage.csv") # this dtaset produces one marker in height BLUE_He_ID_2019_1
+fa1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE3_ar/3_Height_1Stage_1.csv")
+fa1 <- fa1 %>% dplyr::select(1:3) %>% spread(trial, predicted.value) %>% remove_rownames() %>% column_to_rownames(var = "gen")
 list_5 <- gsub("^", "BLUE_He_", colnames(fa1))
 colnames(fa1) <- list_5
 fa1 <- fa1 %>% rownames_to_column(var = "gen")
