@@ -37,12 +37,6 @@ data_4.1 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params =
 save(data_4.1, file = "~/Documents/Cesar/git/big_files/data_4.1.RData")
 data_5.3 <- set.threshold(data_4.1, method= "Bonferroni", level=0.05)
 data_6.4 <- get.QTL(data_5.3) 
-data_6.4 %>% distinct(Marker, .keep_all = T) 
+data_6.5 <- data_6.4 %>% distinct(Marker, .keep_all = T) 
 data_6.4$Marker
-hist(pheno$FA1_He_ID_2019_1)
-hist(pheno$FA3_He_ID_2019_1)
-cor(pheno$FA1_He_ID_2019_1, pheno$FA3_He_ID_2019_1)
-colnames(pheno)
-pheno[,c(1,11)]
-var(pheno$FA1_He_ID_2019_1)
-var(pheno$FA3_He_ID_2019_1)
+
