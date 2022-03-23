@@ -186,6 +186,7 @@ colnames(PCA)
 PCA <- PCA %>% dplyr::select(c(1,109:111))
 str(PCA)
 PCA$gen <- as.character(PCA$gen)
+PCA$gen <- as.factor(PCA$gen)
 
 f1 <- inner_join(a1, a2, by = "gen") %>% inner_join(., a3, by = "gen") %>% inner_join(., a4, by = "gen") %>% inner_join(., a5, by = "gen") %>% inner_join(., c3, by = "gen") %>% inner_join(., c4, by = "gen") %>% inner_join(., d1, by = "gen") %>% inner_join(., d2, by = "gen") %>% inner_join(., d3, by = "gen")%>% inner_join(., d4, by = "gen") %>% inner_join(., e1, by = "gen") %>% inner_join(., e2, by = "gen") %>% inner_join(., e3, by = "gen") %>% inner_join(., e4, by = "gen") %>% inner_join(., e5, by = "gen") %>% inner_join(., PCA, by = "gen")
 colnames(f1)

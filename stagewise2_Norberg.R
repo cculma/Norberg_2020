@@ -311,14 +311,12 @@ effects
 directory <- "~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA_1"
 
 
-
 P5 <- file.path(directory, "assay_FD.csv")
 
 setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/FA_1")
 data_cov <- list.files(pattern = ".csv", full.names = T)
 list_9 <- gsub(".csv", "", gsub("./", "", data_cov))
 list_8
-
 
 vcov_1 <- list()
 for (i in 1:length(data_cov)) {
@@ -343,15 +341,97 @@ for (i in 1:length(data_cov)) {
 
 # IMPORTANT
 save.image("~/Documents/Cesar/git/big_files/stagewise1_Norberg.RData")
+load("~/Documents/Cesar/git/big_files/stagewise1_Norberg.RData")
 
 names(ST2) <- list_8
 ST2 <-rbindlist(ST2, use.names=TRUE, fill=TRUE, idcol="trial")
 ST2 <- ST2[,c(1:3)]
 colnames(ST2)[2] <- "gen"
-ST2 <- ST2 %>% spread(key = trial, value = BV)
-f1 <- inner_join(ST2, PCA, by = "gen") 
-write.csv(f1, "~/Documents/Cesar/git/big_files/pheno_fa1.csv", quote = F, row.names = F)
+colnames(pred.id)[1] <- "gen"
 
+ST2 <- ST2 %>% spread(key = trial, value = BV)
+
+f1 <- inner_join(pred.id, PCA, by = "gen") 
+write.csv(f1, "~/Documents/Cesar/git/big_files/pheno_fa2.csv", quote = F, row.names = F)
+
+
+####################
+# MET FA
+head(Yield_BLUE)
+str(Yield_BLUE2)
+Yield_BLUE2 <- as.data.frame(Yield_BLUE2)
+list_5 <- c("id", "env", "loc", "year", "cut")
+Yield_BLUE2[list_5] <- lapply(Yield_BLUE2[list_5], factor)
+
+Yield_BLUE3 <- na.omit(Yield_BLUE2)
+Yield_ID <- Yield_BLUE3 %>% dplyr::filter(loc %in% "ID")
+Yield_OR <- Yield_BLUE3 %>% dplyr::filter(loc %in% "OR")
+Yield_WA <- Yield_BLUE3 %>% dplyr::filter(loc %in% "WA")
+
+
+# 1_FA
+
+FA_1 <- asreml::asreml(fixed = BLUE ~ 1 + env, 
+                       random = ~ + fa(env, 1):id, 
+                       data = Yield_BLUE3, na.action = list(x = "include", y = "include"), 
+                       weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+
+# model ok
+FA_2 <- asreml::asreml(fixed = BLUE ~ 1 + env, 
+                       random = ~ + fa(env, 1):id + fa(loc, 1):id, 
+                       data = Yield_BLUE3, na.action = list(x = "include", y = "include"), 
+                       weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+
+preds1 <- predict.asreml(FA_1, classify='id', sed = T)
+BLUP1 <- preds1$pvals
+preds2 <- predict.asreml(FA_2, classify='id', sed = T)
+BLUP2 <- preds2$pvals
+hist(BLUP$predicted.value)
+cor(BLUP1$predicted.value, BLUP2$predicted.value)
+summary(FA_1)$aic
+# [1] 2312.251
+# attr(,"parameters")
+# [1] 62
+
+summary(FA_2)$aic
+# [1] 1909.733
+# attr(,"parameters")
+# [1] 68
+
+
+BLUP1 <- BLUP1[,c(1,2)]
+colnames(BLUP1) <- c("id", "FA1")
+BLUP2 <- BLUP2[,c(1,2)]
+colnames(BLUP2) <- c("id", "FA2")
+BLUP <- inner_join(Y2, BLUP2, by = "id") %>% inner_join(., PCA, by = "id") 
+write.csv(BLUP, "~/Documents/Cesar/git/big_files/pheno_fa1.csv", row.names = F, quote = F)
+
+# 2_FA
+head(Yield_WA)
+FA_3 <- asreml::asreml(fixed = BLUE ~ 1 + env, 
+                       random = ~ + fa(env, 1):id + fa(year, 1):id, 
+                       data = Yield_ID, na.action = list(x = "include", y = "include"), 
+                       weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+
+summary(FA_3)$aic
+preds3 <- predict.asreml(FA_3, classify='id', sed = T)
+BLUP3 <- preds3$pvals
+Y1[2]
+Y1 <- list(Yield_ID, Yield_OR, Yield_WA)
+Y2 <- list()
+for (i in 1:(length(Y1))) {
+  FA_3 <- asreml::asreml(fixed = BLUE ~ 1 + env, 
+                         random = ~ + fa(env, 1):id + fa(year, 1):id, 
+                         data = Y1[i], na.action = list(x = "include", y = "include"), 
+                         weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+  
+  preds3 <- predict.asreml(FA_3, classify='id', sed = T)
+  BLUP3 <- preds3$pvals
+  Y2[[length(Y2)+1]] <- BLUP3
+}
+names(Y2) <- c("Yield_ID", "Yield_OR", "Yield_WA")
+Y2 <-rbindlist(Y2, use.names=TRUE, fill=TRUE, idcol="env")
+Y2 <- Y2 %>% dplyr::select(1:3) %>% spread(key = env, value = predicted.value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
 ################
 
 PCA <- read.csv("~/Documents/Cesar/git/big_files/pheno.csv")
