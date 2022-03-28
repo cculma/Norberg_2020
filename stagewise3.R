@@ -50,8 +50,8 @@ lev1 <- c("block", "id", "row", "col")
 ST1_1MSC <- list()
 for (i in 1:length(data_ar1)) {
   data <- read.csv(data_ar1[i])
-  data <- data[,c(3,6,7,8,11,16,21)]
-  colnames(data) <- c("block", "id", "row", "col", "resp", "cov1", "cov2")
+  data <- data[,c(3,6,4,7,8,11,16,21)]
+  colnames(data) <- c("block", "id", "position", "row", "col", "resp", "cov1", "cov2")
   data[,lev1] <- lapply(data[,lev1], factor)
   data <- data[order(data$row, data$col), ]
   ST1_1MSC[[length(ST1_1MSC)+1]] = data
@@ -63,9 +63,9 @@ str(ST1_1MSC)
 ST1_1MSC <- na.omit(ST1_1MSC)
 write.csv(ST1_1MSC, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_1MSC.csv", quote = F, row.names = F)
 
-effects <- data.frame(name=c("block","row","col", "cov1", "cov2"),
-                      fixed=c(FALSE,FALSE,FALSE,TRUE,TRUE),
-                      factor=c(TRUE,TRUE,TRUE,FALSE,FALSE))
+effects <- data.frame(name=c("block","position", "row","col", "cov1", "cov2"),
+                      fixed=c(FALSE,TRUE,FALSE,FALSE,TRUE,TRUE),
+                      factor=c(TRUE,FALSE,TRUE,TRUE,FALSE,FALSE))
 effects
 
 head(ST1_1MSC)
