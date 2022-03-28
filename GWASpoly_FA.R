@@ -34,6 +34,7 @@ data_1 <- read.GWASpoly(ploidy=4,
 data_2 <- set.K(data = data_1, LOCO = F, n.core = 32)
 data_3.2 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 32)
 
+<<<<<<< HEAD
 data_5.2 <- set.threshold(data_3.2, method= "Bonferroni", level=0.05)
 data_6.2 <- get.QTL(data_5.2) 
 data_6.3 <- get.QTL(data_5.2) 
@@ -42,6 +43,14 @@ data_6.5 <- data_6.3 %>% distinct(Marker, .keep_all = T)
 
 save(data_3.2, file = "~/Documents/Cesar/git/big_files/data_3.2.RData")
 load("~/Documents/Cesar/git/big_files/data_3.2.RData")
+=======
+
+data_5.3 <- set.threshold(data_4, method= "Bonferroni", level=0.05)
+data_6.4 <- get.QTL(data_5.3) 
+
+data_6.5 <- data_6.4 %>% distinct(Marker, .keep_all = T) 
+data_6.4$Marker
+>>>>>>> 25f6f31d39018bf3f19383a22b8ac1ce0f010980
 
 
 data_2 <- set.K(data = data_1, LOCO = T, n.core = 32)
