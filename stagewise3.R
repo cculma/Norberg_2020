@@ -66,6 +66,11 @@ write.csv(ST1_1MSC, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST
 effects <- data.frame(name=c("block","position", "row","col", "cov1", "cov2"),
                       fixed=c(FALSE,TRUE,FALSE,FALSE,TRUE,TRUE),
                       factor=c(TRUE,FALSE,TRUE,TRUE,FALSE,FALSE))
+
+effects <- data.frame(name=c("block","position", "cov1", "cov2"),
+                      fixed=c(FALSE,TRUE,TRUE,TRUE),
+                      factor=c(TRUE,FALSE,FALSE,FALSE))
+
 effects
 
 head(ST1_1MSC)
@@ -91,151 +96,25 @@ class(geno)
 
 ans2a <- Stage2(data=stage1.blue,vcov=NULL)
 ans2c <- Stage2(data=stage1.blue, vcov=stage1.vcov, geno=geno, silent=FALSE)
+ans2a$aic
 ans2c$aic
 
+prep <- blup_prep(data=stage1.blue,
+                  vcov=stage1.vcov,
+                  geno=geno,
+                  vars=ans2c$vars)
+pred.id <- blup(prep,geno=geno,what="id")
+pred.id_1 <- blup(prep,geno=geno, what="id")
 
+pred.id <- pred.id[1:2]
+colnames(pred.id)[2] <- "ST4_MS"
+ST1 <- stage1.blue %>% spread(key = env, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+colnames(ST1)[2:14] <- gsub("^", "ST1_MS_", colnames(ST1)[2:14])
 
+str(ST1)
+ST2 <- inner_join(ST1, pred.id, by = "id") %>% inner_join(., PCA, by = "id")
 
-#################
-# 2_DM
-
-DM_BLUE <- list()
-DM_vcov <- list()
-for (i in 1:length(data_ar2)) {
-  data <- read.csv(data_ar2[i])
-  data <- data[,c(3,6,7,8,12,17,22)]
-  colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
-  data[,lev1] <- lapply(data[,lev1], factor)
-  data <- data[order(data$row, data$col), ]
-  m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~+block, residual = ~sar(row):sar(col), 
-                       data = data, 
-                       na.action = list(x = "include", y = "include"))
-  
-  preds <- predict(m2, classify='gen', vcov=TRUE)
-  vcov1 <- preds$vcov
-  blue <- preds$pvals
-  colnames(blue) <- c("gen", "BLUE", "std.error", "status")
-  dimnames(vcov1) <- list(blue$id,blue$id)
-  
-  # Adding Weights
-  blue$weight <- (1/blue$std.error)^2
-  DM_BLUE[[length(DM_BLUE)+1]] = blue
-  DM_vcov[[length(DM_vcov)+1]] = vcov1
-}
-
-names(DM_BLUE) <- list_2
-names(DM_vcov) <- list_2
-
-DM_BLUE <-rbindlist(DM_BLUE, use.names=TRUE, fill=TRUE, idcol="env")
-DM_BLUE1 <- DM_BLUE %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = env, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
-DM_BLUE2 <- DM_BLUE %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
-
-
-#################
-# 3_Height
-
-Height_BLUE <- list()
-Height_vcov <- list()
-for (i in 1:length(data_ar3)) {
-  data <- read.csv(data_ar3[i])
-  data <- data[,c(3,6,7,8,13,18,23)]
-  colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
-  data[,lev1] <- lapply(data[,lev1], factor)
-  data <- data[order(data$row, data$col), ]
-  m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~+block, residual = ~sar(row):sar(col), 
-                       data = data, 
-                       na.action = list(x = "include", y = "include"))
-  
-  preds <- predict(m2, classify='gen', vcov=TRUE)
-  vcov1 <- preds$vcov
-  blue <- preds$pvals
-  colnames(blue) <- c("gen", "BLUE", "std.error", "status")
-  dimnames(vcov1) <- list(blue$id,blue$id)
-  
-  # Adding Weights
-  blue$weight <- (1/blue$std.error)^2
-  Height_BLUE[[length(Height_BLUE)+1]] = blue
-  Height_vcov[[length(Height_vcov)+1]] = vcov1
-}
-
-names(Height_BLUE) <- list_3
-names(Height_vcov) <- list_3
-
-Height_BLUE <-rbindlist(Height_BLUE, use.names=TRUE, fill=TRUE, idcol="env")
-Height_BLUE1 <- Height_BLUE %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = env, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
-Height_BLUE2 <- Height_BLUE %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
-
-
-#################
-# 4_Yield
-
-Yield_BLUE <- list()
-Yield_vcov <- list()
-for (i in 1:length(data_ar4)) {
-  data <- read.csv(data_ar4[i])
-  data <- data[,c(3,6,7,8,14,19,24)]
-  colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
-  data[,lev1] <- lapply(data[,lev1], factor)
-  data <- data[order(data$row, data$col), ]
-  m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~ + block , residual = ~ sar(row):sar(col), 
-                       data = data, 
-                       na.action = list(x = "include", y = "include"))
-  
-  preds <- predict.asreml(m2, classify='gen', vcov=TRUE)
-  vcov1 <- preds$vcov
-  blue <- preds$pvals
-  colnames(blue) <- c("gen", "BLUE", "std.error", "status")
-  dimnames(vcov1) <- list(blue$id,blue$id)
-  
-  # Adding Weights
-  blue$weight <- (1/blue$std.error)^2
-  Yield_BLUE[[length(Yield_BLUE)+1]] = blue
-  Yield_vcov[[length(Yield_vcov)+1]] = vcov1
-}
-names(Yield_BLUE) <- list_4
-names(Yield_vcov) <- list_4
-
-Yield_BLUE <-rbindlist(Yield_BLUE, use.names=TRUE, fill=TRUE, idcol="env")
-Yield_BLUE1 <- Yield_BLUE %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = env, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
-Yield_BLUE2 <- Yield_BLUE %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
-
-#################
-# 5_FD
-
-FD_BLUE <- list()
-FD_vcov <- list()
-for (i in 1:length(data_ar5)) {
-  data <- read.csv(data_ar5[i])
-  data <- data[,c(3,6,7,8,15,20,25)]
-  colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
-  data[,lev1] <- lapply(data[,lev1], factor)
-  data <- data[order(data$row, data$col), ]
-  m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~ + block, 
-                       residual = ~sar(row):sar(col), 
-                       data = data, 
-                       na.action = list(x = "include", y = "include"))
-  
-  preds <- predict.asreml(m2, classify='gen', vcov=TRUE)
-  vcov1 <- preds$vcov
-  blue <- preds$pvals
-  colnames(blue) <- c("gen", "BLUE", "std.error", "status")
-  dimnames(vcov1) <- list(blue$id,blue$id)
-  # Adding Weights
-  blue$weight <- (1/blue$std.error)^2
-  FD_BLUE[[length(FD_BLUE)+1]] = blue
-  FD_vcov[[length(FD_vcov)+1]] = vcov1
-}
-names(FD_BLUE) <- list_5
-names(FD_vcov) <- list_5
-
-FD_BLUE <-rbindlist(FD_BLUE, use.names=TRUE, fill=TRUE, idcol="env")
-FD_BLUE1 <- FD_BLUE %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = env, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
-FD_BLUE2 <- FD_BLUE %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
-
+write.csv(ST2, "~/Documents/Cesar/git/big_files/pheno_fa2.csv", quote = F, row.names = F)
 
 
 #################
