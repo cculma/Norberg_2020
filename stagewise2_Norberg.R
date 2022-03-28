@@ -4,7 +4,7 @@ library(StageWise)
 library(asreml)
 library(data.table)
 library(tidyverse)
-
+library(asremlPlus)
 #################
 # 1 stage results
 # MS = 1_MSC
@@ -360,51 +360,193 @@ write.csv(f1, "~/Documents/Cesar/git/big_files/pheno_fa2.csv", quote = F, row.na
 head(Yield_BLUE)
 str(Yield_BLUE2)
 Yield_BLUE2 <- as.data.frame(Yield_BLUE2)
-list_5 <- c("id", "env", "loc", "year", "cut")
-Yield_BLUE2[list_5] <- lapply(Yield_BLUE2[list_5], factor)
-
-Yield_BLUE3 <- na.omit(Yield_BLUE2)
-Yield_ID <- Yield_BLUE3 %>% dplyr::filter(loc %in% "ID")
-Yield_OR <- Yield_BLUE3 %>% dplyr::filter(loc %in% "OR")
-Yield_WA <- Yield_BLUE3 %>% dplyr::filter(loc %in% "WA")
 
 
-# 1_FA
+head(MSC_BLUE2)
+head(DM_BLUE2)
+head(Height_BLUE2)
+head(Yield_BLUE2)
+head(FD_BLUE2)
 
-FA_1 <- asreml::asreml(fixed = BLUE ~ 1 + env, 
-                       random = ~ + fa(env, 1):id, 
-                       data = Yield_BLUE3, na.action = list(x = "include", y = "include"), 
-                       weights = weight, family = asreml::asr_gaussian(dispersion = 1))
 
-# model ok
-FA_2 <- asreml::asreml(fixed = BLUE ~ 1 + env, 
-                       random = ~ + fa(env, 1):id + fa(loc, 1):id, 
-                       data = Yield_BLUE3, na.action = list(x = "include", y = "include"), 
-                       weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+T1 <- list(MSC_BLUE2, DM_BLUE2, Height_BLUE2)
+# T1 <- list(MSC_BLUE2, DM_BLUE2, Height_BLUE2, Yield_BLUE2, FD_BLUE2)
+names(T1) <- c("MS", "DM", "He", "Yi")
+list_5 <- c("gen", "env", "loc", "year", "cut")
 
-preds1 <- predict.asreml(FA_1, classify='id', sed = T)
-BLUP1 <- preds1$pvals
-preds2 <- predict.asreml(FA_2, classify='id', sed = T)
+
+# model used for BLUP5.1
+
+# data <- Yield_BLUE2
+# data <- as.data.frame(data)
+# data[list_5] <- lapply(data[list_5], factor)
+# data <- data[order(data$gen, data$env), ]
+# data1 <- na.omit(data)
+
+# FA_1 <- asreml::asreml(fixed = BLUE ~ 1 + loc,
+#                        random = ~ + env + facv(env, 1):id(gen),
+#                        data = data1, na.action = list(x = "include", y = "include"),
+#                        weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+# 
+# BLUP5.1 <- predict.asreml(FA_1, classify='env:gen', vcov = F, sed = F)$pvals
+# BLUP6.1 <- predict.asreml(FA_1, classify='loc:gen', sed = T)$pvals
+# BLUP7.1 <- predict.asreml(FA_1, classify='gen', sed = T)$pvals
+
+# data <- FD_BLUE2
+# data <- as.data.frame(data)
+# data[list_5] <- lapply(data[list_5], factor)
+# data <- data[order(data$gen, data$env), ]
+# data1 <- na.omit(data)
+# str(data1)
+# #fa FD
+# #facv others
+# 
+# FA_3 <- asreml::asreml(fixed = BLUE ~ 1 + gen + loc,
+#                        random = ~ + env + fa(env, 1):id(gen),
+#                        data = data1, na.action = list(x = "include", y = "include"),
+#                        weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+# 
+# BLUP1 <- predict.asreml(FA_3, classify='env:gen', sed = T)$pvals
+# BLUP3 <- predict.asreml(FA_3, classify='loc:gen', sed = T)$pvals
+# BLUP4 <- predict.asreml(FA_3, classify='gen', sed = T)$pvals
+
+
+BLUP7.1 <- BLUP7.1 %>% dplyr::select(1:2)
+colnames(BLUP7.1)[2] <- "ST4_Yi"
+
+BLUP4 <- BLUP4 %>% dplyr::select(1:2)
+colnames(BLUP4)[2] <- "ST4_FD"
+
+BLUP3 <- BLUP3 %>% dplyr::select(1:3) %>% spread(key = loc, value = predicted.value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+colnames(BLUP3)[2:3] <- c("ST3_FD_ID", "ST3_FD_WA")
+BLUP6.1 <- BLUP6.1 %>% dplyr::select(1:3) %>% spread(key = loc, value = predicted.value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+colnames(BLUP6.1)[2:4] <- c("ST3_Yi_ID", "ST3_Yi_OR", "ST3_Yi_WA")
+
+
+BLUP1 <- BLUP1 %>% dplyr::select(1:3) %>% spread(key = env, value = predicted.value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+colnames(BLUP1)[2:4] <- gsub("^", "ST1_FD_", colnames(BLUP1)[2:4])
+
+BLUP5.1 <- BLUP5.1 %>% dplyr::select(1:3) %>% spread(key = env, value = predicted.value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+colnames(BLUP5.1)[2:32] <- gsub("^", "ST1_Yi_", colnames(BLUP5.1)[2:32])
+
+
+T5 <- list()
+T6 <- list()
+T7 <- list()
+
+for (i in 1:(length(T1))) {
+  data <- T1[[i]]
+  data <- as.data.frame(data)
+  data[list_5] <- lapply(data[list_5], factor)
+  data <- data[order(data$gen, data$env), ]
+  data1 <- na.omit(data)
+  
+  FA_1 <- asreml::asreml(fixed = BLUE ~ 1 + gen + loc, 
+                         random = ~ + env + facv(env, 1):id(gen),
+                         data = data1, na.action = list(x = "include", y = "include"), 
+                         weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+  
+  BLUP5 <- predict.asreml(FA_1, classify='env:gen', sed = T)$pvals
+  BLUP6 <- predict.asreml(FA_1, classify='loc:gen', sed = T)$pvals
+  BLUP7 <- predict.asreml(FA_1, classify='gen', sed = T)$pvals
+  T5[[length(T5)+1]] <- BLUP5
+  T6[[length(T6)+1]] <- BLUP6
+  T7[[length(T7)+1]] <- BLUP7
+}
+names(T7) <- c("ST4_MS", "ST4_DM", "ST4_He")
+names(T6) <- c("ST3_MS", "ST3_DM", "ST3_He")
+names(T5) <- c("ST1_MS", "ST1_DM", "ST1_He")
+
+
+T7 <-rbindlist(T7, use.names=TRUE, fill=TRUE, idcol="env")
+T7 <- T7 %>% dplyr::select(1:3) %>% spread(key = env, value = predicted.value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+
+head(T6[[1]])
+T6.1 <- list()
+for (i in 1:(length(T6))) {
+  data <- T6[[i]]
+  data <- data %>% dplyr::select(1:3) %>% spread(key = loc, value = predicted.value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+  T6.1[[length(T6.1)+1]] <- data
+}
+names(T6.1) <- c("ST3_MS", "ST3_DM", "ST3_He")
+
+colnames(T6.1[[1]])[2:4] <- c("ST3_MS_ID", "ST3_MS_OR", "ST3_MS_WA")
+colnames(T6.1[[2]])[2:4] <- c("ST3_DM_ID", "ST3_DM_OR", "ST3_DM_WA")
+colnames(T6.1[[3]])[2:4] <- c("ST3_He_ID", "ST3_He_OR", "ST3_He_WA")
+
+inner_join(T6.1[[1]], T6.1[[2]], by = "gen")
+
+T6.1 <-rbindlist(T6.1, use.names=TRUE, fill=TRUE, idcol="env")
+
+colnames() <- c("ST3_MS_ID", "ST3_MS_OR", "ST3_MS_WA")
+
+T5.1 <- list()
+for (i in 1:(length(T5))) {
+  data <- T5[[i]]
+  data <- data %>% dplyr::select(1:3) %>% spread(key = env, value = predicted.value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+  T5.1[[length(T5.1)+1]] <- data
+}
+
+colnames(T5.1[[1]])[2:14] <- gsub("^", "ST1_MS_", colnames(T5.1[[1]])[2:14])
+colnames(T5.1[[2]])[2:9] <- gsub("^", "ST1_DM_", colnames(T5.1[[2]])[2:9])
+colnames(T5.1[[3]])[2:23] <- gsub("^", "ST1_He_", colnames(T5.1[[3]])[2:23])
+
+head(BLUP5.1)
+head(BLUP1)
+head(BLUP4)
+head(BLUP3)
+BLUP <- inner_join(T5.1[[1]], T5.1[[2]], by = "gen") %>% inner_join(., T5.1[[3]], by = "gen") %>% 
+  inner_join(., BLUP5.1, by = "gen") %>% inner_join(., BLUP1, by = "gen") %>% 
+  inner_join(., T6.1[[1]], by = "gen") %>% inner_join(., T6.1[[2]], by = "gen") %>% 
+  inner_join(., T6.1[[3]], by = "gen") %>% inner_join(., BLUP6.1, by = "gen") %>% 
+  inner_join(., BLUP3, by = "gen") %>% inner_join(., T7, by = "gen") %>% 
+  inner_join(., BLUP7.1, by = "gen") %>% inner_join(., BLUP4, by = "gen") %>% 
+  inner_join(., PCA, by = "gen") 
+colnames(BLUP)
+
+write.csv(BLUP, "~/Documents/Cesar/git/big_files/pheno_fa1.csv", row.names = F, quote = F)
+
+
+
 BLUP2 <- preds2$pvals
-hist(BLUP$predicted.value)
-cor(BLUP1$predicted.value, BLUP2$predicted.value)
-summary(FA_1)$aic
-# [1] 2312.251
-# attr(,"parameters")
-# [1] 62
+BLUP3.1 <- preds3.1$pvals
+BLUP3.2 <- preds3.2$pvals
 
-summary(FA_2)$aic
-# [1] 1909.733
-# attr(,"parameters")
-# [1] 68
+sd(BLUP1$predicted.value)
+sd(BLUP2$predicted.value)
+sd(BLUP3.1$ST4_WA_Yi)
 
+BLUP3.1 <- BLUP3.1 %>% dplyr::select(1:2)
+colnames(BLUP3.1)[2] <- "ST4_WA_Yi"
+BLUP3.2 <- BLUP1 %>% dplyr::select(1:2)
+colnames(BLUP3.2)[2] <- "ST4_FA1_WA_Yi"
+
+BLUP3.2 <- BLUP3.2 %>% dplyr::select(1:3) %>% spread(key = env, value = predicted.value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+BLUP <- inner_join(BLUP3.1, BLUP3.2, by = "id") %>% inner_join(., BLUP3.1, by = "id") %>% inner_join(., PCA, by = "id") 
+BLUP <- inner_join(BLUP3.1, BLUP3.2, by = "id") %>% inner_join(., PCA, by = "id") 
+write.csv(BLUP, "~/Documents/Cesar/git/big_files/pheno_fa1.csv", row.names = F, quote = F)
+
+colnames(BLUP3.2)[2] <- "ST1_ID_2019_1"
+BLUP3.2 <- BLUP3.2[,c(1,5)]
+c(1,5)
+colnames(Yield_BLUE1.1)[2] <- "ST0_ID_2019_1"
+Yield_BLUE1.1 <- Yield_BLUE1[,c(1,5)]
+c(1,5)
+
+# preds1 <- predict.asreml(FA_1, classify='id', sed = T)
+# BLUP1 <- preds1$pvals
+preds2 <- predict.asreml(FA_2, classify='id', sed = T)
+
+BLUP2 <- preds2$sed
+
+BLUP1.1 <- BLUP1.1[,c(1,2)]
+colnames(BLUP1.1) <- c("id", "FA_2")
 
 BLUP1 <- BLUP1[,c(1,2)]
 colnames(BLUP1) <- c("id", "FA1")
 BLUP2 <- BLUP2[,c(1,2)]
 colnames(BLUP2) <- c("id", "FA2")
-BLUP <- inner_join(Y2, BLUP2, by = "id") %>% inner_join(., PCA, by = "id") 
-write.csv(BLUP, "~/Documents/Cesar/git/big_files/pheno_fa1.csv", row.names = F, quote = F)
+
 
 # 2_FA
 head(Yield_WA)
@@ -413,15 +555,15 @@ FA_3 <- asreml::asreml(fixed = BLUE ~ 1 + env,
                        data = Yield_ID, na.action = list(x = "include", y = "include"), 
                        weights = weight, family = asreml::asr_gaussian(dispersion = 1))
 
-summary(FA_3)$aic
+
 preds3 <- predict.asreml(FA_3, classify='id', sed = T)
 BLUP3 <- preds3$pvals
 Y1[2]
 Y1 <- list(Yield_ID, Yield_OR, Yield_WA)
 Y2 <- list()
 for (i in 1:(length(Y1))) {
-  FA_3 <- asreml::asreml(fixed = BLUE ~ 1 + env, 
-                         random = ~ + fa(env, 1):id + fa(year, 1):id, 
+  FA_3 <- asreml::asreml(fixed = BLUE ~ 1 + id, 
+                         random = ~ + fa(env, 1):id, 
                          data = Y1[i], na.action = list(x = "include", y = "include"), 
                          weights = weight, family = asreml::asr_gaussian(dispersion = 1))
   
@@ -432,11 +574,15 @@ for (i in 1:(length(Y1))) {
 names(Y2) <- c("Yield_ID", "Yield_OR", "Yield_WA")
 Y2 <-rbindlist(Y2, use.names=TRUE, fill=TRUE, idcol="env")
 Y2 <- Y2 %>% dplyr::select(1:3) %>% spread(key = env, value = predicted.value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+
+
 ################
 
 PCA <- read.csv("~/Documents/Cesar/git/big_files/pheno.csv")
 colnames(PCA)
 PCA <- PCA %>% dplyr::select(c(1,109:111))
 str(PCA)
-PCA$gen <- as.character(PCA$gen)
 
+PCA$gen <- as.character(PCA$gen)
+PCA$gen <- as.factor(PCA$gen)
+colnames(PCA)[1] <- "id"
