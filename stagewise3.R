@@ -42,40 +42,58 @@ list_3 <- gsub(".csv", "", gsub("./", "", data_ar3))
 list_4 <- gsub(".csv", "", gsub("./", "", data_ar4))
 list_5 <- gsub(".csv", "", gsub("./", "", data_ar5))
 
-lev1 <- c("block", "gen", "row", "col")
+lev1 <- c("block", "id", "row", "col")
 
 #################
 # 1_MSC
 
-MSC_BLUE <- list()
-MSC_vcov <- list()
+ST1_1MSC <- list()
 for (i in 1:length(data_ar1)) {
   data <- read.csv(data_ar1[i])
   data <- data[,c(3,6,7,8,11,16,21)]
-  colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
+  colnames(data) <- c("block", "id", "row", "col", "resp", "cov1", "cov2")
   data[,lev1] <- lapply(data[,lev1], factor)
   data <- data[order(data$row, data$col), ]
-  m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~ + block, residual = ~sar(row):sar(col), 
-                       data = data, 
-                       na.action = list(x = "include", y = "include"))
-  
-  preds <- predict(m2, classify='gen', vcov=TRUE)
-  vcov1 <- preds$vcov
-  blue <- preds$pvals
-  colnames(blue) <- c("gen", "BLUE", "std.error", "status")
-  dimnames(vcov1) <- list(blue$id,blue$id)
-  # Adding Weights
-  blue$weight <- (1/blue$std.error)^2
-  MSC_BLUE[[length(MSC_BLUE)+1]] = blue
-  MSC_vcov[[length(MSC_vcov)+1]] = vcov1
+  ST1_1MSC[[length(ST1_1MSC)+1]] = data
 }
 
-names(MSC_BLUE) <- list_1
-names(MSC_vcov) <- list_1
-MSC_BLUE <-rbindlist(MSC_BLUE, use.names=TRUE, fill=TRUE, idcol="env")
-MSC_BLUE1 <- MSC_BLUE %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = env, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
-MSC_BLUE2 <- MSC_BLUE %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
+names(ST1_1MSC) <- list_1
+ST1_1MSC <-rbindlist(ST1_1MSC, use.names=TRUE, fill=TRUE, idcol="env")
+str(ST1_1MSC)
+ST1_1MSC <- na.omit(ST1_1MSC)
+write.csv(ST1_1MSC, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_1MSC.csv", quote = F, row.names = F)
+
+effects <- data.frame(name=c("block","row","col", "cov1", "cov2"),
+                      fixed=c(FALSE,FALSE,FALSE,TRUE,TRUE),
+                      factor=c(TRUE,TRUE,TRUE,FALSE,FALSE))
+effects
+
+head(ST1_1MSC)
+head(pheno1a.file)
+a1 <- file.path("~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_1MSC.csv")
+
+ans1a <- Stage1(filename=a1, 
+                traits="resp",
+                effects=effects, 
+                solver="asreml")
+
+rm(stage1.blue)
+stage1.blue <- ans1a$blue
+stage1.vcov <- ans1a$vcov
+
+
+g1 <- file.path("~/Documents/Cesar/git/big_files/Norberg_1.txt")
+geno <- read.csv(g1, check.names=F)
+geno[1:5,1:5]
+dim(geno) #  97316   195
+geno <- read_geno(filename=g1, ploidy=4, map=TRUE, min.minor.allele=5)
+class(geno)
+
+ans2a <- Stage2(data=stage1.blue,vcov=NULL)
+ans2c <- Stage2(data=stage1.blue, vcov=stage1.vcov, geno=geno, silent=FALSE)
+ans2c$aic
+
+
 
 
 #################
