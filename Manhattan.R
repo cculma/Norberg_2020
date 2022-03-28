@@ -50,21 +50,38 @@ QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T)
 
 # DM Manhattan plot
 P1 <- manhattan.plot(data = data_5.0, traits = trait5) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
+
 # FD Manhattan plot
 P2 <- manhattan.plot(data = data_5.0, traits= trait4) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
+
 ggsave(filename = "~/Documents/git/Norberg_2020/figs/FD_manhattan.jpg", plot = P2, width = 8, height = 8)
 
-fit1 <- c("ST2_He_OR_2018", "ST1_He_OR_2018_3", "ST1_Yi_OR_2019_3",
+trait6 <- c("ST2_He_OR_2018", "ST1_He_OR_2018_3", "ST1_Yi_OR_2019_3",
           "ST1_MS_WA_2019_2", "ST1_DM_ID_2019_1", "ST1_MS_OR_2019_1")
 
-P3 <- manhattan.plot(data = data_5.0, traits = fit1) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
+P3 <- manhattan.plot(data = data_5.0, traits = trait6) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
 
 
 P4 <- manhattan.plot(data = data_5.1, traits=c ("ST3_MS_OR")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
 
+trait7 <- c("ST1_MS_WA_2020_2", "ST1_MS_WA_2020_5", "ST1_MS_WA_2020_1", "ST3_MS_OR")
+
+P5 <- manhattan.plot(data = data_5.1, traits= trait7) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
+
+
+trait8 <- c("ST2_He_OR_2018","ST4_He_Overall","ST3_Yi_OR",
+            "ST1_He_WA_2019_4")
+
+P6 <- manhattan.plot(data = data_5.0, traits= trait8) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
+
+
+trait9 <- c("ST1_Yi_OR_2020_4", "ST3_Yi_WA", "ST1_Yi_OR_2020_4")
+
+P7 <- manhattan.plot(data = data_5.1, traits= trait9) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
+
 #~~~~~~~~~
 
-P5 <- manhattan.plot(data = data_5, traits=c ("sep_20_1stage")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
+
 P6 <- manhattan.plot(data = data_5, traits=c ("may_21_1stage")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
 P7 <- manhattan.plot(data = data_5, traits=c ("jun_21_1stage")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
 P8 <- manhattan.plot(data = data_5, traits=c ("jul_21_1stage")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
