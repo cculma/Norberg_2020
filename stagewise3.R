@@ -59,13 +59,17 @@ for (i in 1:length(data_ar1)) {
 
 names(ST1_1MSC) <- list_1
 ST1_1MSC <-rbindlist(ST1_1MSC, use.names=TRUE, fill=TRUE, idcol="env")
-str(ST1_1MSC)
+
+ST1_1MSC <- ST1_1MSC %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
 ST1_1MSC <- na.omit(ST1_1MSC)
+head(ST1_1MSC)
+str(ST1_1MSC)
+ST1_1MSC$loc <- as.factor(ST1_1MSC$loc)
+levels(ST1_1MSC$loc)
 write.csv(ST1_1MSC, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_1MSC.csv", quote = F, row.names = F)
 
-effects <- data.frame(name=c("block","position", "row","col", "cov1", "cov2"),
-                      fixed=c(FALSE,TRUE,FALSE,FALSE,TRUE,TRUE),
-                      factor=c(TRUE,FALSE,TRUE,TRUE,FALSE,FALSE))
+?blup_prep
+?blup
 
 effects <- data.frame(name=c("block","position", "cov1", "cov2"),
                       fixed=c(FALSE,TRUE,TRUE,TRUE),
@@ -73,8 +77,6 @@ effects <- data.frame(name=c("block","position", "cov1", "cov2"),
 
 effects
 
-head(ST1_1MSC)
-head(pheno1a.file)
 a1 <- file.path("~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_1MSC.csv")
 
 ans1a <- Stage1(filename=a1, 
@@ -86,28 +88,16 @@ rm(stage1.blue)
 stage1.blue <- ans1a$blue
 stage1.vcov <- ans1a$vcov
 
+table(stage1.blue$loc)
 
 g1 <- file.path("~/Documents/Cesar/git/big_files/Norberg_1.txt")
-geno <- read.csv(g1, check.names=F)
-geno[1:5,1:5]
-dim(geno) #  97316   195
+# geno <- read.csv(g1, check.names=F)
+# geno[1:5,1:5]
+# dim(geno) #  97316   195
 geno <- read_geno(filename=g1, ploidy=4, map=TRUE, min.minor.allele=5)
 class(geno)
 
-ans2a <- Stage2(data=stage1.blue,vcov=NULL)
-ans2c <- Stage2(data=stage1.blue, vcov=stage1.vcov, geno=geno, silent=FALSE)
-ans2a$aic
-ans2c$aic
 
-prep <- blup_prep(data=stage1.blue,
-                  vcov=stage1.vcov,
-                  geno=geno,
-                  vars=ans2c$vars)
-pred.id <- blup(prep,geno=geno,what="id")
-pred.id_1 <- blup(prep,geno=geno, what="id")
-
-pred.id <- pred.id[1:2]
-colnames(pred.id)[2] <- "ST4_MS"
 ST1 <- stage1.blue %>% spread(key = env, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
 colnames(ST1)[2:14] <- gsub("^", "ST1_MS_", colnames(ST1)[2:14])
 
@@ -115,6 +105,79 @@ str(ST1)
 ST2 <- inner_join(ST1, pred.id, by = "id") %>% inner_join(., PCA, by = "id")
 
 write.csv(ST2, "~/Documents/Cesar/git/big_files/pheno_fa2.csv", quote = F, row.names = F)
+
+locs <- c("ID","OR","WA")
+blues <- ans1a$blue[ans1a$blue$loc %in% locs,]
+tmp <- sapply(strsplit(names(ans1a$vcov),split="_"),"[[",1)
+vcov <- ans1a$vcov[tmp %in% locs]
+
+ans2b <- Stage2(data = blues, 
+                vcov = vcov, 
+                geno = geno,  
+                silent=FALSE)
+summary(ans2b$vars)
+ans2b$aic
+
+ans2c <- Stage2(data=stage1.blue, 
+                vcov=stage1.vcov, 
+                geno=NULL, 
+                silent=FALSE)
+ans2c$aic
+
+prep1 <- blup_prep(data=blues, vcov=vcov, geno=geno, vars=ans2b$vars, method = NULL)
+prep2 <- blup_prep(data=blues, vcov=vcov, geno=NULL, vars=ans2c$vars, method = NULL)
+prep3 <- blup_prep(data=blues, vcov=vcov, geno=geno, vars=ans2b$vars, method = "Vinv")
+
+index.ID <- c(ID=1, OR=0, WA=0)  
+index.OR <- c(ID=0, OR=1, WA=0)  
+index.WA <- c(ID=0, OR=0, WA=1) 
+
+pred.ID <- blup(data=prep1, geno=geno, index.weights=index.ID,what="id")
+pred.OR <- blup(data=prep1, geno=geno, index.weights=index.OR,what="id")
+pred.WA <- blup(data=prep1, geno=geno, index.weights=index.WA,what="id")
+
+
+pred.01 <- blup(data=prep1, geno=geno, what = "id")
+pred.02 <- blup(data=prep2, geno=NULL, what = "id")
+pred.03 <- blup(data=prep3, geno=geno, what = "id")
+hist(pred.01$BV.r2)
+
+pred.ID <- pred.ID[1:2]
+colnames(pred.ID)[2] <- "ST3_ID"
+pred.OR <- pred.OR[1:2]
+colnames(pred.OR)[2] <- "ST3_OR"
+pred.WA <- pred.WA[1:2]
+colnames(pred.WA)[2] <- "ST3_WA"
+pred.al <- pred.al[1:2]
+colnames(pred.al)[2] <- "ST4_overall"
+
+ST3 <- inner_join(pred.ID, pred.OR, by = "id") %>% inner_join(., pred.WA, by = "id") %>% inner_join(., pred.al, by = "id") %>% inner_join(., PCA, by = "id") 
+
+write.csv(ST3, "~/Documents/Cesar/git/big_files/pheno_MCS.csv", quote = F, row.names = F)
+
+ans2c <- Stage2(data=stage1.blue, 
+                vcov=stage1.vcov, 
+                geno=NULL, 
+                silent=FALSE)
+
+mm7 = asreml(fixed = height ~ 1 + site , 
+             random = ~ diag(site):block + fa(site,1):female,  
+             rcov = ~ at(site):units, 
+             data = ds, workspace=80e6 )
+
+mm8 <- asreml(fixed = BLUE ~ 1, 
+              random = ~ + fa(env, 1):id, 
+              data = stage1.blue, 
+              na.action = list(x = "include", y = "include"), 
+              weights = stage1.vcov, 
+              family = asreml::asr_gaussian(dispersion = 1))
+
+head(stage1.blue)
+
+mm7 <- update.asreml(mm7)
+summary(mm7)$varcomp[2:5] 
+info.crit.asreml(mm7)
+
 
 
 #################
@@ -249,3 +312,4 @@ write.csv(BLUE_Yi1, "~/Documents/Cesar/git/big_files/pheno_fa2.csv", quote = F, 
 # end
 # save.image("~/Documents/Cesar/git/big_files/data_6.RData")
 # load("~/Documents/Cesar/git/big_files/data_6.RData")
+sessionInfo()

@@ -149,8 +149,9 @@ df3 <- df2 %>% separate(5, col_headings_1, sep = ";", remove = TRUE, convert = F
 QTL_08 <- inner_join(QTL_06, QTL_04, by = "Marker") %>% inner_join(., QTL_05, by = "Marker") %>% left_join(., df3, by = "Marker1") 
 
 nrow(QTL_08 %>% distinct(gene_id, .keep_all = TRUE))
-sum(!is.na(QTL_08$gene_id)) # 38 annotated in Uniprot
+sum(!is.na(QTL_08$gene_id)) # 72 annotated in Uniprot
 colnames(QTL_08)
+write.table(QTL_08, "~/Documents/Cesar/git/big_files/markers3.tsv", row.names = F, quote = F, sep = "\t")
 
 QTL_09 <- QTL_08 %>% group_by(gene_id) %>% summarise(Marker1 = paste(Marker1, collapse = ";")) 
 QTL_10 <- QTL_08 %>% distinct(gene_id, .keep_all = TRUE) %>% dplyr::select(7:9)
