@@ -45,7 +45,7 @@ ggcorrplot(P3[,13:1], hc.order = F, type = "full", lab = T, lab_col = "grey3", l
 
 ##################
 
-a1 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/pheno_fa.csv")
+a1 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/pheno_fa.csv", row.names = 1)
 a1$gen
 summary(a1)
 
@@ -390,3 +390,24 @@ ggplot(nba, aes(x= ST4_FD_Overall, y = ST4_Yi_Overall, label = gen)) +
   scale_x_continuous(expand = expansion(mult = c(0.2, .2))) +
   scale_y_continuous(expand = expansion(mult = c(0.1, .1))) +
   theme_classic(base_size = 16)
+
+
+install.packages("fastmatrix")
+library(fastmatrix)
+id1 <- diag(10)
+
+a2 <- a1[1:10, 1:3]
+a3 <- cov(a2)
+
+kronecker(a3, id1, %x%)
+a4 <- kronecker.prod(a3, id1)
+
+(0.8242275)
+(0.678831)
+
+0.769568
+0.856239E-01
+
+r = (0.8242275*0.678831)/sqrt(((0.8242275)^2+0.769568)*((0.678831)^2+0.856239E-01))
+
+sqrt()
