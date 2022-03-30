@@ -118,7 +118,7 @@ write.table(S3, "~/Documents/Cesar/git/big_files/markers1.tsv", row.names = F, q
 S2 <- dcast(S2, formula = Marker ~ Trait, fun.aggregate = length)
 col_headings_3 <- c("stage", "trait", "loc", "year", "cut")
 S4 <- as.data.frame(colnames(S2)) %>% separate(1, col_headings_3, sep = "_", remove = TRUE, convert = FALSE, extra = "warn") %>% dplyr::filter(!row_number() %in% c(1))
-write.table(S4, "~/Documents/git/Norberg_2020/spatial_distribution/markers3.tsv", row.names = F, quote = F, sep = "\t")
+write.table(S4, "~/Documents/Cesar/git/Norberg_2020/spatial_distribution/header.tsv", row.names = F, quote = F, sep = "\t")
 
 ##############
 # To annotate markers
