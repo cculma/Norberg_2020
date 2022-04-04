@@ -19,9 +19,14 @@ library(ggthemes)
 library(hrbrthemes)
 library(VennDiagram)
 
+#################
+
+models_1 <- c("general", "additive", "1-dom", "2-dom",  "diplo-additive", "diplo-general")
+#################
+
 
 # workstation
-setwd("~/Documents/Cesar/git/big_files/")
+setwd("~/Documents/Cesar/git/kamiak_norberg/")
 # mac
 setwd("~/Documents/git/Norberg_2020/GWAS_results/")
 
@@ -44,11 +49,17 @@ load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD
 
 data_5.0 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
 QTL_01 <- get.QTL(data_5.0)
+=======
+load("~/Documents/Cesar/git/big_files/data_3.3.RData")
+# load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.3.RData")
+?set.threshold
+data_5 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
+
+QTL_01 <- get.QTL(data_5)
 QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
 cc <- count(QTL_01, Trait)
 
 ################
-
 
 QTL_03 <- QTL_01 %>% group_by(Marker) %>% top_n(1, abs(Score)) %>% dplyr::select(Marker, Score) %>% distinct(Marker, .keep_all = TRUE)
 QTL_04 <- QTL_01 %>% group_by(Marker) %>% summarise(Trait = paste(Trait, collapse = ";")) 
