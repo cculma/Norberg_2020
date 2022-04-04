@@ -10,7 +10,6 @@ library(plyranges)
 library(Repitools)
 library(data.table)
 
-library(tidyr)
 library(devtools)
 library(sommer)
 library(ggplot2)
@@ -43,17 +42,13 @@ data_3.3 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params =
 # load("~/Documents/Cesar/git/big_files/data_3.3.RData")
 load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.3.RData")
 
-data_5 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
-QTL_01 <- get.QTL(data_5)
+data_5.0 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
+QTL_01 <- get.QTL(data_5.0)
 QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
 cc <- count(QTL_01, Trait)
 
 ################
-P6 <- manhattan.plot(data = data_5, traits= c("ST1_He_OR_2019_2")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
 
-P7 <- manhattan.plot(data = data_5, traits= c("ST1_MS_WA_2020_2")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
-
-################
 
 QTL_03 <- QTL_01 %>% group_by(Marker) %>% top_n(1, abs(Score)) %>% dplyr::select(Marker, Score) %>% distinct(Marker, .keep_all = TRUE)
 QTL_04 <- QTL_01 %>% group_by(Marker) %>% summarise(Trait = paste(Trait, collapse = ";")) 
@@ -69,6 +64,9 @@ S1 <- dcast(S1, formula = Marker ~ Model, fun.aggregate = length)
 S2 <- QTL_01 %>% dplyr::select(1,4) %>% distinct(Marker, Trait, .keep_all = T) 
 S2 <- dcast(S2, formula = Marker ~ Trait, fun.aggregate = length)
 colnames(S2)
+colSums(S2[2:length(S2)])
+rowSums(S2[2:length(S2)])
+
 S3 <- inner_join(QTL_06, S1, by = "Marker") %>% inner_join(., S2, by = "Marker")
 
 write.table(S3, "~/Documents/Cesar/git/big_files/markers1.tsv", row.names = F, quote = F, sep = "\t")
