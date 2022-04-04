@@ -31,7 +31,7 @@ setwd("~/Documents/Cesar/git/big_files/")
 # mac
 setwd("~/Documents/git/Norberg_2020/GWAS_results/")
 
-pheno <- read.csv("~/Documents/Cesar/git/big_files/pheno.csv", row.names = 1)
+pheno <- read.csv("~/Documents/Cesar/git/big_files/5_FD_1stage.csv")
 head(pheno)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
 trait1
@@ -71,7 +71,7 @@ load("~/Documents/Cesar/git/big_files/data_4.RData")
 
 
 data_5.0 <- set.threshold(data_3, method= "Bonferroni", level=0.05)
-data_5.1 <- set.threshold(data_3.1, method= "Bonferroni", level=0.05)
+data_5.1 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
 data_5.2 <- set.threshold(data_4, method= "Bonferroni", level=0.05)
 
 data_6.0 <- get.QTL(data_5.0)
@@ -89,11 +89,11 @@ t_6.3 <- c("ST4_MS_Overall", "ST4_DM_Overall", "ST4_He_Overall", "ST4_Yi_Overall
 data_6.3 <- QTL_01 %>% dplyr::filter(Trait %in% t_6.3) %>% distinct(Marker, .keep_all = T) 
 data_6.3$Marker
 
-QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
+QTL_02 <- data_6.1 %>% distinct(Marker, .keep_all = T) 
 
 ###########
 # save(data_3, file = "~/Documents/Cesar/git/big_files/data_3.RData")
-# load("~/Documents/Cesar/git/big_files/data_3.RData")
+load("~/Documents/Cesar/git/big_files/data_3.3.RData")
 load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_5.RData")
 ################
 
@@ -166,6 +166,37 @@ save.image(file = "~/Documents/Cesar/git/big_files/data_4.RData")
 # data_4.RData is big (1.6 GB) I will reduce the size removing data_1, data_2, data_3, data_3.1
 rm(list = c("data_1", "data_2", "data_3", "data_3.1", "data_5"))
 save.image(file = "~/Documents/Cesar/git/big_files/data_5.RData")
+
+####################
+library(GWASpoly)
+pheno <- read.csv("~/Documents/Cesar/git/big_files/5_FD_1stage.csv")
+head(pheno)
+g1 <- file.path("~/Documents/Cesar/git/big_files/Norberg_1.txt")
+
+geno <- read_geno(filename=g1, ploidy=4, map=TRUE, min.minor.allele=5)
+class(geno)
+
+
+D1 <- read.GWASpoly(ploidy=4, pheno.file="5_FD_1stage.csv", 
+                      geno.file="Norberg_1.txt",
+                      format="numeric", n.traits=1, delim=",")
+
+data.loco <- set.K(data = D1, LOCO=TRUE, n.core=32)
+
+N <- 189 #Population size
+params <- set.params(geno.freq = 1 - 5/N, fixed = "env", fixed.type = "factor")
+
+data.loco.scan <- GWASpoly(data=data.loco,
+                           models=c("additive","1-dom"),
+                           traits=c("predicted.value"), 
+                           params=params,
+                           n.core=30)
+
+class(data.loco.scan)
+class(data_3.2)
+data2 <- set.threshold(data.loco.scan,method="M.eff",level=0.05)
+
+
 ###########
 # end
 

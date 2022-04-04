@@ -17,7 +17,7 @@ library(plotly)
 # workstation
 setwd("~/Documents/Cesar/git/big_files/")
 
-pheno <- read.csv("~/Documents/Cesar/git/big_files/pheno_MCS.csv", row.names = 1)
+pheno <- read.csv("~/Documents/Cesar/git/big_files/pheno_fa.csv", row.names = 1)
 head(pheno)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
 trait1
@@ -25,17 +25,31 @@ params <- set.params(fixed=c("PC1","PC2","PC3"),
                      fixed.type=rep("numeric",3), n.PC = 3)
 models_1 <- c("general", "additive", "1-dom", "2-dom",  "diplo-additive", "diplo-general")
 data_1 <- read.GWASpoly(ploidy=4, 
-                        pheno.file="pheno_MCS.csv", 
+                        pheno.file="pheno_fa.csv", 
                         geno.file="AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt", 
                         format="ACGT", n.traits=length(trait1), delim=",")
-data_2 <- set.K(data = data_1, LOCO = F, n.core = 32)
+data_2.1 <- set.K(data = data_1, LOCO = F, n.core = 32)
+data_2.2 <- set.K(data = data_1, LOCO = T, n.core = 32)
+
+data_4 <- GWASpoly(data = data_2.2, models = models_1, traits = c("ST1_MS_WA_2020_2"), params = params, n.core = 32)
+save(data_4, file = "~/Documents/Cesar/git/big_files/data_4.RData")
+
 data_3.2 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 32)
+
 # ST1_1MSC_1 <- data_3.2
 data_5.2 <- set.threshold(data_3.2, method= "Bonferroni", level=0.05)
 
 data_6.3 <- get.QTL(data_5.2) 
 QTL_01 <- get.QTL(data_5.2) 
 data_6.5 <- data_6.3 %>% distinct(Marker, .keep_all = T) 
+
+data_6.4 <- data_6.3 %>% dplyr::filter(Trait %in% "ST1_MS_WA_2020_2")
+data_6.5 <- data_6.4 %>% distinct(Marker, .keep_all = T) 
+
+data_4.1 <- set.threshold(data_4, method= "Bonferroni", level=0.05)
+data_6.6 <- get.QTL(data_4.1) 
+data_6.6 <- data_6.6 %>% distinct(Marker, .keep_all = T) 
+
 
 QTL_03 <- QTL_01 %>% group_by(Marker) %>% top_n(1, abs(Score)) %>% dplyr::select(Marker, Score) %>% distinct(Marker, .keep_all = TRUE)
 QTL_04 <- QTL_01 %>% group_by(Marker) %>% summarise(Trait = paste(Trait, collapse = ";")) 

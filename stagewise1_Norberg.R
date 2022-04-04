@@ -117,6 +117,20 @@ DM_BLUE2 <- DM_BLUE %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("
 
 #################
 # 3_Height
+lev2 <- c("block", "gen", "position", "row", "col")
+data <- read.csv(data_ar3[1])
+data <- data[,c(3,6,4,7,8,13,18,23)]
+colnames(data) <- c("block", "gen", "position", "row", "col", "resp", "cov1", "cov2")
+data[,lev2] <- lapply(data[,lev2], factor)
+data <- data[order(data$row, data$col), ]
+head(data)
+
+m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
+                     random = ~ + block, 
+                     residual = ~ ar2(row):ar2(col),
+                     data = data, 
+                     na.action = list(x = "include", y = "include"))
+infoCriteria.asreml(m2)
 
 Height_BLUE <- list()
 Height_vcov <- list()

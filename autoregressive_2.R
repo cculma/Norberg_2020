@@ -33,7 +33,6 @@ cor(a5$predicted.value, b5$predicted.value, use = "complete.obs")
 model_ante <- asreml(predicted.value ~ year + cut + year:cut,
                      residual = ~gen:ante(cut), data = b5)
 
-b4.1 <- subset(b4$Loc == )
 
 model_ar1 <- asreml(fixed = predicted.value ~ year + cut + year:cut,
                     random = ~ Loc,

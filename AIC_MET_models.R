@@ -1,0 +1,124 @@
+# comparison of different ASReml models
+# spacial enphasis on genetic variance metrix in MET.
+rm(list = ls())
+library(StageWise)
+library(asreml)
+library(data.table)
+library(tidyverse)
+library(asremlPlus)
+#################
+# 1 stage results
+# MS = 1_MSC
+# DM = 2_DM
+# He = 3_Height
+# Yi = 4_Yield
+# FD = 5_FD
+
+# ST2
+# load("~/Documents/Cesar/git/big_files/data_6.RData")
+list_5 <- c("env", "loc", "year", "cut", "gen")
+head(Height_BLUE2)
+data <- Height_BLUE2
+class(data)
+data <- as.data.frame(data)
+str(data1)
+data[list_5] <- lapply(data[list_5], factor)
+data <- data[order(data$gen, data$env), ]
+data1 <- na.omit(data)
+head(data1)
+
+FA_1 <- asreml::asreml(fixed = BLUE ~ 1 + gen + loc, 
+                       random = ~ + env + facv(env, 1):id(gen),
+                       data = data1, na.action = list(x = "include", y = "include"), 
+                       weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+
+
+FA_2 <- asreml::asreml(fixed = BLUE ~ 1 + gen + loc, 
+                       random = ~ + env + facv(env, 2):id(gen),
+                       data = data1, na.action = list(x = "include", y = "include"), 
+                       weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+FA_2 <- update.asreml(FA_2)
+
+
+Diag <- asreml::asreml(fixed = BLUE ~ 1 + gen + loc, 
+                       random = ~ + env + diag(env):id(gen),
+                       data = data1, na.action = list(x = "include", y = "include"), 
+                       weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+
+IDV <- asreml::asreml(fixed = BLUE ~ 1 + gen + loc, 
+                      random = ~ + env + idv(env):idv(gen),
+                      data = data1, na.action = list(x = "include", y = "include"), 
+                      weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+
+#  Cross-classified model with GE 
+mm2 <- asreml::asreml(fixed = BLUE ~ 1 + env,
+                      random = ~ gen + env:gen, 
+                      residual = ~ dsum(~ env|gen), 
+                      data = data1, na.action = list(x = "include", y = "include"), 
+                      weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+
+CORGH <- asreml::asreml(fixed = BLUE ~ 1  + env + loc, 
+                      random = ~ + corgh(env):id(gen),
+                      data = data1, na.action = list(x = "include", y = "include"), 
+                      weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+
+
+infoCriteria.asreml(FA_1)
+infoCriteria.asreml(FA_2)
+infoCriteria.asreml(Diag)
+infoCriteria.asreml(IDV)
+infoCriteria.asreml(mm2)
+infoCriteria.asreml(CORGH)
+
+
+summary(FA_2)$varcomp
+FA1_sum <- as.data.frame(summary(FA_1)$varcomp)
+FA2_sum <- as.data.frame(summary(FA_2)$varcomp)
+head(FA1_sum)
+param <- FA_1$vparameters
+vpredict(FA_1, rb ~ V2 / (sqrt(V1)*sqrt(V3)))
+
+varcomps8 <- summary(FA_1)$varcomp
+head(varcomps8)
+fa_comps <- varcomps8[grep("fa", rownames(varcomps8)),"component", drop = F]
+head(fa_comps)
+#remove the leading characters
+rownames(fa_comps) <- sub(".*env.", "", rownames(fa_comps))
+#split into var, fa1, and fa2 parameter estimates
+fa_vars <- fa_comps[grep("var", rownames(fa_comps)), ,drop = F]
+rownames(fa_vars) = sub(".var", "", rownames(fa_vars))
+colnames(fa_vars) = "var"
+
+#use this for rotated loadings
+fa_vars$fa1 = L.star[,1]
+fa_vars$fa2 = L.star[,2]
+fa_vars$site = rownames(fa_vars)
+fa_vars = mutate(fa_vars, Vg = var + (fa1^2) + (fa2^2))
+fa_vars
+
+varcomps8$component
+head(varcomps8)
+error.vars = varcomps8[grep("variance", rownames(varcomps8)),"component", drop = F] 
+error.vars$site = substr(rownames(error.vars), start = 6, stop = 8)
+error.vars$site = gsub("!", "", error.vars$site)
+
+### Get the within-site heritability 
+Env.stats = merge(fa_vars, error.vars, by = "site")
+colnames(Env.stats)[colnames(Env.stats)=="component"] = "Ve"
+Env.stats = mutate(Env.stats, h2 = Vg*4/(Vg + Ve))
+
+### Get the overall mean height at each site
+Env.means = predict(FA_1, classify = "env")
+Env.means = Env.means$pvals[,1:2]
+colnames(Env.means) = c("site", "height")
+
+Env.stats = merge(Env.stats, Env.means, by = "site")
+
+#get the fa1 scores for all females 
+fa1_scores = coef(FA_1)$random[grep("Comp1:female", rownames(coef(mm8)$random)),]
+names(fa1_scores) = sub("fa(site, 2)_Comp1:female_", "", names(fa1_scores), fixed = T)
+
+
+BLUP5 <- predict.asreml(FA_1, classify='env:gen', sed = T)$pvals
+BLUP6 <- predict.asreml(FA_1, classify='loc:gen', sed = T)$pvals
+BLUP7 <- predict.asreml(FA_1, classify='gen', sed = T)$pvals

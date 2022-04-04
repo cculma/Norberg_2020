@@ -548,16 +548,8 @@ BLUP2 <- BLUP2[,c(1,2)]
 colnames(BLUP2) <- c("id", "FA2")
 
 
-# 2_FA
-head(Yield_WA)
-FA_3 <- asreml::asreml(fixed = BLUE ~ 1 + env, 
-                       random = ~ + fa(env, 1):id + fa(year, 1):id, 
-                       data = Yield_ID, na.action = list(x = "include", y = "include"), 
-                       weights = weight, family = asreml::asr_gaussian(dispersion = 1))
 
 
-preds3 <- predict.asreml(FA_3, classify='id', sed = T)
-BLUP3 <- preds3$pvals
 Y1[2]
 Y1 <- list(Yield_ID, Yield_OR, Yield_WA)
 Y2 <- list()

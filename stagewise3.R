@@ -45,8 +45,7 @@ list_5 <- gsub(".csv", "", gsub("./", "", data_ar5))
 lev1 <- c("block", "id", "row", "col")
 
 #################
-# 1_MSC
-
+# MS = 1_MSC
 ST1_1MSC <- list()
 for (i in 1:length(data_ar1)) {
   data <- read.csv(data_ar1[i])
@@ -63,32 +62,158 @@ ST1_1MSC <-rbindlist(ST1_1MSC, use.names=TRUE, fill=TRUE, idcol="env")
 ST1_1MSC <- ST1_1MSC %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
 ST1_1MSC <- na.omit(ST1_1MSC)
 head(ST1_1MSC)
-str(ST1_1MSC)
 ST1_1MSC$loc <- as.factor(ST1_1MSC$loc)
 levels(ST1_1MSC$loc)
 write.csv(ST1_1MSC, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_1MSC.csv", quote = F, row.names = F)
 
-?blup_prep
-?blup
+# DM = 2_DM
+ST1_2DM <- list()
+for (i in 1:length(data_ar2)) {
+  data <- read.csv(data_ar2[i])
+  data <- data[,c(3,6,4,7,8,12,17,22)]
+  colnames(data) <- c("block", "id", "position", "row", "col", "resp", "cov1", "cov2")
+  data[,lev1] <- lapply(data[,lev1], factor)
+  data <- data[order(data$row, data$col), ]
+  ST1_2DM[[length(ST1_2DM)+1]] = data
+}
+
+names(ST1_2DM) <- list_2
+ST1_2DM <-rbindlist(ST1_2DM, use.names=TRUE, fill=TRUE, idcol="env")
+ST1_2DM <- ST1_2DM %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
+ST1_2DM <- na.omit(ST1_2DM)
+head(ST1_2DM)
+ST1_2DM$loc <- as.factor(ST1_2DM$loc)
+levels(ST1_2DM$loc)
+write.csv(ST1_2DM, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_2DM.csv", quote = F, row.names = F)
+
+# He = 3_Height
+ST1_3He <- list()
+for (i in 1:length(data_ar3)) {
+  data <- read.csv(data_ar3[1])
+  data <- data[,c(3,6,4,7,8,13,18,23)]
+  colnames(data) <- c("block", "id", "position", "row", "col", "resp", "cov1", "cov2")
+  data[,lev1] <- lapply(data[,lev1], factor)
+  data <- data[order(data$row, data$col), ]
+  ST1_3He[[length(ST1_3He)+1]] = data
+}
+
+names(ST1_3He) <- list_3
+ST1_3He <-rbindlist(ST1_3He, use.names=TRUE, fill=TRUE, idcol="env")
+ST1_3He <- ST1_3He %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
+ST1_3He <- na.omit(ST1_3He)
+head(ST1_3He)
+ST1_3He$loc <- as.factor(ST1_3He$loc)
+levels(ST1_3He$loc)
+write.csv(ST1_3He, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_3He.csv", quote = F, row.names = F)
+
+# Yi = 4_Yield
+ST1_4Yi <- list()
+for (i in 1:length(data_ar4)) {
+  data <- read.csv(data_ar4[i])
+  data <- data[,c(3,6,4,7,8,14,19,24)]
+  colnames(data) <- c("block", "id", "position", "row", "col", "resp", "cov1", "cov2")
+  data[,lev1] <- lapply(data[,lev1], factor)
+  data <- data[order(data$row, data$col), ]
+  ST1_4Yi[[length(ST1_4Yi)+1]] = data
+}
+names(ST1_4Yi) <- list_4
+ST1_4Yi <-rbindlist(ST1_4Yi, use.names=TRUE, fill=TRUE, idcol="env")
+ST1_4Yi <- ST1_4Yi %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
+ST1_4Yi <- na.omit(ST1_4Yi)
+head(ST1_4Yi)
+ST1_4Yi$loc <- as.factor(ST1_4Yi$loc)
+levels(ST1_4Yi$loc)
+write.csv(ST1_4Yi, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_4Yi.csv", quote = F, row.names = F)
+
+# FD = 5_FD
+ST1_5FD <- list()
+for (i in 1:length(data_ar5)) {
+  data <- read.csv(data_ar5[i])
+  data <- data[,c(3,6,4,7,8,15,20,25)]
+  colnames(data) <- c("block", "id", "position", "row", "col", "resp", "cov1", "cov2")
+  data[,lev1] <- lapply(data[,lev1], factor)
+  data <- data[order(data$row, data$col), ]
+  ST1_5FD[[length(ST1_5FD)+1]] = data
+}
+
+names(ST1_5FD) <- list_5
+ST1_5FD <-rbindlist(ST1_5FD, use.names=TRUE, fill=TRUE, idcol="env")
+ST1_5FD <- ST1_5FD %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
+ST1_5FD <- na.omit(ST1_5FD)
+head(ST1_5FD)
+ST1_5FD$loc <- as.factor(ST1_5FD$loc)
+levels(ST1_5FD$loc)
+write.csv(ST1_5FD, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_5FD.csv", quote = F, row.names = F)
+
+
+#####################################
+
+
+effects <- data.frame(name=c("block","year","position", "cov1", "cov2"),
+                      fixed=c(FALSE,TRUE,TRUE,TRUE,TRUE),
+                      factor=c(TRUE,TRUE,FALSE,FALSE,FALSE))
 
 effects <- data.frame(name=c("block","position", "cov1", "cov2"),
                       fixed=c(FALSE,TRUE,TRUE,TRUE),
-                      factor=c(TRUE,FALSE,FALSE,FALSE))
+                      factor=c(TRUE,FALSE,TRUE,TRUE))
 
 effects
 
 a1 <- file.path("~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_1MSC.csv")
+a2 <- file.path("~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_2DM.csv")
+a3 <- file.path("~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_3He.csv")
+a4 <- file.path("~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_4Yi.csv")
+a5 <- file.path("~/Documents/Cesar/git/Norberg_2020/BLUE_values/STAGEWISE/ST1_5FD.csv")
 
-ans1a <- Stage1(filename=a1, 
+lev2 <- c("ST1_1MS", "ST1_2DM", "ST1_3He", "ST1_4Yi", "ST1_5FD")
+ans1 <- list(a1, a2, a3, a4 ,a5)
+
+blue_list <- list()
+vcov_list <- list()
+for (i in 1:length(ans1)) {
+  ans_a1 <- Stage1(filename=ans1[[i]], 
+                   traits="resp",
+                   effects=effects, 
+                   solver="asreml")
+  # stage1.blue <- ans_a1$blue
+  # stage1.vcov <- ans_a1$vcov
+  
+  blues <- ans_a1$blue[ans_a1$blue$loc %in% locs,]
+  tmp <- sapply(strsplit(names(ans_a1$vcov),split="_"),"[[",1)
+  vcov <- ans_a1$vcov[tmp %in% locs]
+  
+  blue_list[[length(blue_list)+1]] <- blues
+  vcov_list[[length(vcov_list)+1]] <- vcov
+}
+names(blue_list) <- lev2
+names(vcov_list) <- lev2
+
+
+ans_a1 <- Stage1(filename=a3,
                 traits="resp",
-                effects=effects, 
+                effects=effects,
                 solver="asreml")
 
 rm(stage1.blue)
-stage1.blue <- ans1a$blue
-stage1.vcov <- ans1a$vcov
+stage1.blue <- ans_a1$blue
+stage1.vcov <- ans_a1$vcov
 
-table(stage1.blue$loc)
+blues <- ans_a1$blue[ans_a1$blue$loc %in% locs,]
+tmp <- sapply(strsplit(names(ans_a1$vcov),split="_"),"[[",1)
+vcov <- ans_a1$vcov[tmp %in% locs]
+
+stage1.blue <- stage1.blue[,c(1:3)]
+
+ans2c <- Stage2(data=stage1.blue,
+                vcov=stage1.vcov,
+                geno=geno,
+                silent=FALSE)
+ans2c$aic
+
+
+# prep1 <- blup_prep(data=blues, vcov=vcov, geno=geno, vars=ans2b$vars)
+
+
 
 g1 <- file.path("~/Documents/Cesar/git/big_files/Norberg_1.txt")
 # geno <- read.csv(g1, check.names=F)
@@ -96,7 +221,6 @@ g1 <- file.path("~/Documents/Cesar/git/big_files/Norberg_1.txt")
 # dim(geno) #  97316   195
 geno <- read_geno(filename=g1, ploidy=4, map=TRUE, min.minor.allele=5)
 class(geno)
-
 
 ST1 <- stage1.blue %>% spread(key = env, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
 colnames(ST1)[2:14] <- gsub("^", "ST1_MS_", colnames(ST1)[2:14])
@@ -107,26 +231,34 @@ ST2 <- inner_join(ST1, pred.id, by = "id") %>% inner_join(., PCA, by = "id")
 write.csv(ST2, "~/Documents/Cesar/git/big_files/pheno_fa2.csv", quote = F, row.names = F)
 
 locs <- c("ID","OR","WA")
-blues <- ans1a$blue[ans1a$blue$loc %in% locs,]
-tmp <- sapply(strsplit(names(ans1a$vcov),split="_"),"[[",1)
-vcov <- ans1a$vcov[tmp %in% locs]
 
-ans2b <- Stage2(data = blues, 
-                vcov = vcov, 
-                geno = geno,  
-                silent=FALSE)
-summary(ans2b$vars)
-ans2b$aic
+vcov_list
+blue_list
 
-ans2c <- Stage2(data=stage1.blue, 
-                vcov=stage1.vcov, 
-                geno=NULL, 
-                silent=FALSE)
-ans2c$aic
+ST3_ID <- list()
+ST3_OR <- list()
+ST3_WA <- list()
+ST4 <- list()
+for (i in 1:length(blue_list)) {
+  ans2b <- Stage2(data = blue_list[[5]], 
+                  vcov = vcov_list[[5]], 
+                  geno = geno,  
+                  silent=FALSE, workspace = )
+  prep1 <- blup_prep(data=blue_list[[5]], vcov=vcov_list[[5]], geno=geno, vars=ans2b$vars, method = NULL)
+  pred.ID <- blup(data=prep1, geno=geno, index.weights=index.ID,what="id")
+  pred.OR <- blup(data=prep1, geno=geno, index.weights=index.OR,what="id")
+  pred.WA <- blup(data=prep1, geno=geno, index.weights=index.WA,what="id")
+  pred.id <- blup(data=prep1, geno=geno, what="id")
+  
+  ST3_ID[[length(ST3_ID)+1]] <- pred.ID
+  ST3_OR[[length(ST3_OR)+1]] <- pred.OR
+  ST3_WA[[length(ST3_WA)+1]] <- pred.WA
+  ST4[[length(ST4)+1]] <- pred.id
+}
 
-prep1 <- blup_prep(data=blues, vcov=vcov, geno=geno, vars=ans2b$vars, method = NULL)
-prep2 <- blup_prep(data=blues, vcov=vcov, geno=NULL, vars=ans2c$vars, method = NULL)
-prep3 <- blup_prep(data=blues, vcov=vcov, geno=geno, vars=ans2b$vars, method = "Vinv")
+
+
+
 
 index.ID <- c(ID=1, OR=0, WA=0)  
 index.OR <- c(ID=0, OR=1, WA=0)  
@@ -135,12 +267,12 @@ index.WA <- c(ID=0, OR=0, WA=1)
 pred.ID <- blup(data=prep1, geno=geno, index.weights=index.ID,what="id")
 pred.OR <- blup(data=prep1, geno=geno, index.weights=index.OR,what="id")
 pred.WA <- blup(data=prep1, geno=geno, index.weights=index.WA,what="id")
+pred.id <- blup(data=prep1, geno=geno, what="id")
 
-
-pred.01 <- blup(data=prep1, geno=geno, what = "id")
-pred.02 <- blup(data=prep2, geno=NULL, what = "id")
-pred.03 <- blup(data=prep3, geno=geno, what = "id")
-hist(pred.01$BV.r2)
+# pred.01 <- blup(data=prep1, geno=geno, what = "id")
+# pred.02 <- blup(data=prep2, geno=NULL, what = "id")
+# pred.03 <- blup(data=prep3, geno=geno, what = "id")
+# hist(pred.01$BV.r2)
 
 pred.ID <- pred.ID[1:2]
 colnames(pred.ID)[2] <- "ST3_ID"
