@@ -8,76 +8,93 @@ library(ggpubr)
 library(GWASpoly)
 library(ggplot2)
 
-load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_5.RData")
-trait1
-trait2
-trait3 <- c("ST4_MS_Overall", "ST4_DM_Overall", "ST4_He_Overall", "ST4_Yi_Overall")
-trait4 <- c("ST1_FD_WA_2018_3", "ST1_FD_ID_2019_4",	"ST1_FD_WA_2019_5", "ST4_FD_Overall")
-trait5 <- c("ST1_DM_ID_2019_1", "ST3_DM_WA", "ST4_DM_Overall")
+load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.2.RData")
+
+# DM
+trait1 <- c("ST1_DM_ID_2019_1",
+            "ST1_DM_OR_2018_1",
+            "ST1_DM_WA_2019_1",
+            "ST3_DM_OR",
+            "ST3_DM_WA")
+
+# FD
+trait2 <- c("ST1_FD_ID_2019_4",
+            "ST1_FD_WA_2018_3",
+            "ST4_FD_Overall")
+
+# He
+trait3 <- c("ST1_He_ID_2019_1",
+            "ST1_He_OR_2018_1",
+            "ST1_He_OR_2019_2",
+            "ST1_He_OR_2019_4",
+            "ST1_He_OR_2020_2",
+            "ST1_He_OR_2020_3",
+            "ST1_He_WA_2018_1",
+            "ST1_He_WA_2019_1",
+            "ST1_He_WA_2019_2",
+            "ST1_He_WA_2020_1",
+            "ST3_He_OR",
+            "ST4_He_Overall")
+
+# MS
+trait4 <- c("ST1_MS_ID_2018_1",
+            "ST1_MS_OR_2020_1",
+            "ST1_MS_WA_2020_2",
+            "ST1_MS_WA_2020_3",
+            "ST1_MS_WA_2020_5",
+            "ST3_MS_OR")
+
+# Yi
+trait5 <- c("ST1_Yi_ID_2019_4",
+            "ST1_Yi_OR_2019_4",
+            "ST1_Yi_OR_2020_1",
+            "ST1_Yi_OR_2020_3",
+            "ST1_Yi_OR_2020_4",
+            "ST1_Yi_WA_2019_5",
+            "ST1_Yi_WA_2020_3",
+            "ST1_Yi_WA_2020_5",
+            "ST3_Yi_WA")
 
 ############### 
-
-load("~/Documents/Cesar/git/big_files/data_3.RData")
-load("~/Documents/Cesar/git/big_files/data_3.1.RData")
-load("~/Documents/Cesar/git/big_files/data_4.RData")
-
-load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.RData")
-
-data_5.0 <- set.threshold(data_3, method= "Bonferroni", level=0.05)
-data_5.1 <- set.threshold(data_3.1, method= "Bonferroni", level=0.05)
-data_5.2 <- set.threshold(data_4, method= "Bonferroni", level=0.05)
-
-data_6.0 <- get.QTL(data_5.0)
-data_6.1 <- get.QTL(data_5.1)
-data_6.2 <- get.QTL(data_5.2)
-
-t_6.0 <- c("ST3_Yi_OR", "ST4_Yi_Overall")
-t_6.1 <- c("ST1_Yi_OR_2020_2", "ST2_Yi_OR_2020", "ST3_Yi_OR", "ST4_Yi_Overall")
-
-data_6.0 <- data_6.0 %>% dplyr::filter(!Trait %in% t_6.0)
-data_6.1 <- data_6.1 %>% dplyr::filter(!Trait %in% t_6.1)
-
-QTL_01 <- rbind(data_6.0, data_6.1)
-t_6.3 <- c("ST4_MS_Overall", "ST4_DM_Overall", "ST4_He_Overall", "ST4_Yi_Overall", "ST4_FD_Overall")
-data_6.3 <- QTL_01 %>% dplyr::filter(Trait %in% t_6.3) %>% distinct(Marker, .keep_all = T) 
-data_6.3$Marker
-
-QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
-
-
-###############
-
+data_5.0 <- set.threshold(data_3.2, method= "Bonferroni", level=0.1)
 
 # DM Manhattan plot
-P1 <- manhattan.plot(data = data_5.0, traits = trait5) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
+P1 <- manhattan.plot(data = data_5.0, traits = trait1) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
 
 # FD Manhattan plot
-P2 <- manhattan.plot(data = data_5.0, traits= trait4) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
+P2 <- manhattan.plot.1(data = data_5.0, traits= trait2) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
 
-ggsave(filename = "~/Documents/git/Norberg_2020/figs/FD_manhattan.jpg", plot = P2, width = 8, height = 8)
+# He
+P3 <- manhattan.plot.1(data = data_5.0, traits = trait3) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
 
-trait6 <- c("ST2_He_OR_2018", "ST1_He_OR_2018_3", "ST1_Yi_OR_2019_3",
-          "ST1_MS_WA_2019_2", "ST1_DM_ID_2019_1", "ST1_MS_OR_2019_1")
+# MS
+P4 <- manhattan.plot.1(data = data_5.0, traits= trait4) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
 
-P3 <- manhattan.plot(data = data_5.0, traits = trait6) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
+# Yi
+P5 <- manhattan.plot(data = data_5.0, traits= trait5) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
 
-
-P4 <- manhattan.plot(data = data_5.1, traits=c ("ST3_MS_OR")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
-
-trait7 <- c("ST1_MS_WA_2020_2", "ST1_MS_WA_2020_5", "ST1_MS_WA_2020_1", "ST3_MS_OR")
-
-P5 <- manhattan.plot(data = data_5.1, traits= trait7) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
-
-
-trait8 <- c("ST2_He_OR_2018","ST4_He_Overall","ST3_Yi_OR",
-            "ST1_He_WA_2019_4")
-
-P6 <- manhattan.plot(data = data_5.0, traits= trait8) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
+ggsave(filename = "~/Documents/git/Norberg_2020/GWAS_results/Figures/DM_manhattan.jpg", plot = P1, width = 6, height = 4)
+ggsave(filename = "~/Documents/git/Norberg_2020/GWAS_results/Figures/FD_manhattan.jpg", plot = P2, width = 6, height = 2)
+ggsave(filename = "~/Documents/git/Norberg_2020/GWAS_results/Figures/He_manhattan.jpg", plot = P3, width = 6, height = 8)
+ggsave(filename = "~/Documents/git/Norberg_2020/GWAS_results/Figures/MS_manhattan.jpg", plot = P4, width = 6, height = 4)
+ggsave(filename = "~/Documents/git/Norberg_2020/GWAS_results/Figures/Yi_manhattan.jpg", plot = P5, width = 6, height = 6)
 
 
-trait9 <- c("ST1_Yi_OR_2020_4", "ST3_Yi_WA", "ST1_Yi_OR_2020_4")
 
-P7 <- manhattan.plot(data = data_5.1, traits= trait9) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("aquamarine4","azure4")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
+# assay
+load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_4.RData")
+data_5.0 <- set.threshold(data_3.2, method= "Bonferroni", level=0.1)
+data_5.1 <- set.threshold(data_4, method= "Bonferroni", level=0.1)
+
+
+
+P6 <- manhattan.plot(data = data_5.0, traits= c("ST1_MS_WA_2020_2")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
+
+P7 <- manhattan.plot(data = data_5.1, traits= c("ST1_MS_WA_2020_2")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
+
+myplot2 <- ggarrange(P6, P7,
+                     labels = c("loco_F", "loco_T"), ncol = 2, nrow = 1)
+
 
 #~~~~~~~~~
 
