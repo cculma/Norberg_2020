@@ -41,11 +41,17 @@ data_3.3 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params =
 
 # save(data_3.3, file = "/scratch/user/cesar.medinaculma/20220324_080110/data_3.3.RData")
 # load("~/Documents/Cesar/git/big_files/data_3.3.RData")
+load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.3.RData")
 
 data_5 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
 QTL_01 <- get.QTL(data_5)
 QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
 cc <- count(QTL_01, Trait)
+
+################
+P6 <- manhattan.plot(data = data_5, traits= c("ST1_He_OR_2019_2")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
+
+P7 <- manhattan.plot(data = data_5, traits= c("ST1_MS_WA_2020_2")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
 
 ################
 
