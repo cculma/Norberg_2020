@@ -20,9 +20,14 @@ library(ggthemes)
 library(hrbrthemes)
 library(VennDiagram)
 
+#################
+
+models_1 <- c("general", "additive", "1-dom", "2-dom",  "diplo-additive", "diplo-general")
+#################
+
 
 # workstation
-setwd("~/Documents/Cesar/git/big_files/")
+setwd("~/Documents/Cesar/git/kamiak_norberg/")
 # mac
 setwd("~/Documents/git/Norberg_2020/GWAS_results/")
 
@@ -40,14 +45,27 @@ data_2 <- set.K(data = data_1, LOCO = T, n.core = 60)
 data_3.3 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 100)
 
 # save(data_3.3, file = "/scratch/user/cesar.medinaculma/20220324_080110/data_3.3.RData")
-# load("~/Documents/Cesar/git/big_files/data_3.3.RData")
-load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.3.RData")
-
+load("~/Documents/Cesar/git/big_files/data_3.3.RData")
+# load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.3.RData")
+?set.threshold
 data_5 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
+
 QTL_01 <- get.QTL(data_5)
 QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
 cc <- count(QTL_01, Trait)
 
+################
+N = 190
+params <- set.params(geno.freq = 1 - 5/N,  fixed=c("PC1","PC2","PC3"),
+                     fixed.type=rep("numeric",3), n.PC = 3)
+
+
+data_2 <- set.K(data = data_1, LOCO = F, n.core = 30)
+data_3.4 <- GWASpoly(data = data_2, models = models_1, traits = c("ST1_He_OR_2019_2", "ST1_MS_WA_2020_2"), params = params, n.core = 30)
+data_5 <- set.threshold(data_3.4, method= "M.eff", level=0.05)
+QTL_01 <- get.QTL(data_5)
+QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
+save(data_3.4, file = "~/Documents/Cesar/git/kamiak_norberg/data_3.4.RData")
 ################
 P6 <- manhattan.plot(data = data_5, traits= c("ST1_He_OR_2019_2")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
 
