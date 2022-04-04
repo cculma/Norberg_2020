@@ -9,12 +9,7 @@ library(genomation)
 library(plyranges)
 library(Repitools)
 library(data.table)
-library(plotly)
 
-library(parallel)
-library(doParallel)
-library(iterators)
-library(foreach)
 library(tidyr)
 library(devtools)
 library(sommer)
@@ -31,70 +26,27 @@ setwd("~/Documents/Cesar/git/big_files/")
 # mac
 setwd("~/Documents/git/Norberg_2020/GWAS_results/")
 
-pheno <- read.csv("~/Documents/Cesar/git/big_files/5_FD_1stage.csv")
-head(pheno)
+# FA1
+pheno <- read.csv("pheno_fa1.csv", row.names = 1)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
 trait1
-params <- set.params(fixed=c("PC1","PC2","PC3"),
-                     fixed.type=rep("numeric",3), n.PC = 3)
-models_1 <- c("general", "additive", "1-dom", "2-dom",  "diplo-additive", "diplo-general")
 
-data_1 <- read.GWASpoly(ploidy=4, 
-                        pheno.file="pheno.csv", 
-                        geno.file="AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt", 
+data_1 <- read.GWASpoly(ploidy=4,
+                        pheno.file="pheno_fa1.csv",
+                        geno.file="AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt",
                         format="ACGT", n.traits=length(trait1), delim=",")
 
-data_2 <- set.K(data = data_1, LOCO = F, n.core = 32)
-# data_3 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 30)
-# data_3 <- GWASpoly(data = data_2, models = models_1, traits = "ST4_Overall", params = params, n.core = 32)
+data_2 <- set.K(data = data_1, LOCO = T, n.core = 60)
+data_3.3 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 100)
 
-data_5 <- set.threshold(data_3, method= "Bonferroni", level=0.05)
+# save(data_3.3, file = "/scratch/user/cesar.medinaculma/20220324_080110/data_3.3.RData")
+# load("~/Documents/Cesar/git/big_files/data_3.3.RData")
+
+data_5 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
 QTL_01 <- get.QTL(data_5)
 QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
+cc <- count(QTL_01, Trait)
 
-############
-# this allows to run GWASpoly in traits 2020
-trait2 <- trait1[c(5,9,10,11,12,13,18,21,29,30,31,39,40,41,42,43,58,59,60,61,70,71,72,73,74,80,83,88,91,93,94,96:99,101:106)]
-trait2
-data_3.1 <- GWASpoly(data = data_2, models = models_1, traits = trait2, params = params, n.core = 32)
-# save(data_3.1, file = "~/Documents/Cesar/git/big_files/data_3.1.RData")
-############
-# I have to re run all yield because dataset BLUE_OR_2020_2 was different
-trait3 <- trait1[c(59,88,101,106)]
-trait3 
-data_4 <- GWASpoly(data = data_2, models = models_1, traits = trait3, params = params, n.core = 32)
-save(data_4, file = "~/Documents/Cesar/git/big_files/data_4.RData")
-############
-load("~/Documents/Cesar/git/big_files/data_3.RData")
-load("~/Documents/Cesar/git/big_files/data_3.1.RData")
-load("~/Documents/Cesar/git/big_files/data_4.RData")
-
-
-data_5.0 <- set.threshold(data_3, method= "Bonferroni", level=0.05)
-data_5.1 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
-data_5.2 <- set.threshold(data_4, method= "Bonferroni", level=0.05)
-
-data_6.0 <- get.QTL(data_5.0)
-data_6.1 <- get.QTL(data_5.1)
-data_6.2 <- get.QTL(data_5.2)
-
-t_6.0 <- c("ST3_Yi_OR", "ST4_Yi_Overall")
-t_6.1 <- c("ST1_Yi_OR_2020_2", "ST2_Yi_OR_2020", "ST3_Yi_OR", "ST4_Yi_Overall")
-
-data_6.0 <- data_6.0 %>% dplyr::filter(!Trait %in% t_6.0)
-data_6.1 <- data_6.1 %>% dplyr::filter(!Trait %in% t_6.1)
-
-QTL_01 <- rbind(data_6.0, data_6.1)
-t_6.3 <- c("ST4_MS_Overall", "ST4_DM_Overall", "ST4_He_Overall", "ST4_Yi_Overall", "ST4_FD_Overall")
-data_6.3 <- QTL_01 %>% dplyr::filter(Trait %in% t_6.3) %>% distinct(Marker, .keep_all = T) 
-data_6.3$Marker
-
-QTL_02 <- data_6.1 %>% distinct(Marker, .keep_all = T) 
-
-###########
-# save(data_3, file = "~/Documents/Cesar/git/big_files/data_3.RData")
-load("~/Documents/Cesar/git/big_files/data_3.3.RData")
-load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_5.RData")
 ################
 
 QTL_03 <- QTL_01 %>% group_by(Marker) %>% top_n(1, abs(Score)) %>% dplyr::select(Marker, Score) %>% distinct(Marker, .keep_all = TRUE)
