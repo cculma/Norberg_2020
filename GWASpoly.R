@@ -43,19 +43,20 @@ data_1 <- read.GWASpoly(ploidy=4,
 data_2 <- set.K(data = data_1, LOCO = T, n.core = 60)
 data_3.3 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 100)
 
-# save(data_3.3, file = "/scratch/user/cesar.medinaculma/20220324_080110/data_3.3.RData")
 # load("~/Documents/Cesar/git/big_files/data_3.3.RData")
 load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.3.RData")
 
 data_5.0 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
 QTL_01 <- get.QTL(data_5.0)
-=======
+
 load("~/Documents/Cesar/git/big_files/data_3.3.RData")
 # load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.3.RData")
-?set.threshold
+
 data_5 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
 
 QTL_01 <- get.QTL(data_5)
+QTL_01 <- QTL_01 %>% dplyr::filter(!Trait %in% c("ST1_He_OR_2019_2", "ST1_MS_WA_2020_2"))
+
 QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
 cc <- count(QTL_01, Trait)
 
@@ -75,8 +76,15 @@ S1 <- dcast(S1, formula = Marker ~ Model, fun.aggregate = length)
 S2 <- QTL_01 %>% dplyr::select(1,4) %>% distinct(Marker, Trait, .keep_all = T) 
 S2 <- dcast(S2, formula = Marker ~ Trait, fun.aggregate = length)
 colnames(S2)
+
 colSums(S2[2:length(S2)])
-rowSums(S2[2:length(S2)])
+QTL_07 <- QTL_06
+QTL_07$totalM <- rowSums(S3[13:length(S3)])
+
+colnames(S3)
+QTL_08 <- QTL_01 %>% separate(1, c("stage", "trait", "loc", "year", "cut"), sep = "_", remove = T, convert = FALSE, extra = "merge")  %>% dplyr::select(2,8)  %>% distinct(Marker, .keep_all = T) 
+
+QTL_07 <- right_join(QTL_07, QTL_08, by = "Marker") 
 
 S3 <- inner_join(QTL_06, S1, by = "Marker") %>% inner_join(., S2, by = "Marker")
 

@@ -2,15 +2,16 @@
 rm(list = ls())
 library(StageWise)
 library(asreml)
-
 library(data.table)
 library(tidyverse)
 library(asremlPlus)
+
+################
+
 directory <- "~/Documents/Cesar/git/Norberg_2020/BLUE_values"
 P5 <- file.path(directory, "assay1.csv")
 
-
-##########################
+################
 dim(P1)
 head(P1)
 colnames(P1)
