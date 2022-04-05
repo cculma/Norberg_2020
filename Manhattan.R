@@ -56,7 +56,9 @@ trait5 <- c("ST1_Yi_ID_2019_4",
             "ST3_Yi_WA")
 
 ############### 
-data_5.0 <- set.threshold(data_3.2, method= "Bonferroni", level=0.1)
+data_5.0 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
+data_5.1 <- set.threshold(data_3.4, method= "Bonferroni", level=0.05)
+
 
 # DM Manhattan plot
 P1 <- manhattan.plot(data = data_5.0, traits = trait1) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
@@ -88,13 +90,16 @@ data_5.1 <- set.threshold(data_4, method= "Bonferroni", level=0.1)
 
 
 
-P6 <- manhattan.plot(data = data_5.0, traits= c("ST1_MS_WA_2020_2")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
+P6 <- manhattan.plot(data = data_5.0, traits= c("ST1_FD_WA_2018_3", "ST1_FD_ID_2019_4", "ST4_FD", "ST3_FD_WA", "ST3_FD_ID", "ST1_FD_WA_2019_5")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
 
-P7 <- manhattan.plot(data = data_5.1, traits= c("ST1_MS_WA_2020_2")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
+P7 <- manhattan.plot(data = data_5.0, traits= c("ST1_MS_WA_2020_2")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
 
-myplot2 <- ggarrange(P6, P7,
-                     labels = c("loco_F", "loco_T"), ncol = 2, nrow = 1)
+P8 <- manhattan.plot(data = data_5.1, traits= c("ST1_He_OR_2019_2")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
 
+P9 <- manhattan.plot(data = data_5.1, traits= c("ST1_MS_WA_2020_2")) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
+
+qq.plot(data = data_5.1, trait="ST1_MS_WA_2020_2") 
+qq.plot(data = data_5.1, trait="ST1_He_OR_2019_2") 
 
 #~~~~~~~~~
 
