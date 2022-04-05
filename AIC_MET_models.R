@@ -15,10 +15,64 @@ library(asremlPlus)
 # FD = 5_FD
 
 # ST2
-# load("~/Documents/Cesar/git/big_files/data_6.RData")
+load("~/Documents/Cesar/git/big_files/data_6.RData")
 list_5 <- c("env", "loc", "year", "cut", "gen")
 head(Height_BLUE2)
-data <- Height_BLUE2
+head(FD_BLUE2)
+head(MSC_BLUE2)
+head(Yield_BLUE2)
+head(DM_BLUE2)
+
+T2 <- list(MSC_BLUE2, DM_BLUE2, Height_BLUE2, Yield_BLUE2, FD_BLUE2)
+T3 <- list()
+
+for (i in 1:(length(T2))) {
+  data <- T2[[i]]
+  class(data)
+  data <- as.data.frame(data)
+  str(data1)
+  data[list_5] <- lapply(data[list_5], factor)
+  data <- data[order(data$gen, data$env), ]
+  data1 <- na.omit(data)
+  head(data1)
+  
+  Diag <- asreml::asreml(fixed = BLUE ~ 1 + env + loc, 
+                         random = ~ + diag(env):id(gen),
+                         data = data1, na.action = list(x = "include", y = "include"), 
+                         weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+  
+  CORGH <- asreml::asreml(fixed = BLUE ~ 1  + env + loc, 
+                          random = ~ + corgh(env):id(gen),
+                          data = data1, na.action = list(x = "include", y = "include"), 
+                          weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+  
+  FA_1 <- asreml::asreml(fixed = BLUE ~ 1 + env + loc, 
+                         random = ~ + facv(env, 1):id(gen),
+                         data = data1, na.action = list(x = "include", y = "include"), 
+                         weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+  
+  FA_2 <- asreml::asreml(fixed = BLUE ~ 1 + env + loc, 
+                         random = ~ + facv(env, 2):id(gen),
+                         data = data1, na.action = list(x = "include", y = "include"), 
+                         weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+  FA_2 <- update.asreml(FA_2)
+  
+  info1 <- infoCriteria.asreml(Diag)
+  info2 <- infoCriteria.asreml(CORGH)
+  info3 <- infoCriteria.asreml(FA_1)
+  info4 <- infoCriteria.asreml(FA_2)
+  
+  info1$model <- "Diag"
+  info2$model <- "CORGH"
+  info3$model <- "FA_1"
+  info4$model <- "FA_2"
+  
+  data <- rbind(info1, info2, info3, info4)
+  T3[[length(T3)+1]] = data
+  
+}
+
+data <- FD_BLUE2
 class(data)
 data <- as.data.frame(data)
 str(data1)
@@ -26,24 +80,50 @@ data[list_5] <- lapply(data[list_5], factor)
 data <- data[order(data$gen, data$env), ]
 data1 <- na.omit(data)
 head(data1)
+str(data1)
 
-FA_1 <- asreml::asreml(fixed = BLUE ~ 1 + gen + loc, 
-                       random = ~ + env + facv(env, 1):id(gen),
+Diag <- asreml::asreml(fixed = BLUE ~ 1 + env + loc, 
+                       random = ~ + diag(env):id(gen),
                        data = data1, na.action = list(x = "include", y = "include"), 
                        weights = weight, family = asreml::asr_gaussian(dispersion = 1))
 
+CORGH <- asreml::asreml(fixed = BLUE ~ 1  + env + loc, 
+                      random = ~ + corgh(env):id(gen),
+                      data = data1, na.action = list(x = "include", y = "include"), 
+                      weights = weight, family = asreml::asr_gaussian(dispersion = 1))
 
-FA_2 <- asreml::asreml(fixed = BLUE ~ 1 + gen + loc, 
-                       random = ~ + env + facv(env, 2):id(gen),
+FA_1 <- asreml::asreml(fixed = BLUE ~ 1 + env + loc, 
+                       random = ~ + facv(env, 1):id(gen),
+                       data = data1, na.action = list(x = "include", y = "include"), 
+                       weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+
+FA_2 <- asreml::asreml(fixed = BLUE ~ 1 + env + loc, 
+                       random = ~ + facv(env, 2):id(gen),
                        data = data1, na.action = list(x = "include", y = "include"), 
                        weights = weight, family = asreml::asr_gaussian(dispersion = 1))
 FA_2 <- update.asreml(FA_2)
 
 
-Diag <- asreml::asreml(fixed = BLUE ~ 1 + gen + loc, 
-                       random = ~ + env + diag(env):id(gen),
-                       data = data1, na.action = list(x = "include", y = "include"), 
-                       weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+info1 <- infoCriteria.asreml(Diag)
+info2 <- infoCriteria.asreml(CORGH)
+info3 <- infoCriteria.asreml(FA_1)
+info4 <- infoCriteria.asreml(FA_2)
+
+info1$model <- "Diag"
+info2$model <- "CORGH"
+info3$model <- "FA_1"
+info4$model <- "FA_2"
+
+data <- rbind(info1, info2, info3, info4)
+data2 <- rbind(info1, info2, info3)
+
+
+T4 <- c(T3, list(data2))
+names(T4) <- c("MS","DM","He","Yi","FD")
+T4 <-rbindlist(T4, use.names=TRUE, fill=TRUE, idcol="trait")
+write.csv(T4, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/ST2_AIC.csv", quote = F, row.names = F)
+
+
 
 IDV <- asreml::asreml(fixed = BLUE ~ 1 + gen + loc, 
                       random = ~ + env + idv(env):idv(gen),
@@ -57,18 +137,6 @@ mm2 <- asreml::asreml(fixed = BLUE ~ 1 + env,
                       data = data1, na.action = list(x = "include", y = "include"), 
                       weights = weight, family = asreml::asr_gaussian(dispersion = 1))
 
-CORGH <- asreml::asreml(fixed = BLUE ~ 1  + env + loc, 
-                      random = ~ + corgh(env):id(gen),
-                      data = data1, na.action = list(x = "include", y = "include"), 
-                      weights = weight, family = asreml::asr_gaussian(dispersion = 1))
-
-
-infoCriteria.asreml(FA_1)
-infoCriteria.asreml(FA_2)
-infoCriteria.asreml(Diag)
-infoCriteria.asreml(IDV)
-infoCriteria.asreml(mm2)
-infoCriteria.asreml(CORGH)
 
 
 summary(FA_2)$varcomp

@@ -43,3 +43,14 @@ asreml::asreml(	fixed = resp ~ 1 + cov1 + cov2 + lin(col),
 		residual = ~ar1(row):ar1v(col), 
 		data = df, 
 		na.action = list(x = "include", y = "include"))
+
+# corgh
+asreml::asreml(fixed = resp ~ 1 + trial, random = ~+corgh(trial):id(gen), 
+    data = df, na.action = list(x = "include", y = "include"), 
+    weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+
+asreml::asreml(fixed = resp ~ 1 + gen, random = ~+trial + trial:gen, 
+    data = df, na.action = list(x = "include", y = "include"), 
+    weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+
+
