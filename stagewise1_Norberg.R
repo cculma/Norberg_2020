@@ -230,6 +230,7 @@ for (i in 1:length(data_ar5)) {
 names(FD_BLUE) <- list_5
 names(FD_vcov) <- list_5
 
+
 FD_BLUE <-rbindlist(FD_BLUE, use.names=TRUE, fill=TRUE, idcol="env")
 FD_BLUE1 <- FD_BLUE %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = env, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
 FD_BLUE2 <- FD_BLUE %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")

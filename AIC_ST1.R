@@ -36,6 +36,7 @@ lev1 <- c("block", "gen", "row", "col")
 ####################
 
 M_MS <- list()
+BLUE_MS <- list()
 for (i in 1:length(data_ar1)) {
   data <- read.csv(data_ar1[i])
   data <- data[,c(3,6,7,8,11,16,21)]
@@ -61,24 +62,37 @@ for (i in 1:length(data_ar1)) {
   info1 <- infoCriteria.asreml(m1)
   info2 <- infoCriteria.asreml(m2)
   info3 <- infoCriteria.asreml(m3)
-  
-  info1$model <- "sar_sar"
-  info2$model <- "ar1_id"
-  info3$model <- "ar1_ar1"
-  
-  data <- rbind(info1, info2, info3)
-  M_MS[[length(M_MS)+1]] = data
-}
-names(M_MS) <- list_1
-M_MS <-rbindlist(M_MS, use.names=TRUE, fill=TRUE, idcol="trait")
 
-M_MS[ , .SD[which.min(AIC)], by = trait]
+  # info1$model <- "sar_sar"
+  # info2$model <- "ar1_id"
+  # info3$model <- "ar1_ar1"
+  # 
+  # data1 <- rbind(info1, info2, info3)
+  # M_MS[[length(M_MS)+1]] = data1
+  
+  ifelse(info1$AIC < info2$AIC && info1$AIC < info3$AIC, 
+         blue <- predict.asreml(m1, classify='gen', vcov=TRUE)$pvals,
+         ifelse(info2$AIC < info1$AIC && info2$AIC < info3$AIC,
+                blue <- predict.asreml(m2, classify='gen', vcov=TRUE)$pvals,
+                ifelse(info3$AIC < info1$AIC && info3$AIC < info2$AIC,
+                       blue <- predict.asreml(m3, classify='gen', vcov=TRUE)$pvals)))
+  
+  colnames(blue) <- c("gen", "BLUE", "std.error", "status")
+  blue$weight <- (1/blue$std.error)^2
+  BLUE_MS[[length(BLUE_MS)+1]] = blue
+}
+# names(M_MS) <- list_1
+# M_MS <-rbindlist(M_MS, use.names=TRUE, fill=TRUE, idcol="trait")
+
+names(BLUE_MS) <- list_1
+BLUE_MS <-rbindlist(BLUE_MS, use.names=TRUE, fill=TRUE, idcol="trait")
+BLUE_MS1 <- BLUE_MS %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = trait, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+BLUE_MS2 <- BLUE_MS %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
 
 #################
 
-data <- read.csv(data_ar2[3])
-
 M_DM <- list()
+BLUE_DM <- list()
 for (i in 1:length(data_ar2)) {
   data <- read.csv(data_ar2[i])
   data <- data[,c(3,6,7,8,12,17,22)]
@@ -105,20 +119,35 @@ for (i in 1:length(data_ar2)) {
   info2 <- infoCriteria.asreml(m2)
   info3 <- infoCriteria.asreml(m3)
 
-  info1$model <- "sar_sar"
-  info2$model <- "ar1_id"
-  info3$model <- "ar1_ar1"
-
-  data <- rbind(info1, info2, info3)
-  M_DM[[length(M_DM)+1]] = data
+  # info1$model <- "sar_sar"
+  # info2$model <- "ar1_id"
+  # info3$model <- "ar1_ar1"
+  # 
+  # data1 <- rbind(info1, info2, info3)
+  # M_DM[[length(M_DM)+1]] = data1
+  
+  ifelse(info1$AIC < info2$AIC && info1$AIC < info3$AIC, 
+         blue <- predict.asreml(m1, classify='gen', vcov=TRUE)$pvals,
+         ifelse(info2$AIC < info1$AIC && info2$AIC < info3$AIC,
+                blue <- predict.asreml(m2, classify='gen', vcov=TRUE)$pvals,
+                ifelse(info3$AIC < info1$AIC && info3$AIC < info2$AIC,
+                       blue <- predict.asreml(m3, classify='gen', vcov=TRUE)$pvals)))
+  
+  colnames(blue) <- c("gen", "BLUE", "std.error", "status")
+  blue$weight <- (1/blue$std.error)^2
+  BLUE_DM[[length(BLUE_DM)+1]] = blue
 }
-names(M_DM) <- list_2
-M_DM <-rbindlist(M_DM, use.names=TRUE, fill=TRUE, idcol="trait")
-M_DM[ , .SD[which.min(AIC)], by = trait]
+# names(M_DM) <- list_2
+# M_DM <-rbindlist(M_DM, use.names=TRUE, fill=TRUE, idcol="trait")
+
+names(BLUE_DM) <- list_2
+BLUE_DM <-rbindlist(BLUE_DM, use.names=TRUE, fill=TRUE, idcol="trait")
+BLUE_DM1 <- BLUE_DM %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = trait, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+BLUE_DM2 <- BLUE_DM %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
 
 #################
-
 M_He <- list()
+BLUE_He <- list()
 for (i in 1:length(data_ar3)) {
   data <- read.csv(data_ar3[i])
   data <- data[,c(3,6,7,8,13,18,23)]
@@ -145,20 +174,37 @@ for (i in 1:length(data_ar3)) {
   info2 <- infoCriteria.asreml(m2)
   info3 <- infoCriteria.asreml(m3)
   
-  info1$model <- "sar_sar"
-  info2$model <- "ar1_id"
-  info3$model <- "ar1_ar1"
+  # info1$model <- "sar_sar"
+  # info2$model <- "ar1_id"
+  # info3$model <- "ar1_ar1"
+  # 
+  # data1 <- rbind(info1, info2, info3)
+  # M_He[[length(M_He)+1]] = data1
   
-  data <- rbind(info1, info2, info3)
-  M_He[[length(M_He)+1]] = data
+  ifelse(info1$AIC < info2$AIC && info1$AIC < info3$AIC, 
+         blue <- predict.asreml(m1, classify='gen', vcov=TRUE)$pvals,
+         ifelse(info2$AIC < info1$AIC && info2$AIC < info3$AIC,
+                blue <- predict.asreml(m2, classify='gen', vcov=TRUE)$pvals,
+                ifelse(info3$AIC < info1$AIC && info3$AIC < info2$AIC,
+                       blue <- predict.asreml(m3, classify='gen', vcov=TRUE)$pvals)))
+  
+  colnames(blue) <- c("gen", "BLUE", "std.error", "status")
+  blue$weight <- (1/blue$std.error)^2
+  BLUE_He[[length(BLUE_He)+1]] = blue
 }
-names(M_He) <- list_3
-M_He <-rbindlist(M_He, use.names=TRUE, fill=TRUE, idcol="trait")
-M_He[ , .SD[which.min(AIC)], by = trait]
+# names(M_He) <- list_3
+# M_He <-rbindlist(M_He, use.names=TRUE, fill=TRUE, idcol="trait")
+# M_He[ , .SD[which.min(AIC)], by = trait]
+
+names(BLUE_He) <- list_3
+BLUE_He <-rbindlist(BLUE_He, use.names=TRUE, fill=TRUE, idcol="trait")
+BLUE_He1 <- BLUE_He %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = trait, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+BLUE_He2 <- BLUE_He %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
 
 ######################
 
 M_Yi <- list()
+BLUE_Yi <- list()
 for (i in 1:length(data_ar4)) {
   data <- read.csv(data_ar4[i])
   data <- data[,c(3,6,7,8,14,19,24)]
@@ -185,20 +231,37 @@ for (i in 1:length(data_ar4)) {
   info2 <- infoCriteria.asreml(m2)
   info3 <- infoCriteria.asreml(m3)
   
-  info1$model <- "sar_sar"
-  info2$model <- "ar1_id"
-  info3$model <- "ar1_ar1"
+  # info1$model <- "sar_sar"
+  # info2$model <- "ar1_id"
+  # info3$model <- "ar1_ar1"
+  # 
+  # data1 <- rbind(info1, info2, info3)
+  # M_Yi[[length(M_Yi)+1]] = data1
   
-  data <- rbind(info1, info2, info3)
-  M_Yi[[length(M_Yi)+1]] = data
+  ifelse(info1$AIC < info2$AIC && info1$AIC < info3$AIC, 
+         blue <- predict.asreml(m1, classify='gen', vcov=TRUE)$pvals,
+         ifelse(info2$AIC < info1$AIC && info2$AIC < info3$AIC,
+                blue <- predict.asreml(m2, classify='gen', vcov=TRUE)$pvals,
+                ifelse(info3$AIC < info1$AIC && info3$AIC < info2$AIC,
+                       blue <- predict.asreml(m3, classify='gen', vcov=TRUE)$pvals)))
+  
+  colnames(blue) <- c("gen", "BLUE", "std.error", "status")
+  blue$weight <- (1/blue$std.error)^2
+  BLUE_Yi[[length(BLUE_Yi)+1]] = blue
 }
-names(M_Yi) <- list_4
-M_Yi <-rbindlist(M_Yi, use.names=TRUE, fill=TRUE, idcol="trait")
-M_Yi[ , .SD[which.min(AIC)], by = trait]
+# names(M_Yi) <- list_4
+# M_Yi <-rbindlist(M_Yi, use.names=TRUE, fill=TRUE, idcol="trait")
+# M_Yi[ , .SD[which.min(AIC)], by = trait]
+
+names(BLUE_Yi) <- list_4
+BLUE_Yi <-rbindlist(BLUE_Yi, use.names=TRUE, fill=TRUE, idcol="trait")
+BLUE_Yi1 <- BLUE_Yi %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = trait, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+BLUE_Yi2 <- BLUE_Yi %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
 
 ####################
 
 M_FD <- list()
+BLUE_FD <- list()
 for (i in 1:length(data_ar5)) {
   data <- read.csv(data_ar5[i])
   data <- data[,c(3,6,7,8,15,20,25)]
@@ -221,20 +284,40 @@ for (i in 1:length(data_ar5)) {
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
+  
   info1 <- infoCriteria.asreml(m1)
   info2 <- infoCriteria.asreml(m2)
   info3 <- infoCriteria.asreml(m3)
+
+  # info1$model <- "sar_sar"
+  # info2$model <- "ar1_id"
+  # info3$model <- "ar1_ar1"
+  # 
+  # data1 <- rbind(info1, info2, info3)
+  # M_FD[[length(M_FD)+1]] = data1
   
-  info1$model <- "sar_sar"
-  info2$model <- "ar1_id"
-  info3$model <- "ar1_ar1"
+  ifelse(info1$AIC < info2$AIC && info1$AIC < info3$AIC, 
+         blue <- predict.asreml(m1, classify='gen', vcov=TRUE)$pvals,
+         ifelse(info2$AIC < info1$AIC && info2$AIC < info3$AIC,
+                blue <- predict.asreml(m2, classify='gen', vcov=TRUE)$pvals,
+                ifelse(info3$AIC < info1$AIC && info3$AIC < info2$AIC,
+                       blue <- predict.asreml(m3, classify='gen', vcov=TRUE)$pvals)))
   
-  data <- rbind(info1, info2, info3)
-  M_FD[[length(M_FD)+1]] = data
+  colnames(blue) <- c("gen", "BLUE", "std.error", "status")
+  blue$weight <- (1/blue$std.error)^2
+  BLUE_FD[[length(BLUE_FD)+1]] = blue
 }
-names(M_FD) <- list_5
-M_FD <-rbindlist(M_FD, use.names=TRUE, fill=TRUE, idcol="trait")
-M_FD[ , .SD[which.min(AIC)], by = trait]
+
+# names(M_FD) <- list_5
+# M_FD <-rbindlist(M_FD, use.names=TRUE, fill=TRUE, idcol="trait")
+# M_FD[ , .SD[which.min(AIC)], by = trait]
+
+names(BLUE_FD) <- list_5
+BLUE_FD <-rbindlist(BLUE_FD, use.names=TRUE, fill=TRUE, idcol="trait")
+BLUE_FD1 <- BLUE_FD %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = trait, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+BLUE_FD2 <- BLUE_FD %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
+
+#######################
 
 
 M_DM[ , .SD[which.min(AIC)], by = trait]
@@ -252,3 +335,4 @@ M_FD$trait1 <- "FD"
 J1 <- rbind(M_DM,M_He,M_MS,M_Yi,M_FD)
 write.csv(J1, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/ST1_AIC.csv", quote = F, row.names = F)
 save.image("~/Documents/Cesar/git/big_files/AIC_ST1.RData")
+load("~/Documents/Cesar/git/big_files/AIC_ST1.RData")
