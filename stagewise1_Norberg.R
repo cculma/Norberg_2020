@@ -92,7 +92,7 @@ for (i in 1:length(data_ar2)) {
   data[,lev1] <- lapply(data[,lev1], factor)
   data <- data[order(data$row, data$col), ]
   m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~+block, residual = ~sar(row):sar(col), 
+                       random = ~ + block, residual = ~sar(row):sar(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   

@@ -72,7 +72,7 @@ for (i in 1:(length(T2))) {
   
 }
 
-data <- FD_BLUE2
+data <- MSC_BLUE2
 class(data)
 data <- as.data.frame(data)
 str(data1)
@@ -103,7 +103,7 @@ FA_2 <- asreml::asreml(fixed = BLUE ~ 1 + env + loc,
                        weights = weight, family = asreml::asr_gaussian(dispersion = 1))
 FA_2 <- update.asreml(FA_2)
 
-
+?infoCriteria.asreml
 info1 <- infoCriteria.asreml(Diag)
 info2 <- infoCriteria.asreml(CORGH)
 info3 <- infoCriteria.asreml(FA_1)
@@ -115,7 +115,7 @@ info3$model <- "FA_1"
 info4$model <- "FA_2"
 
 data <- rbind(info1, info2, info3, info4)
-data2 <- rbind(info1, info2, info3)
+data2 <- rbind(info1, info2, info3, info4)
 
 
 T4 <- c(T3, list(data2))

@@ -125,6 +125,7 @@ QTL_08 <- inner_join(QTL_06, QTL_04, by = "Marker") %>% inner_join(., QTL_05, by
 
 nrow(QTL_08 %>% distinct(gene_id, .keep_all = TRUE))
 sum(!is.na(QTL_08$gene_id)) # 72 annotated in Uniprot
+sum(is.na(QTL_08$gene_id)) # 42 annotated in Uniprot
 colnames(QTL_08)
 write.table(QTL_08, "~/Documents/Cesar/git/big_files/markers3.tsv", row.names = F, quote = F, sep = "\t")
 
