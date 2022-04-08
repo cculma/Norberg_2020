@@ -26,22 +26,30 @@ models_1 <- c("general", "additive", "1-dom", "2-dom",  "diplo-additive", "diplo
 
 
 # workstation
-setwd("~/Documents/Cesar/git/kamiak_norberg/")
+setwd("~/Documents/Cesar/git/big_files/")
 # mac
 setwd("~/Documents/git/Norberg_2020/GWAS_results/")
 
 # FA1
-pheno <- read.csv("pheno_fa1.csv", row.names = 1)
+pheno <- read.csv("FD_cal.csv", row.names = 1)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
 trait1
 
+N = 190
+params <- set.params(geno.freq = 1 - 5/N, fixed=c("PC1","PC2","PC3"),
+                     fixed.type=rep("numeric",3), n.PC = 3)
+
+
 data_1 <- read.GWASpoly(ploidy=4,
-                        pheno.file="pheno_fa1.csv",
+                        pheno.file="FD_cal.csv",
                         geno.file="AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt",
                         format="ACGT", n.traits=length(trait1), delim=",")
 
-data_2 <- set.K(data = data_1, LOCO = T, n.core = 60)
-data_3.3 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 100)
+data_2 <- set.K(data = data_1, LOCO = T, n.core = 30)
+data_3.3 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 30)
+
+data_4 <- set.K(data = data_1, LOCO = F, n.core = 30)
+data_4.3 <- GWASpoly(data = data_4, models = models_1, traits = trait1, params = params, n.core = 30)
 
 # load("~/Documents/Cesar/git/big_files/data_3.3.RData")
 load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.3.RData")
