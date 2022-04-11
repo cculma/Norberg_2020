@@ -47,15 +47,20 @@ data_1 <- read.GWASpoly(ploidy=4,
 
 data_2 <- set.K(data = data_1, LOCO = T, n.core = 30)
 data_3.3 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 30)
-
+FD_data_3.3 <- data_3.3
 data_4 <- set.K(data = data_1, LOCO = F, n.core = 30)
 data_4.3 <- GWASpoly(data = data_4, models = models_1, traits = trait1, params = params, n.core = 30)
-
-# load("~/Documents/Cesar/git/big_files/data_3.3.RData")
-load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.3.RData")
+FD_data_4.3 <- data_4.3
 
 data_5.0 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
 QTL_01 <- get.QTL(data_5.0)
+
+data_5.1 <- set.threshold(data_4.3, method= "Bonferroni", level=0.05)
+QTL_02 <- get.QTL(data_5.1)
+
+save(FD_data_3.3, file = "~/Documents/Cesar/git/big_files/FD_data_3.3.RData")
+save(FD_data_4.3, file = "~/Documents/Cesar/git/big_files/FD_data_4.3.RData")
+
 
 load("~/Documents/Cesar/git/big_files/data_3.3.RData")
 # load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.3.RData")
