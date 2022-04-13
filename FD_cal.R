@@ -275,11 +275,135 @@ write.csv(BLUP5, "~/Documents/Cesar/git/big_files/FD_cal.csv", quote = F, row.na
 
 # get all variance components
 varcomp <- summary(met8)$varcomp
+varcomp <- summary(Diag)$varcomp
+varcomp <- summary(US)$varcomp
+varcomp <- summary(FA_1)$varcomp
+varcomp <- summary(FA_2)$varcomp
+
+
 # extract error variance
 
 newnames <- c("V_e", "V_g")
 oldnames <- c("fa1", "var")
 
 varcomp <- varcomp  %>% rownames_to_column("comp1") %>% slice(1:(n() - 1)) %>% separate(1, c("model", "env", "var"), sep = "!", remove = T, convert = FALSE, extra = "merge") %>% dplyr::select(2:4) %>% spread(key = var, value = component, fill = NA, convert = FALSE, drop = TRUE, sep = NULL) %>% rename_with(~ newnames, all_of(oldnames))
-
 varcomp$H2 <- varcomp$V_g/(varcomp$V_g + varcomp$V_e)
+
+T2 <- list(BLUE_MS2, BLUE_DM2, BLUE_He2, BLUE_Yi2, BLUE_FD4)
+T5 <- list()
+T6 <- list()
+T7 <- list()
+for (i in 1:(length(T2))) {
+  data <- T2[[i]]
+  class(data)
+  data <- as.data.frame(data)
+  colnames(data)[1] <- "env"
+  str(data1)
+  data[list_5.1] <- lapply(data[list_5.1], factor)
+  data <- data[order(data$gen, data$env), ]
+  data1 <- na.omit(data)
+  head(data1)
+
+  Diag <- asreml::asreml(fixed = BLUE ~ 1 + env +  loc,
+                         random = ~ + diag(env):id(gen),
+                         data = data1, na.action = list(x = "include", y = "include"),
+                         weights = weight, family = asreml::asr_gaussian(dispersion = 1), workspace="10gb")
+
+  US <- asreml::asreml(fixed = BLUE ~ 1 + env +  loc,
+                       random = ~ + idv(env):id(gen),
+                       data = data1, na.action = list(x = "include", y = "include"),
+                       weights = weight, family = asreml::asr_gaussian(dispersion = 1), workspace="10gb")
+
+  FA_1 <- asreml::asreml(fixed = BLUE ~ 1 + env + loc, 
+                         random = ~ + fa(env, 1):id(gen),
+                         data = data1, na.action = list(x = "include", y = "include"), 
+                         weights = weight, family = asreml::asr_gaussian(dispersion = 1), workspace="10gb")
+  FA_1 <- update.asreml(FA_1)
+  
+  varcomp <- summary(FA_1)$varcomp
+  varcomp <- varcomp  %>% rownames_to_column("comp1") %>% slice(1:(n() - 1)) %>% separate(1, c("model", "env", "var"), sep = "!", remove = T, convert = FALSE, extra = "merge") %>% dplyr::select(2:4) %>% spread(key = var, value = component, fill = NA, convert = FALSE, drop = TRUE, sep = NULL) %>% rename_with(~ newnames, all_of(oldnames))
+  varcomp$H2 <- varcomp$V_g/(varcomp$V_g + varcomp$V_e)
+  T7[[length(T7)+1]] = varcomp
+
+  FA_2 <- asreml::asreml(fixed = BLUE ~ 1 + env + loc,
+                         random = ~ + fa(env, 2):id(gen),
+                         data = data1, na.action = list(x = "include", y = "include"),
+                         weights = weight, family = asreml::asr_gaussian(dispersion = 1), workspace="10gb")
+  FA_2 <- update.asreml(FA_2)
+
+  i1 <- infoCriteria.asreml(Diag)
+  i2 <- infoCriteria.asreml(US)
+  i3 <- infoCriteria.asreml(FA_1)
+  i4 <- infoCriteria.asreml(FA_2)
+
+  i1$model <- "Diag"
+  i2$model <- "US"
+  i3$model <- "FA_1"
+  i4$model <- "FA_2"
+
+  data2 <- rbind(i1, i2, i3, i4)
+  T5[[length(T5)+1]] = data2
+
+  ifelse(i1$AIC < i2$AIC && i1$AIC < i3$AIC && i1$AIC < i4$AIC,
+         c(BLUP3 <- predictPlus(classify = "loc:gen", asreml.obj = Diag,
+                                wald.tab = NULL,
+                                present = c("env", "loc", "gen"))$predictions,
+           BLUP4 <- predictPlus(classify = "gen", asreml.obj = Diag,
+                                wald.tab = Diag$wald.tab,
+                                present = c("env", "loc", "gen"))$predictions),
+         ifelse(i2$AIC < i1$AIC && i2$AIC < i3$AIC && i2$AIC < i4$AIC,
+                c(BLUP3 <- predictPlus(classify = "loc:gen", asreml.obj = US,
+                                       wald.tab = NULL,
+                                       present = c("env", "loc", "gen"))$predictions,
+                  BLUP4 <- predictPlus(classify = "gen", asreml.obj = US,
+                                       wald.tab = NULL,
+                                       present = c("env", "loc", "gen"))$predictions),
+                ifelse(i3$AIC < i1$AIC && i3$AIC < i2$AIC && i3$AIC < i4$AIC,
+                       c(BLUP3 <- predictPlus(classify = "loc:gen", asreml.obj = FA_1,
+                                              wald.tab = NULL,
+                                              present = c("env", "loc", "gen"))$predictions,
+                         BLUP4 <- predictPlus(classify = "gen", asreml.obj = FA_1,
+                                              wald.tab = NULL,
+                                              present = c("env", "loc", "gen"))$predictions),
+                       ifelse(i4$AIC < i1$AIC && i4$AIC < i2$AIC && i4$AIC < i3$AIC,
+                              c(BLUP3 <- predictPlus(classify = "loc:gen", asreml.obj = FA_2,
+                                                     wald.tab = Diag$wald.tab,
+                                                     present = c("env", "loc", "gen"))$predictions,
+                                BLUP4 <- predictPlus(classify = "gen", asreml.obj = FA_2,
+                                                     wald.tab = Diag$wald.tab,
+                                                     present = c("env", "loc", "gen"))$predictions,
+                                BLUP5 <- predictPlus(classify = "env:gen", asreml.obj = FA_2,
+                                                     wald.tab = Diag$wald.tab,
+                                                     present = c("env", "loc", "gen"))$predictions)
+                       ))))
+
+  BLUP3 <- BLUP3[,c(1:3)]
+  BLUP4 <- BLUP4[,c(1:2)]
+  BLUP5 <- BLUP5[,c(1:3)]
+
+  BLUP3$loc <- gsub("^", list_7[i], BLUP3$loc)
+
+  BLUP3 <- BLUP3 %>% spread(key = loc, value = predicted.value, fill = NA,
+                            convert = FALSE, drop = TRUE, sep = NULL)
+  colnames(BLUP4)[2] <- list_8[i]
+  BLUP5 <- full_join(BLUP3, BLUP4, by = "gen")
+  T6[[length(T6)+1]] = BLUP5
+
+
+}
+
+names(T5) <- list_9
+T5 <-rbindlist(T5, use.names=TRUE, fill=TRUE, idcol="trait")
+T5[ , .SD[which.min(AIC)], by = trait]
+
+write.csv(T5, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/ST2_AIC_1.csv", quote = F, row.names = F)
+
+names(T6) <- c("MS","DM","He","Yi","FD")
+
+BLUP8 <- full_join(T6[[1]], T6[[2]], by = "gen") %>% full_join(., T6[[3]], by = "gen")  %>% full_join(., T6[[4]], by = "gen")  %>% full_join(., T6[[5]], by = "gen")  %>% left_join(., PCA, by = "gen") 
+colnames(BLUP8)[2:21] <- gsub("^", "BLUP_", colnames(BLUP8)[2:21])
+write.csv(BLUP8, "~/Documents/Cesar/git/big_files/pheno_fa2.csv", quote = F, row.names = F)
+
+names(T7) <- list_9
+T7 <-rbindlist(T7, use.names=TRUE, fill=TRUE, idcol="trait")
+write.csv(T7, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/ST2_AIC_H2_.csv", quote = F, row.names = F)
