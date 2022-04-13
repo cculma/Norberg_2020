@@ -336,3 +336,28 @@ J1 <- rbind(M_DM,M_He,M_MS,M_Yi,M_FD)
 write.csv(J1, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/ST1_AIC.csv", quote = F, row.names = F)
 save.image("~/Documents/Cesar/git/big_files/AIC_ST1.RData")
 load("~/Documents/Cesar/git/big_files/AIC_ST1.RData")
+
+J1 <- read.csv("~/Documents/git/Norberg_2020/BLUE_values/ST1_AIC.csv")
+J1$trait1 <- as.factor(J1$trait1)
+head(J1)
+levels(J1$trait1)
+J1.1 <- J1 %>% dplyr::filter(trait1 %in% c("DM")) %>% dplyr::select(1,5,8) %>% spread(key = model, value = AIC, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+
+J1.2 <- J1 %>% dplyr::filter(trait1 %in% c("FD")) %>% dplyr::select(1,5,8) %>% spread(key = model, value = AIC, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+
+J1.3 <- J1 %>% dplyr::filter(trait1 %in% c("He")) %>% dplyr::select(1,5,8) %>% spread(key = model, value = AIC, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+
+J1.4 <- J1 %>% dplyr::filter(trait1 %in% c("MS")) %>% dplyr::select(1,5,8) %>% spread(key = model, value = AIC, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+
+J1.5 <- J1 %>% dplyr::filter(trait1 %in% c("Yi")) %>% dplyr::select(1,5,8) %>% spread(key = model, value = AIC, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+
+colnames(J1.1)[2:length(J1.1)] <- gsub("^", "DM_", colnames(J1.1)[2:length(J1.1)])
+colnames(J1.2)[2:length(J1.2)] <- gsub("^", "FD_", colnames(J1.2)[2:length(J1.2)])
+colnames(J1.3)[2:length(J1.3)] <- gsub("^", "He_", colnames(J1.3)[2:length(J1.3)])
+colnames(J1.4)[2:length(J1.4)] <- gsub("^", "MS_", colnames(J1.4)[2:length(J1.4)])
+colnames(J1.5)[2:length(J1.5)] <- gsub("^", "Yi_", colnames(J1.5)[2:length(J1.5)])
+
+J2 <- full_join(J1.1, J1.2, by = "trait") %>% full_join(., J1.3, by = "trait") %>% full_join(., J1.4, by = "trait") %>% full_join(., J1.5, by = "trait")
+
+write.csv(J2, "~/Documents/git/Norberg_2020/BLUE_values/ST1_AIC_1.csv", quote = F, row.names = F)
+

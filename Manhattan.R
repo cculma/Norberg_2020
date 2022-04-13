@@ -69,13 +69,13 @@ data_5.1 <- set.threshold(data_3.4, method= "Bonferroni", level=0.05)
 P1 <- manhattan.plot(data = data_5.0, traits = trait1) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
 
 # FD Manhattan plot
-P2 <- manhattan.plot.1(data = data_5.0, traits= trait2) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
+P2 <- manhattan.plot(data = FD_data_3.3, traits= cc1$Trait) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
 
 # He
-P3 <- manhattan.plot.1(data = data_5.0, traits = trait3) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
+P3 <- manhattan.plot(data = data_5.1, traits = cc2$Trait) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank()) 
 
 # MS
-P4 <- manhattan.plot.1(data = data_5.0, traits= trait4) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
+P4 <- manhattan.plot(data = data_5.0, traits= trait4) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
 
 # Yi
 P5 <- manhattan.plot(data = data_5.0, traits= trait5) + theme_classic(base_family = "Arial", base_size = 12) + scale_color_manual(values=c("royalblue2","gray70")) + theme(legend.position = "none", axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.y = element_text(size = 12), plot.tag = element_blank())
@@ -86,6 +86,8 @@ ggsave(filename = "~/Documents/git/Norberg_2020/GWAS_results/Figures/He_manhatta
 ggsave(filename = "~/Documents/git/Norberg_2020/GWAS_results/Figures/MS_manhattan.jpg", plot = P4, width = 6, height = 4)
 ggsave(filename = "~/Documents/git/Norberg_2020/GWAS_results/Figures/Yi_manhattan.jpg", plot = P5, width = 6, height = 6)
 
+ggsave(filename = "~/Documents/git/Norberg_2020/GWAS_results/Figures/FD1_manhattan.jpg", plot = P2, width = 6, height = 4)
+ggsave(filename = "~/Documents/git/Norberg_2020/GWAS_results/Figures/FD2_manhattan.jpg", plot = P3, width = 6, height = 4)
 
 
 # assay

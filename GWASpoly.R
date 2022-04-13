@@ -52,26 +52,30 @@ data_4 <- set.K(data = data_1, LOCO = F, n.core = 30)
 data_4.3 <- GWASpoly(data = data_4, models = models_1, traits = trait1, params = params, n.core = 30)
 FD_data_4.3 <- data_4.3
 
-data_5.0 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
+?set.threshold
+data_5.0 <- set.threshold(FD_data_3.3, method= "Bonferroni", level=0.05)
+data_5.0 <- set.threshold(FD_data_3.3, method= "M.eff", level=0.05)
 QTL_01 <- get.QTL(data_5.0)
 
-data_5.1 <- set.threshold(data_4.3, method= "Bonferroni", level=0.05)
+data_5.1 <- set.threshold(FD_data_4.3, method= "Bonferroni", level=0.05)
 QTL_02 <- get.QTL(data_5.1)
 
 save(FD_data_3.3, file = "~/Documents/Cesar/git/big_files/FD_data_3.3.RData")
 save(FD_data_4.3, file = "~/Documents/Cesar/git/big_files/FD_data_4.3.RData")
-
-
-load("~/Documents/Cesar/git/big_files/data_3.3.RData")
-# load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.3.RData")
 
 data_5 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
 
 QTL_01 <- get.QTL(data_5)
 QTL_01 <- QTL_01 %>% dplyr::filter(!Trait %in% c("ST1_He_OR_2019_2", "ST1_MS_WA_2020_2"))
 
-QTL_02 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
-cc <- count(QTL_01, Trait)
+QTL_01.1 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
+cc1 <- count(QTL_01, Trait)
+cc1$Trait
+
+QTL_02.1 <- QTL_02 %>% distinct(Marker, .keep_all = T) 
+cc2 <- count(QTL_02, Trait)
+
+
 
 ################
 
@@ -95,7 +99,10 @@ QTL_07 <- QTL_06
 QTL_07$totalM <- rowSums(S3[13:length(S3)])
 
 colnames(S3)
-QTL_08 <- QTL_01 %>% separate(1, c("stage", "trait", "loc", "year", "cut"), sep = "_", remove = T, convert = FALSE, extra = "merge")  %>% dplyr::select(2,8)  %>% distinct(Marker, .keep_all = T) 
+QTL_08 <- QTL_01 %>% separate(1, c("stage", "trait", "loc", "year", "cut"), sep = "_", remove = T, convert = FALSE, extra = "merge")  %>% dplyr::select(3,4,5,8)  %>% distinct(Marker, .keep_all = T) 
+
+QTL_08 <- QTL_01 %>% dplyr::select(3,4,5,8)  %>% distinct(Marker, .keep_all = T) write.csv(S4, "GWAS_results/markers_FDcor.csv")
+
 
 QTL_07 <- right_join(QTL_07, QTL_08, by = "Marker") 
 
@@ -106,6 +113,9 @@ write.table(S3, "~/Documents/Cesar/git/big_files/markers1.tsv", row.names = F, q
 S2 <- dcast(S2, formula = Marker ~ Trait, fun.aggregate = length)
 col_headings_3 <- c("stage", "trait", "loc", "year", "cut")
 S4 <- as.data.frame(colnames(S2)) %>% separate(1, col_headings_3, sep = "_", remove = TRUE, convert = FALSE, extra = "warn") %>% dplyr::filter(!row_number() %in% c(1))
+
+write.table(S3, "~/Documents/git/Norberg_2020/GWAS_results/FD_marker.csv", row.names = F, quote = F, sep = "\t")
+
 write.table(S4, "~/Documents/Cesar/git/Norberg_2020/spatial_distribution/header.tsv", row.names = F, quote = F, sep = "\t")
 
 ##############
