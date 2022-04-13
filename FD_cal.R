@@ -20,41 +20,9 @@ S_FD4$gen <- as.factor(S_FD4$gen)
 S_FD4 <- read.csv("~/Documents/Cesar/git/big_files/FD_scores.csv")
 S_FD1 <- S_FD4 %>% dplyr::filter(!gen %in% c(201,202))
 
-
+# load("~/Documents/Cesar/git/big_files/AIC_ST1.RData")
 # names(BLUE_FD) <- list_5
 # BLUE_FD <-rbindlist(BLUE_FD, use.names=TRUE, fill=TRUE, idcol="trait")
-
-S_FD1 <- BLUE_FD %>% dplyr::filter(gen %in% c(44,61,104,112,144,201))
-S_FD1 <- inner_join(S_FD1, S_FD4, by = "gen")
-
-
-S_FD1.1 <- S_FD1 %>% dplyr::filter(trait %in% list_5[1])
-S_FD1.2 <- S_FD1 %>% dplyr::filter(trait %in% list_5[2])
-S_FD1.3 <- S_FD1 %>% dplyr::filter(trait %in% list_5[3])
-
-S_FD2.1 <- lm(FD ~ BLUE, data = S_FD1.1)
-S_FD2.2 <- lm(FD ~ BLUE, data = S_FD1.2)
-S_FD2.3 <- lm(FD ~ BLUE, data = S_FD1.3)
-
-summary(S_FD2.1)
-summary(S_FD2.2)
-summary(S_FD2.3)
-
-
-S_FD2.1$coefficients[1]
-S_FD2.1$coefficients[2]
-
-S_FD3.1 <- BLUE_FD %>% dplyr::filter(trait %in% list_5[1])
-S_FD3.2 <- BLUE_FD %>% dplyr::filter(trait %in% list_5[2])
-S_FD3.3 <- BLUE_FD %>% dplyr::filter(trait %in% list_5[3])
-
-S_FD3.1$FD1 <- S_FD2.1$coefficients[2] * S_FD3.1$BLUE + S_FD2.1$coefficients[1]
-S_FD3.2$FD1 <- S_FD2.2$coefficients[2] * S_FD3.2$BLUE + S_FD2.2$coefficients[1]
-S_FD3.3$FD1 <- S_FD2.3$coefficients[2] * S_FD3.3$BLUE + S_FD2.3$coefficients[1]
-
-S_FD5 <- rbind(S_FD3.1, S_FD3.2, S_FD3.3)
-
-S_FD5 <- S_FD5 %>% dplyr::select(1,2,7) %>% spread(key = trait, value = FD1, fill = NA, convert = FALSE, drop = TRUE, sep = NULL) %>% full_join(., PCA, by = "gen") %>% dplyr::filter(!gen %in% c(201, 202))
 
 
 
@@ -186,9 +154,12 @@ for (i in 1:length(data_ar5)) {
   BLUE_FD[[length(BLUE_FD)+1]] = blue
 }
 
+list_5 <- gsub(".csv", "", gsub("./", "", data_ar5))
 names(M_FD) <- list_5
 M_FD <-rbindlist(M_FD, use.names=TRUE, fill=TRUE, idcol="trait")
 M_FD[ , .SD[which.min(AIC)], by = trait]
+
+M_FD <- rbind(M_FD, M_He_FD)
 
 names(BLUE_FD) <- list_5
 BLUE_FD <-rbindlist(BLUE_FD, use.names=TRUE, fill=TRUE, idcol="trait")
@@ -196,11 +167,29 @@ BLUE_FD1 <- BLUE_FD %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1
 BLUE_FD2 <- BLUE_FD %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
 
 BLUE_FD3 <- inner_join(BLUE_FD1, He_FD1, by = "gen")
-colnames(BLUE_FD3)[2:length(BLUE_FD3)] <- gsub("^", "ST1_FD_", colnames(BLUE_FD3)[2:length(BLUE_FD3)])
+
 summary(BLUE_FD3)
 
 BLUE_FD4 <- rbind(BLUE_FD2, He_FD2)
+summary(BLUE_FD4)
 
+
+colnames(BLUE_DM1)
+
+
+colnames(BLUE_MS1)[2:length(BLUE_MS1)] <- gsub("^", "ST0_MS_", colnames(BLUE_MS1)[2:length(BLUE_MS1)])
+colnames(BLUE_DM1)[2:length(BLUE_DM1)] <- gsub("^", "ST0_DM_", colnames(BLUE_DM1)[2:length(BLUE_DM1)])
+colnames(BLUE_He1)[2:length(BLUE_He1)] <- gsub("^", "ST0_PH_", colnames(BLUE_He1)[2:length(BLUE_He1)])
+colnames(BLUE_Yi1)[2:length(BLUE_Yi1)] <- gsub("^", "ST0_Yi_", colnames(BLUE_Yi1)[2:length(BLUE_Yi1)])
+colnames(BLUE_FD3)[2:length(BLUE_FD3)] <- gsub("^", "ST0_FD_", colnames(BLUE_FD3)[2:length(BLUE_FD3)])
+
+
+T2 <- list(BLUE_MS1, BLUE_DM1, BLUE_He1, BLUE_Yi1, BLUE_FD3)
+
+BLUP7 <- inner_join(BLUE_MS1, BLUE_DM1, by = "gen") %>% inner_join(., BLUE_He1, by = "gen") %>% inner_join(., BLUE_Yi1, by = "gen") %>% inner_join(., BLUE_FD3, by = "gen")  %>% left_join(., PCA, by = "gen")
+write.csv(BLUP7, "~/Documents/Cesar/git/big_files/pheno_fa2.csv", quote = F, row.names = F)
+
+BLUP8 <- full_join(BLUP7, BLUP6, by = "gen") %>% full_join(., PCA, by = "gen")
 
 
 data <- BLUE_FD4
@@ -213,6 +202,8 @@ data <- data[order(data$gen, data$env), ]
 data1 <- na.omit(data)
 head(data1)
 str(data1)
+
+# fixed = BLUE ~ 1 + gen +  loc
 Diag <- asreml::asreml(fixed = BLUE ~ 1 + gen +  loc, 
                        random = ~ + diag(env):id(gen),
                        data = data1, na.action = list(x = "include", y = "include"), 
@@ -228,6 +219,17 @@ FA_1 <- asreml::asreml(fixed = BLUE ~ 1 + gen + loc,
                        data = data1, na.action = list(x = "include", y = "include"), 
                        weights = weight, family = asreml::asr_gaussian(dispersion = 1), workspace="10gb")
 FA_1 <- update.asreml(FA_1)
+
+###############
+# Model 8: Factor Analytically model (fa1) 
+met8 <- asreml(fixed = BLUE ~ 1 + env,
+               random = ~ + fa(env, 1):id(gen),
+               data = data1, na.action = list(x = "include", y = "include"), 
+               weights = weight, family = asreml::asr_gaussian(dispersion = 1))
+met8 <- update.asreml(met8)
+infoCriteria.asreml(met8)
+###############
+
 
 FA_2 <- asreml::asreml(fixed = BLUE ~ 1 + gen + loc, 
                        random = ~ + fa(env, 2):id(gen),
@@ -246,13 +248,14 @@ i3$model <- "FA_1"
 i4$model <- "FA_2"
 
 data2 <- rbind(i1, i2, i3, i4)
+data2$trait <- "FD"
 
-BLUP3 <- predictPlus(classify = "loc:gen", asreml.obj = Diag, 
+BLUP3 <- predictPlus(classify = "loc:gen", asreml.obj = FA_1, 
                      wald.tab = NULL, 
                      present = c("env", "loc", "gen"))$predictions
 
-BLUP4 <- predictPlus(classify = "gen", asreml.obj = Diag, 
-                     wald.tab = Diag$wald.tab, 
+BLUP4 <- predictPlus(classify = "gen", asreml.obj = FA_1, 
+                     wald.tab = FA_1$wald.tab, 
                      present = c("env", "loc", "gen"))$predictions
 
 
@@ -268,3 +271,15 @@ colnames(BLUP4)[2] <- "ST4_FD"
 BLUP5 <- inner_join(BLUE_FD3, BLUP3, by = "gen") %>%  inner_join(. , BLUP4, by = "gen") %>% left_join(., PCA, by = "gen")  
 
 write.csv(BLUP5, "~/Documents/Cesar/git/big_files/FD_cal.csv", quote = F, row.names = F)
+
+
+# get all variance components
+varcomp <- summary(met8)$varcomp
+# extract error variance
+
+newnames <- c("V_e", "V_g")
+oldnames <- c("fa1", "var")
+
+varcomp <- varcomp  %>% rownames_to_column("comp1") %>% slice(1:(n() - 1)) %>% separate(1, c("model", "env", "var"), sep = "!", remove = T, convert = FALSE, extra = "merge") %>% dplyr::select(2:4) %>% spread(key = var, value = component, fill = NA, convert = FALSE, drop = TRUE, sep = NULL) %>% rename_with(~ newnames, all_of(oldnames))
+
+varcomp$H2 <- varcomp$V_g/(varcomp$V_g + varcomp$V_e)

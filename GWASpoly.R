@@ -24,14 +24,13 @@ library(VennDiagram)
 models_1 <- c("general", "additive", "1-dom", "2-dom",  "diplo-additive", "diplo-general")
 #################
 
-
 # workstation
 setwd("~/Documents/Cesar/git/big_files/")
 # mac
 setwd("~/Documents/git/Norberg_2020/GWAS_results/")
 
 # FA1
-pheno <- read.csv("FD_cal.csv", row.names = 1)
+pheno <- read.csv("GFD_cal.csv", row.names = 1)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
 trait1
 
@@ -39,33 +38,46 @@ N = 190
 params <- set.params(geno.freq = 1 - 5/N, fixed=c("PC1","PC2","PC3"),
                      fixed.type=rep("numeric",3), n.PC = 3)
 
-
+format="numeric"
+format1 <- "ACGT"
+?read.GWASpoly
 data_1 <- read.GWASpoly(ploidy=4,
-                        pheno.file="FD_cal.csv",
+                        pheno.file="GFD_cal.csv",
                         geno.file="AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt",
                         format="ACGT", n.traits=length(trait1), delim=",")
 
+
 data_2 <- set.K(data = data_1, LOCO = T, n.core = 30)
 data_3.3 <- GWASpoly(data = data_2, models = models_1, traits = trait1, params = params, n.core = 30)
+data_3.3 <- GWASpoly(data = data_2, models = c("additive","1-dom"), traits = "ST4_FD", params = params, n.core = 30)
 FD_data_3.3 <- data_3.3
 data_4 <- set.K(data = data_1, LOCO = F, n.core = 30)
 data_4.3 <- GWASpoly(data = data_4, models = models_1, traits = trait1, params = params, n.core = 30)
 FD_data_4.3 <- data_4.3
 
-?set.threshold
+
 data_5.0 <- set.threshold(FD_data_3.3, method= "Bonferroni", level=0.05)
 data_5.0 <- set.threshold(FD_data_3.3, method= "M.eff", level=0.05)
 QTL_01 <- get.QTL(data_5.0)
 
 data_5.1 <- set.threshold(FD_data_4.3, method= "Bonferroni", level=0.05)
-QTL_02 <- get.QTL(data_5.1)
+
+data_5.0 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
+data_5.0 <- set.threshold(data_3.3, method= "M.eff", level=0.05, n.core = 30)
+QTL_01 <- get.QTL(data_5.0)
 
 save(FD_data_3.3, file = "~/Documents/Cesar/git/big_files/FD_data_3.3.RData")
 save(FD_data_4.3, file = "~/Documents/Cesar/git/big_files/FD_data_4.3.RData")
 
-data_5 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
+
+load("~/Documents/Cesar/git/big_files/data_3.3.RData")
+# load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.3.RData")
+
+data_5 <- set.threshold(FD_data_3.3, method= "Bonferroni", level=0.05)
+
 
 QTL_01 <- get.QTL(data_5)
+QTL_01 <- QTL_01 %>% dplyr::filter(Score > 5) 
 QTL_01 <- QTL_01 %>% dplyr::filter(!Trait %in% c("ST1_He_OR_2019_2", "ST1_MS_WA_2020_2"))
 
 QTL_01.1 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
@@ -74,8 +86,6 @@ cc1$Trait
 
 QTL_02.1 <- QTL_02 %>% distinct(Marker, .keep_all = T) 
 cc2 <- count(QTL_02, Trait)
-
-
 
 ################
 
