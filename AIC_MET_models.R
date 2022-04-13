@@ -120,11 +120,11 @@ write.csv(T3, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/ST2_AIC.csv", quot
 
 BLUP6 <- full_join(T4[[1]], T4[[2]], by = "gen") %>% full_join(., T4[[3]], by = "gen")  %>% full_join(., T4[[4]], by = "gen")  %>% full_join(., T4[[5]], by = "gen")
 
-colnames(BLUE_MS1)[2:length(BLUE_MS1)] <- gsub("^", "ST1_MS_", colnames(BLUE_MS1)[2:length(BLUE_MS1)])
-colnames(BLUE_DM1)[2:length(BLUE_DM1)] <- gsub("^", "ST1_DM_", colnames(BLUE_DM1)[2:length(BLUE_DM1)])
-colnames(BLUE_He1)[2:length(BLUE_He1)] <- gsub("^", "ST1_He_", colnames(BLUE_He1)[2:length(BLUE_He1)])
-colnames(BLUE_Yi1)[2:length(BLUE_Yi1)] <- gsub("^", "ST1_Yi_", colnames(BLUE_Yi1)[2:length(BLUE_Yi1)])
-colnames(BLUE_FD1)[2:length(BLUE_FD1)] <- gsub("^", "ST1_FD_", colnames(BLUE_FD1)[2:length(BLUE_FD1)])
+colnames(BLUE_MS1)[2:length(BLUE_MS1)] <- gsub("^", "ST0_MS_", colnames(BLUE_MS1)[2:length(BLUE_MS1)])
+colnames(BLUE_DM1)[2:length(BLUE_DM1)] <- gsub("^", "ST0_DM_", colnames(BLUE_DM1)[2:length(BLUE_DM1)])
+colnames(BLUE_He1)[2:length(BLUE_He1)] <- gsub("^", "ST0_He_", colnames(BLUE_He1)[2:length(BLUE_He1)])
+colnames(BLUE_Yi1)[2:length(BLUE_Yi1)] <- gsub("^", "ST0_Yi_", colnames(BLUE_Yi1)[2:length(BLUE_Yi1)])
+colnames(BLUE_FD1)[2:length(BLUE_FD1)] <- gsub("^", "ST0_FD_", colnames(BLUE_FD1)[2:length(BLUE_FD1)])
 
 BLUP7 <- full_join(BLUE_MS1, BLUE_DM1, by = "gen") %>% full_join(., BLUE_He1, by = "gen") %>% full_join(., BLUE_Yi1, by = "gen") %>% full_join(., BLUE_FD1, by = "gen") 
 

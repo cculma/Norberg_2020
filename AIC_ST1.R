@@ -21,7 +21,8 @@ setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/")
 data_ar <- list.files(pattern = ".csv", full.names = T)
 data_ar1 <- data_ar[c(1,4,8,11,15,19,22,23,27:31)] # 1_MSC
 data_ar2 <- data_ar[c(1,4,8,11,15,19,22,27)] # 2_DM
-data_ar3 <- data_ar[c(4,8,10:14,16:19,21:31)] # 3_Height
+# data_ar3 <- data_ar[c(4,8,10:14,16:19,21:31)] # 3_Height
+data_ar3 <- data_ar[c(4,8,11,12,14,16,17,19,21:31)] # 3_Height removing OR FD
 data_ar4 <- data_ar # 4_Yield
 data_ar5 <- data_ar[c(7,21,26)] # 5_FD
 
@@ -174,12 +175,12 @@ for (i in 1:length(data_ar3)) {
   info2 <- infoCriteria.asreml(m2)
   info3 <- infoCriteria.asreml(m3)
   
-  # info1$model <- "sar_sar"
-  # info2$model <- "ar1_id"
-  # info3$model <- "ar1_ar1"
-  # 
-  # data1 <- rbind(info1, info2, info3)
-  # M_He[[length(M_He)+1]] = data1
+  info1$model <- "sar_sar"
+  info2$model <- "ar1_id"
+  info3$model <- "ar1_ar1"
+
+  data1 <- rbind(info1, info2, info3)
+  M_He[[length(M_He)+1]] = data1
   
   ifelse(info1$AIC < info2$AIC && info1$AIC < info3$AIC, 
          blue <- predict.asreml(m1, classify='gen', vcov=TRUE)$pvals,
@@ -192,9 +193,9 @@ for (i in 1:length(data_ar3)) {
   blue$weight <- (1/blue$std.error)^2
   BLUE_He[[length(BLUE_He)+1]] = blue
 }
-# names(M_He) <- list_3
-# M_He <-rbindlist(M_He, use.names=TRUE, fill=TRUE, idcol="trait")
-# M_He[ , .SD[which.min(AIC)], by = trait]
+names(M_He) <- list_3
+M_He <-rbindlist(M_He, use.names=TRUE, fill=TRUE, idcol="trait")
+M_He[ , .SD[which.min(AIC)], by = trait]
 
 names(BLUE_He) <- list_3
 BLUE_He <-rbindlist(BLUE_He, use.names=TRUE, fill=TRUE, idcol="trait")
@@ -231,12 +232,12 @@ for (i in 1:length(data_ar4)) {
   info2 <- infoCriteria.asreml(m2)
   info3 <- infoCriteria.asreml(m3)
   
-  # info1$model <- "sar_sar"
-  # info2$model <- "ar1_id"
-  # info3$model <- "ar1_ar1"
-  # 
-  # data1 <- rbind(info1, info2, info3)
-  # M_Yi[[length(M_Yi)+1]] = data1
+  info1$model <- "sar_sar"
+  info2$model <- "ar1_id"
+  info3$model <- "ar1_ar1"
+
+  data1 <- rbind(info1, info2, info3)
+  M_Yi[[length(M_Yi)+1]] = data1
   
   ifelse(info1$AIC < info2$AIC && info1$AIC < info3$AIC, 
          blue <- predict.asreml(m1, classify='gen', vcov=TRUE)$pvals,
@@ -249,9 +250,9 @@ for (i in 1:length(data_ar4)) {
   blue$weight <- (1/blue$std.error)^2
   BLUE_Yi[[length(BLUE_Yi)+1]] = blue
 }
-# names(M_Yi) <- list_4
-# M_Yi <-rbindlist(M_Yi, use.names=TRUE, fill=TRUE, idcol="trait")
-# M_Yi[ , .SD[which.min(AIC)], by = trait]
+names(M_Yi) <- list_4
+M_Yi <-rbindlist(M_Yi, use.names=TRUE, fill=TRUE, idcol="trait")
+M_Yi[ , .SD[which.min(AIC)], by = trait]
 
 names(BLUE_Yi) <- list_4
 BLUE_Yi <-rbindlist(BLUE_Yi, use.names=TRUE, fill=TRUE, idcol="trait")
@@ -336,3 +337,4 @@ J1 <- rbind(M_DM,M_He,M_MS,M_Yi,M_FD)
 write.csv(J1, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/ST1_AIC.csv", quote = F, row.names = F)
 save.image("~/Documents/Cesar/git/big_files/AIC_ST1.RData")
 load("~/Documents/Cesar/git/big_files/AIC_ST1.RData")
+
