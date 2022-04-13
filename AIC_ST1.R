@@ -361,5 +361,5 @@ colnames(J1.5)[2:length(J1.5)] <- gsub("^", "Yi_", colnames(J1.5)[2:length(J1.5)
 
 J2 <- full_join(J1.1, J1.2, by = "trait") %>% full_join(., J1.3, by = "trait") %>% full_join(., J1.4, by = "trait") %>% full_join(., J1.5, by = "trait")
 
-write.csv(J2, "~/Documents/git/Norberg_2020/BLUE_values/ST1_AIC_1.csv", quote = F, row.names = F)
+write.csv(J2, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/ST1_AIC_1.csv", quote = F, row.names = F)
 
