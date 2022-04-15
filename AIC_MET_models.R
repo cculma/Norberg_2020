@@ -27,7 +27,7 @@ T2 <- list(BLUE_MS2, BLUE_DM2, BLUE_He2, BLUE_Yi2, BLUE_FD4)
 T3 <- list()
 T4 <- list()
 for (i in 1:(length(T2))) {
-  data <- T2[[i]]
+  data <- T2[[1]]
   class(data)
   data <- as.data.frame(data)
   colnames(data)[1] <- "env"
