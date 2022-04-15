@@ -6,8 +6,6 @@ library(data.table)
 library(tidyverse)
 library(asremlPlus)
 
-
-
 #################
 # 1 stage results
 # MS = 1_MSC
@@ -33,7 +31,7 @@ list_4 <- gsub(".csv", "", gsub("./", "", data_ar4))
 list_5 <- gsub(".csv", "", gsub("./", "", data_ar5))
 
 lev1 <- c("block", "gen", "row", "col")
-
+clnames <- c("cov1","cov2")
 ####################
 
 M_MS <- list()
@@ -44,18 +42,18 @@ for (i in 1:length(data_ar1)) {
   colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
   data[,lev1] <- lapply(data[,lev1], factor)
   data <- data[order(data$row, data$col), ]
-  
-  m1 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
+
+  m1 <- asreml::asreml(fixed = resp ~ 1 + (cov1:cov2)/gen, 
                        random = ~ + block, residual = ~sar(row):sar(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
-  m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
+  m2 <- asreml::asreml(fixed = resp ~ 1 + (cov1:cov2)/gen, 
                        random = ~ + block, residual = ~ar1(row):id(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
-  m3 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
+  m3 <- asreml::asreml(fixed = resp ~ 1 + (cov1:cov2)/gen, 
                        random = ~ + block, residual = ~ar1(row):ar1(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
@@ -64,12 +62,12 @@ for (i in 1:length(data_ar1)) {
   info2 <- infoCriteria.asreml(m2)
   info3 <- infoCriteria.asreml(m3)
 
-  # info1$model <- "sar_sar"
-  # info2$model <- "ar1_id"
-  # info3$model <- "ar1_ar1"
-  # 
-  # data1 <- rbind(info1, info2, info3)
-  # M_MS[[length(M_MS)+1]] = data1
+  info1$model <- "sar_sar"
+  info2$model <- "ar1_id"
+  info3$model <- "ar1_ar1"
+
+  data1 <- rbind(info1, info2, info3)
+  M_MS[[length(M_MS)+1]] = data1
   
   ifelse(info1$AIC < info2$AIC && info1$AIC < info3$AIC, 
          blue <- predict.asreml(m1, classify='gen', vcov=TRUE)$pvals,
@@ -78,17 +76,23 @@ for (i in 1:length(data_ar1)) {
                 ifelse(info3$AIC < info1$AIC && info3$AIC < info2$AIC,
                        blue <- predict.asreml(m3, classify='gen', vcov=TRUE)$pvals)))
   
+  
   colnames(blue) <- c("gen", "BLUE", "std.error", "status")
   blue$weight <- (1/blue$std.error)^2
   BLUE_MS[[length(BLUE_MS)+1]] = blue
 }
-# names(M_MS) <- list_1
-# M_MS <-rbindlist(M_MS, use.names=TRUE, fill=TRUE, idcol="trait")
+names(M_MS) <- list_1
+M_MS <-rbindlist(M_MS, use.names=TRUE, fill=TRUE, idcol="trait")
+M_MS[ , .SD[which.min(AIC)], by = trait]
+
+
 
 names(BLUE_MS) <- list_1
 BLUE_MS <-rbindlist(BLUE_MS, use.names=TRUE, fill=TRUE, idcol="trait")
 BLUE_MS1 <- BLUE_MS %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = trait, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
 BLUE_MS2 <- BLUE_MS %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
+BLUE_MS1 <- inner_join(BLUE_MS1, PCA, by = "gen")
+write.csv(BLUE_MS1, "~/Documents/Cesar/git/big_files/pheno_MSC.csv", quote = F, row.names = F)
 
 #################
 

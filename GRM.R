@@ -13,7 +13,7 @@ G2 <- t(G1)
 G2[1:5,1:5]
 
 have.both = intersect(rownames(G2), lev2)
-
+G2
 G2.1 <- G2[have.both,]
 dim(G2.1)
 dim(G2) # [1]   192 97316
@@ -23,10 +23,29 @@ numo <- atcg1234(data=G3, ploidy=4, maf=0.05);
 G4 <- numo$M
 dim(G4) # [1]   192 96996
 G4[1:5,1:5]
-G4 <- G4[have.both,]
-which(apply(G4, 2, var) == 0)
+
 nzv <- nearZeroVar(G4)
-G5 <- G4[, -nzv]
+G4 <- G4[, -nzv]
+combo_info <- findLinearCombos(G4)
+G4 <- G4[, combo_info$remove]
+rm(combo_info)
+dim(G4) # [1]   192 92657
+
+G4[1:5,1:5]
+G4 <- t(G4)
+G4[1:5,1:5]
+class(G4)
+G4 <- as.data.frame(G4)
+G4 <- G4 %>% rownames_to_column(var = "Marker1") %>% separate(col = 1, into = c("Chrom", "Position"), remove = F, sep = "_")
+Marker <- seq(1:nrow(G4))
+G6 <- cbind(Marker, G4)
+dim(G6) # [1] 92465   196
+G6 <- G6[,-2]
+G6[1:5,1:5]
+write.csv(G6, "~/Documents/Cesar/git/big_files/Norberg_2.txt", row.names = F, quote = F)
+
+
+
 dim(G5) # [1]   192 92657
 class(G5)
 
