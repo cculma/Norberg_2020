@@ -342,6 +342,10 @@ load("~/Documents/Cesar/git/big_files/AIC_ST1.RData")
 J1 <- read.csv("~/Documents/git/Norberg_2020/BLUE_values/ST1_AIC.csv")
 J1$trait1 <- as.factor(J1$trait1)
 head(J1)
+J3 <- J1[,c(1,5,8,9)]
+J3 <- J3 %>% spread(key = trait1, value = AIC, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+write.csv(J3, "~/Documents/git/Norberg_2020/BLUE_values/ST1_AIC_1.csv", quote = F, row.names = F)
+
 levels(J1$trait1)
 J1.1 <- J1 %>% dplyr::filter(trait1 %in% c("DM")) %>% dplyr::select(1,5,8) %>% spread(key = model, value = AIC, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
 
