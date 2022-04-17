@@ -37,23 +37,23 @@ clnames <- c("cov1","cov2")
 M_MS <- list()
 BLUE_MS <- list()
 for (i in 1:length(data_ar1)) {
-  data <- read.csv(data_ar1[i])
+  data <- read.csv(data_ar1[13])
   data <- data[,c(3,6,7,8,11,16,21)]
   colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
   data[,lev1] <- lapply(data[,lev1], factor)
   data <- data[order(data$row, data$col), ]
-
-  m1 <- asreml::asreml(fixed = resp ~ 1 + (cov1:cov2)/gen, 
-                       random = ~ + block, residual = ~sar(row):sar(col), 
+  
+  m1 <- asreml::asreml(fixed = resp ~ 1 + (cov2 + cov1):gen,
+                       random = ~ + block , residual = ~sar(row):sar(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
-  m2 <- asreml::asreml(fixed = resp ~ 1 + (cov1:cov2)/gen, 
-                       random = ~ + block, residual = ~ar1(row):id(col), 
+  m2 <- asreml::asreml(fixed = resp ~ 1 + gen, 
+                       random = ~ + block + cov1 + cov2, residual = ~sar(row):sar(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
-  m3 <- asreml::asreml(fixed = resp ~ 1 + (cov1:cov2)/gen, 
+  m3 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
                        random = ~ + block, residual = ~ar1(row):ar1(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
@@ -84,6 +84,7 @@ for (i in 1:length(data_ar1)) {
 names(M_MS) <- list_1
 M_MS <-rbindlist(M_MS, use.names=TRUE, fill=TRUE, idcol="trait")
 M_MS[ , .SD[which.min(AIC)], by = trait]
+hist(blue$predicted.value)
 
 
 

@@ -20,7 +20,8 @@ library(hrbrthemes)
 library(VennDiagram)
 
 #################
-
+params <- set.params(fixed=c("PC1","PC2","PC3"),
+                     fixed.type=rep("numeric",3), n.PC = 3)
 models_1 <- c("general", "additive", "1-dom", "2-dom",  "diplo-additive", "diplo-general")
 #################
 
@@ -30,25 +31,23 @@ setwd("~/Documents/Cesar/git/big_files/")
 setwd("~/Documents/git/Norberg_2020/GWAS_results/")
 
 # FA1
-pheno <- read.csv("pheno_MSC_ST.csv", row.names = 1)
+pheno <- read.csv("pheno_fa.csv", row.names = 1)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
 trait1
 
-N = 190
-params <- set.params(geno.freq = 1 - 5/N, fixed=c("PC1","PC2","PC3"),
-                     fixed.type=rep("numeric",3), n.PC = 3)
+
 
 data_1.1 <- read.GWASpoly(ploidy=4,
-                        pheno.file="pheno_MSC_ST.csv",
+                        pheno.file="pheno_fa.csv",
                         geno.file="Norberg_2.txt",
                         format="numeric", n.traits=length(trait1), delim=",")
 data_2.1 <- set.K(data = data_1.1, LOCO = T, n.core = 30)
 data_3.3 <- GWASpoly(data = data_2.1, models = models_1, traits = trait1, params = params, n.core = 30)
-
+ST0_data_3.3 <- data_3.3
 # data_3.3 <- GWASpoly(data = data_2.1, models = models_1, traits =c("BLUP_ST3_FD_WA"), params = params, n.core = 30)
 # FD_data_3.3 <- data_3.3
 # MS_data_3.3 <- data_3.3
-save(MS_data_3.3, file = "~/Documents/Cesar/git/big_files/MS_data_3.3.RData")
+save(ST0_data_3.3, file = "~/Documents/Cesar/git/big_files/ST0_data_3.3.RData")
 
 # data_4 <- set.K(data = data_1, LOCO = F, n.core = 30)
 # data_4.3 <- GWASpoly(data = data_4, models = models_1, traits = trait1, params = params, n.core = 30)
