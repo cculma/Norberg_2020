@@ -32,6 +32,7 @@ setwd("~/Documents/Cesar/git/big_files/")
 setwd("~/Documents/git/Norberg_2020/GWAS_results/")
 setwd("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/")
 # FA1
+
 pheno <- read.csv("pheno_fa1.csv", row.names = 1)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
 trait1
@@ -56,10 +57,24 @@ data_2.2 <- set.K(data = data_1.2, LOCO = T, n.core = 10)
 data_3.4 <- GWASpoly(data = data_2.2, models = models_1, traits = trait1, params = params, n.core = 10)
 
 
+pheno <- read.csv("pheno_fa.csv", row.names = 1)
+trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
+trait1
+
+
+
+data_1.1 <- read.GWASpoly(ploidy=4,
+                        pheno.file="pheno_fa.csv",
+                        geno.file="Norberg_2.txt",
+                        format="numeric", n.traits=length(trait1), delim=",")
+data_2.1 <- set.K(data = data_1.1, LOCO = T, n.core = 30)
+data_3.3 <- GWASpoly(data = data_2.1, models = models_1, traits = trait1, params = params, n.core = 30)
+ST0_data_3.3 <- data_3.3
+# data_3.3 <- GWASpoly(data = data_2.1, models = models_1, traits =c("BLUP_ST3_FD_WA"), params = params, n.core = 30)
 
 # FD_data_3.3 <- data_3.3
 # MS_data_3.3 <- data_3.3
-save(MS_data_3.3, file = "~/Documents/Cesar/git/big_files/MS_data_3.3.RData")
+save(ST0_data_3.3, file = "~/Documents/Cesar/git/big_files/ST0_data_3.3.RData")
 
 # data_4 <- set.K(data = data_1, LOCO = F, n.core = 30)
 # data_4.3 <- GWASpoly(data = data_4, models = models_1, traits = trait1, params = params, n.core = 30)
