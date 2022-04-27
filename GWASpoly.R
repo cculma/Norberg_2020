@@ -1,6 +1,8 @@
 rm(list = ls()) # clean Global Environment
 # setwd("~/Documents/Cesar/blup_data/Roza2019/Analysis_2021/GWAS/")
 # setwd("~/OneDrive - Washington State University (email.wsu.edu)/Roza_2019/git/Roza2019/")
+
+
 library(GWASpoly)
 library(tidyverse)
 library(vcfR)
@@ -9,7 +11,6 @@ library(genomation)
 library(plyranges)
 library(Repitools)
 library(data.table)
-
 library(devtools)
 library(sommer)
 library(ggplot2)
@@ -29,33 +30,78 @@ models_1 <- c("general", "additive", "1-dom", "2-dom",  "diplo-additive", "diplo
 setwd("~/Documents/Cesar/git/big_files/")
 # mac
 setwd("~/Documents/git/Norberg_2020/GWAS_results/")
-
+setwd("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/")
 # FA1
-pheno <- read.csv("FD.csv", row.names = 1)
+
+pheno <- read.csv("pheno_fa1.csv", row.names = 1)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
 trait1
-?read.GWASpoly
+
+
+data_1.1 <- read.GWASpoly(ploidy=4,
+                        pheno.file="pheno_fa1.csv",
+                        geno.file="Norberg_2.txt",
+                        format="numeric", n.traits=length(trait1), delim=",")
+data_2.1 <- set.K(data = data_1.1, LOCO = T, n.core = 10)
+data_3.3 <- GWASpoly(data = data_2.1, models = models_1, traits = trait1, params = params, n.core = 10)
+
+pheno <- read.csv("pheno_fa2.csv", row.names = 1)
+trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
+trait1
+
+data_1.2 <- read.GWASpoly(ploidy=4,
+                          pheno.file="pheno_fa2.csv",
+                          geno.file="Norberg_2.txt",
+                          format="numeric", n.traits=length(trait1), delim=",")
+data_2.2 <- set.K(data = data_1.2, LOCO = T, n.core = 10)
+data_3.4 <- GWASpoly(data = data_2.2, models = models_1, traits = trait1, params = params, n.core = 10)
+
+
+pheno <- read.csv("pheno_fa.csv", row.names = 1)
+trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
+trait1
 data_1.1 <- read.GWASpoly(ploidy=4,
                         pheno.file="Y",
                         geno.file="Norberg_2.txt",
                         format="numeric", n.traits=length(trait1), delim=",")
 data_2.1 <- set.K(data = data_1.1, LOCO = T, n.core = 30)
 data_3.3 <- GWASpoly(data = data_2.1, models = models_1, traits = trait1, params = params, n.core = 30)
+
 FD_data_3.3 <- data_3.3
+ST0_data_3.3 <- data_3.3
+# data_3.3 <- GWASpoly(data = data_2.1, models = models_1, traits =c("BLUP_ST3_FD_WA"), params = params, n.core = 30)
+
+# FD_data_3.3 <- data_3.3
+# MS_data_3.3 <- data_3.3
+save(ST0_data_3.3, file = "~/Documents/Cesar/git/big_files/ST0_data_3.3.RData")
 
 save(FD_data_3.3, file = "~/Documents/Cesar/git/big_files/FD_data_3.3.RData")
 
+hist(pheno$ST1_MS_WA_2020_5)
+boxplot(pheno$ST1_MS_WA_2020_5)
+
 
 data_5.0 <- set.threshold(Yi_data_3.3, method= "Bonferroni", level=0.05)
+data_5.0 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
+data_5.1 <- set.threshold(data_3.4, method= "Bonferroni", level=0.05)
 data_5.0 <- set.threshold(data_3.3, method= "FDR", level=0.05)
+data_5.0 <- set.threshold(data_3.3, method= "M.eff", level=0.05)
 QTL_01 <- get.QTL(data_5.0)
-QTL_02 <- get.QTL(data_5.0)
+QTL_02 <- get.QTL(data_5.1)
+QTL_01 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
+QTL_02 <- QTL_02 %>% distinct(Marker, .keep_all = T) 
+
 
 
 data_5.1 <- set.threshold(FD_data_4.3, method= "Bonferroni", level=0.05)
 
+
 data_5.0 <- set.threshold(data_3.2, method= "Bonferroni", level=0.05)
 data_5.1 <- set.threshold(data_3.1, method= "M.eff", level=0.05, n.core = 100)
+data_5.0 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
+data_5.1 <- set.threshold(data_3.3, method= "M.eff", level=0.05)
+
+
 QTL_01 <- get.QTL(data_5.0)
 
 load("/home/hawkins/Documents/Cesar/git/big_files/Yi_data_3.3.RData")
