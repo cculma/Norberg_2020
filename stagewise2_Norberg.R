@@ -577,4 +577,6 @@ str(PCA)
 
 PCA$gen <- as.character(PCA$gen)
 PCA$gen <- as.factor(PCA$gen)
+
+
 colnames(PCA)[1] <- "id"
