@@ -143,6 +143,7 @@ for (i in 1:length(data_ar2)) {
   blue$weight <- (1/blue$std.error)^2
   BLUE_DM[[length(BLUE_DM)+1]] = blue
 }
+
 # names(M_DM) <- list_2
 # M_DM <-rbindlist(M_DM, use.names=TRUE, fill=TRUE, idcol="trait")
 

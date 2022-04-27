@@ -8,7 +8,7 @@ library(viridis)
 library(forcats)
 library(ggcorrplot)
 library(ggpubr)
-
+library(caret)
 library(RColorBrewer)
 library(viridis)
 library(wesanderson)
@@ -46,55 +46,152 @@ ggcorrplot(P3[,13:1], hc.order = F, type = "full", lab = T, lab_col = "grey3", l
 ##################
 library(metan)
 
-a1 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/pheno_fa.csv", row.names = 1)
-a1 <- read.csv("~/Documents/git/pheno_fa2.csv", row.names = 1)
-a1 <- read.csv("~/Documents/git/pheno_fa2.csv")
-a1 <- a1[1:(length(colnames(a1))-3)]
-colnames(a1)
+a1 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/pheno_fa2.csv")
 
-a2 <- a1[,c(1:78)]
-colnames(a2)
-a2 <- a2 %>% dplyr::select(1,23:44,76:78)
-a2 <- a2 %>% dplyr::select(1,23:44,76:78)
-a2 <- a2 %>% dplyr::select(1,23:44,76:78)
+a1 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/pheno_fa.csv")
+
+a01 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/yield.csv")
+a02 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/pheno_MSC.csv")
+a03 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/pheno_DM.csv")
+a04 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/FD.csv")
+a05 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/PH.csv")
+
+a06 <- inner_join(a01, a02, by = "gen") %>% inner_join(., a03, by = "gen") %>% inner_join(., a04, by = "gen") %>% inner_join(., a05, by = "gen") 
+a06 <- a06 %>% column_to_rownames(var = "gen") 
+
+# lev1 <- subset(colnames(a06),  grepl("ID_2019_1$", colnames(a2)))
+lev1 <- subset(colnames(a06),  grepl("^ST1_", colnames(a06)))
+a07 <- a06[,lev1]
+colnames(a07)
+lev2 <- subset(colnames(a07),  !grepl("^ST1_R_", colnames(a07)))
+a08 <- a07[,lev2]
+colnames(a08)
+P2.1
+lev3 <- subset(P2.1,  grepl("^ST1_PH_", P2.1))
+lev4 <- subset(P2.1,  grepl("^ST1_Yi_WA_", P2.1))
+lev5 <- subset(P2.1,  grepl("^ST1_S_FD_", P2.1))
+lev6 <- c(lev3, lev5)
+lev6 <- lev6[-5]
+
+lev7 <- subset(P2.1,  grepl("^ST1_Yi_OR_", P2.1))
 
 
-a3 <- a2 %>% gather(key = "trait", value = "BLUE", 2:26)
-str(a3)
+lev3 <- c("ST1_PH_WA_2019_5","ST1_PH_WA_2019_4","ST1_Yi_WA_2018_3",
+          "ST1_Yi_WA_2020_2","ST1_PH_WA_2019_3","ST1_Yi_WA_2020_3",
+          "ST1_Yi_WA_2019_2","ST1_PH_WA_2020_3","ST1_Yi_WA_2019_3",
+          "ST1_PH_WA_2020_2","ST1_PH_WA_2020_5","ST1_Yi_WA_2019_5",
+          "ST1_S_FD_WA_2019_5","ST1_Yi_WA_2020_4","ST1_Yi_WA_2019_4",
+          "ST1_PH_WA_2019_1")
+
+lev4 <- c("ST1_Yi_OR_2020_4","ST1_S_FD_OR_2019_4","ST1_Yi_OR_2019_2",
+          "ST1_Yi_OR_2020_2","ST1_S_FD_OR_2020_4","ST1_S_FD_OR_2018_3")
+
+c("ST1_PH_WA_2019_5","ST1_PH_WA_2019_4","ST1_Yi_WA_2018_3",  
+"ST1_Yi_WA_2020_2","ST1_PH_WA_2019_3","ST1_Yi_WA_2020_3",  
+"ST1_Yi_WA_2019_2","ST1_PH_WA_2020_3","ST1_Yi_WA_2019_3",  
+"ST1_PH_OR_2019_4","ST1_Yi_OR_2020_4","ST1_S_FD_OR_2019_4",
+"ST1_PH_WA_2020_2","ST1_Yi_OR_2019_2","ST1_Yi_OR_2020_2",  
+"ST1_S_FD_OR_2020_4","ST1_PH_WA_2020_5","ST1_Yi_WA_2019_5",  
+"ST1_S_FD_WA_2019_5","ST1_S_FD_OR_2018_3","ST1_Yi_WA_2020_4",  
+"ST1_Yi_WA_2019_4","ST1_PH_WA_2019_1")
+
+a09 <- a06[,lev4]
+a09 <- a09 %>% rownames_to_column(var = "gen") %>% gather(key = "env", value = "yield", 2:9)
+a09 <- a09[,c(1,3,2)]
+write.csv(a09, "~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/Y1.csv", row.names = F, quote = F)
+
+a09 <- a06[,lev7]
+a09 <- a09 %>% rownames_to_column(var = "gen") %>% gather(key = "env", value = "yield", 2:4)
+a09 <- a09[,c(1,3,2)]
+write.csv(a09, "~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/Y2.csv", row.names = F, quote = F)
+
+a09 <- a06[,lev6]
+a09 <- a09 %>% rownames_to_column(var = "gen") %>% gather(key = "env", value = "PH_FD", 2:8)
+a09 <- a09[,c(1,3,2)]
+write.csv(a09, "~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/PH_FD1.csv", row.names = F, quote = F)
+
+
+
+# a1 <- a1[1:(length(colnames(a1))-3)]
+# colnames(a1)
+# a2 <- a1 %>% dplyr::select(-c(5,9,13,17,21)) # FD
+# colnames(a2)
+
+# a2 <- a1[,c(1:78)]
+# colnames(a2)
+# a2 <- a2 %>% dplyr::select(1,73:78) # FD
+# a2 <- a2 %>% dplyr::select(1,23:41) # PH
+# a2 <- a2 %>% dplyr::select(1,2:14) # MS
+# a2 <- a2 %>% dplyr::select(1,15:22) # DM
+# a2 <- a2 %>% dplyr::select(1,42:72) # Yi
+
+
+
+a3 <- a2 %>% gather(key = "trait", value = "BLUE", 2:9)
+
+a3 <- a2 %>% gather(key = "trait", value = "BLUE", 2:16)
 a3[,c("gen","trait")] <- lapply(a3[,c("gen","trait")], factor)
+str(a3)
 
 inspect(a3)
-gge1 <- a3 %>% gge(env = trait, gen = gen, centering = 1, scaling = 1, svp = 2) 
-gge2 <- plot(gge1, type = 8, plot_theme = theme_metan_minimal())
+head(a3)
+a3 <- na.omit(a3)
+a3$trait <- gsub("BLUP_ST3_", "", a3$trait)
 
-class(gge2)
+gge1 <- a3 %>% gge(env = trait, gen = gen, centering = 2, scaling = 1, svp = 2) 
 
-a2 <- a1[,c(1:77)]
-colnames(a2)
-a3 <- a2 %>% dplyr::select(1:21)
-colnames(a2)[c(24,28,31)]
+plot(gge1, type = 3, col.gen = "steelblue", col.env = "black",
+     size.text.env = 3, size.text.gen = 2, size.shape.win = 3, 
+     size.text.win = 3, 
+     title = F, plot_theme = theme_metan_minimal()) + 
+  theme_ipsum(base_family = "Arial", base_size = 12) + 
+  theme(legend.position = "none")
 
-a3 <- a2 %>% dplyr::select(1:21)
-a3 <- a2 %>% dplyr::select(22:77)
-a3 <- a2 %>% dplyr::select(22:43,75:77)
-a3 <- a2 %>% dplyr::select(1:21)
-a3 <- a2 %>% dplyr::select(23:31)
-a3 <- a2 %>% dplyr::select(24,28,31,75:77)
+plot(gge1, type = 10)
+plot(gge1, type = 6, col.gen = "steelblue", col.env = "black", col.circle = "grey", size.text.env = 3, size.text.gen = 2, size.shape.win = 3, 
+     size.text.win = 3, 
+     title = F, plot_theme = theme_metan_minimal()) + 
+  theme_ipsum(base_family = "Arial", base_size = 12)
 
 
+
+lev1 <- subset(colnames(a2),  grepl("ID_2019_1$", colnames(a2)))
+a3 <- a2[,lev1]
+
+a2 <- a2 %>% column_to_rownames(var = "gen") 
+a2 <- a2 %>% column_to_rownames(var = "gen") 
+
+
+P2 <- cor(a2, use = "complete.obs")
+P2 <- cor(a08, use = "complete.obs")
+# P3 <- cov(a2, use = "complete.obs")
+
+P2.1 <- findCorrelation(P2, cutoff = 0.75, verbose = T, names = T, exact = T)
+
+
+P3[upper.tri(P3, diag = F)] <- NA
+P2[lower.tri(P2, diag = T)] <- 0
+
+a3 <- a08[,P2.1]
 colnames(a3)
-colnames(a3) <- c("ST1_FD_OR_2018_3", "ST1_FD_OR_2019_4", "ST1_FD_OR_2020_4", "ST1_FD_ID_2019_4", "ST1_FD_WA_2018_3","ST1_FD_WA_2019_5")
+a3 <- a3[,-10]
 
-colnames(a3) <- c("OR_2018", "OR_2019", "OR_2020", "ID_2019", "WA_2018","WA_2019")
-a3 <- a3[,c(4,1:3,5:6)]
-P2 <- cor(a3, use = "complete.obs")
-P3 <- cov(a3, use = "complete.obs")
 
-ggcorrplot(P2[,ncol(P2):1], hc.order = F, type = "full", lab = T, lab_col = "grey3", lab_size = 3, show.diag = T)  + scale_fill_gradient(low = "white", high = "steelblue") + theme_ipsum(base_family = "Arial", base_size = 12) + theme(axis.text.x = element_text(angle = 90, hjust = 0.95, vjust = 0.2), axis.title.x=element_blank(), axis.title.y = element_blank())
+a3 <- a08[,lev3]
+a3 <- a08[,lev4]
+a3 <- a08[,lev5]
+a3 <- a08[,lev6]
+a3 <- a08[,lev7]
 
-ggcorrplot(P3[,ncol(P2):1], hc.order = F, type = "full", lab = T, lab_col = "grey3", lab_size = 3, show.diag = T) + scale_fill_gradient(low = "white", high = "orangered") + theme_ipsum(base_family = "Arial", base_size = 12) + theme(axis.text.x = element_text(angle = 90, hjust = 0.95, vjust = 0.2), axis.title.x=element_blank(), axis.title.y = element_blank())
 
-# 5 X 5
+P3 <- cor(a3, use = "complete.obs")
+
+
+# ggcorrplot(P2[,ncol(P2):1], hc.order = F, type = "full", lab = T, lab_col = "grey3", lab_size = 3, show.diag = T)  + scale_fill_gradient(low = "white", high = "steelblue") + theme_ipsum(base_family = "Arial", base_size = 10) + theme(axis.text.x = element_text(angle = 90, hjust = 0.95, vjust = 0.2), axis.title.x=element_blank(), axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+
+ggcorrplot(P3[,ncol(P3):1], hc.order = F, type = "full", lab = T, lab_col = "grey3", lab_size = 2, show.diag = T) + scale_fill_gradient(low = "white", high = "orangered") + theme_ipsum(base_family = "Arial", base_size = 10) + theme(axis.text.x = element_text(angle = 90, hjust = 0.95, vjust = 0.2), axis.title.x=element_blank(), axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+
+ggcorrplot(P3, hc.order = TRUE, type = "lower",lab = TRUE, lab_size = 2) + theme_ipsum(base_family = "Arial", base_size = 10) + theme(axis.text.x = element_text(angle = 90, hjust = 0.95, vjust = 0.2), axis.title.x=element_blank(), axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 
 ####
 

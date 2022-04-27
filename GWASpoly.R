@@ -23,6 +23,10 @@ library(VennDiagram)
 #################
 params <- set.params(fixed=c("PC1","PC2","PC3"),
                      fixed.type=rep("numeric",3), n.PC = 3)
+
+params <- set.params(fixed="env",
+                     fixed.type="factor")
+
 models_1 <- c("general", "additive", "1-dom", "2-dom",  "diplo-additive", "diplo-general")
 #################
 
@@ -33,17 +37,25 @@ setwd("~/Documents/git/Norberg_2020/GWAS_results/")
 setwd("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/")
 # FA1
 
-pheno <- read.csv("pheno_fa1.csv", row.names = 1)
+pheno <- read.csv("PH.csv", row.names = 1)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
 trait1
 
-
 data_1.1 <- read.GWASpoly(ploidy=4,
-                        pheno.file="pheno_fa1.csv",
-                        geno.file="Norberg_2.txt",
-                        format="numeric", n.traits=length(trait1), delim=",")
-data_2.1 <- set.K(data = data_1.1, LOCO = T, n.core = 10)
+                          pheno.file="PH.csv",
+                          geno.file="Norberg_2.txt",
+                          format="numeric", n.traits=length(trait1), delim=",")
+
+data_2.1 <- set.K(data = data_1.1, LOCO = F, n.core = 10)
 data_3.3 <- GWASpoly(data = data_2.1, models = models_1, traits = trait1, params = params, n.core = 10)
+
+PH1_data_3.3 <- data_3.3
+Yi_HC_data_3.3 <- data_3.3
+Yi_HC_OR_data_3.3 <- data_3.3
+PH_FD_HC_data_3.3 <- data_3.3
+save(PH_FD_HC_data_3.3, file = "~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/PH_FD_HC_data_3.3.RData")
+
+save(PH1_data_3.3, file = "~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/PH1_data_3.3.RData")
 
 pheno <- read.csv("pheno_fa2.csv", row.names = 1)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
@@ -78,43 +90,54 @@ save(ST0_data_3.3, file = "~/Documents/Cesar/git/big_files/ST0_data_3.3.RData")
 
 # data_4 <- set.K(data = data_1, LOCO = F, n.core = 30)
 # data_4.3 <- GWASpoly(data = data_4, models = models_1, traits = trait1, params = params, n.core = 30)
-# FD_data_4.3 <- data_4.3
+FD_data_4.3 <- data_3.3
 
 hist(pheno$ST1_MS_WA_2020_5)
 boxplot(pheno$ST1_MS_WA_2020_5)
 
-data_5.0 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
-data_5.1 <- set.threshold(data_3.4, method= "Bonferroni", level=0.05)
-data_5.0 <- set.threshold(data_3.3, method= "FDR", level=0.05)
-data_5.0 <- set.threshold(data_3.3, method= "M.eff", level=0.05)
-QTL_01 <- get.QTL(data_5.0)
+
+data_5.1 <- set.threshold(PH1_data_3.3, method= "Bonferroni", level=0.05)
+
 QTL_02 <- get.QTL(data_5.1)
-QTL_01 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
 QTL_02 <- QTL_02 %>% distinct(Marker, .keep_all = T) 
 
+QTL_02 <- QTL_02 %>% dplyr::filter(!Model %in% c("diplo-additive", "diplo-general"))
+cc <- count(QTL_02, Model)
+cc$Model
+cc <- count(QTL_02, Trait)
 
 
-data_5.1 <- set.threshold(FD_data_4.3, method= "Bonferroni", level=0.05)
 
-data_5.0 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
-data_5.1 <- set.threshold(data_3.3, method= "M.eff", level=0.05)
+for (i in 1:length()) {
+  
+}
+
+fit.ans <- fit.QTL(data=data2,trait="vine.maturity",
+                   qtl=qtl[,c("Marker","Model")],
+                   fixed=data.frame(Effect="env",Type="factor"))
 
 
-QTL_01 <- get.QTL(data_5.0)
+
+
+data_5.2 <- set.threshold(PH_data_3.3, method= "Bonferroni", level=0.05)
+QTL_01 <- get.QTL(data_5.2)
+QTL_01 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
+
+cc <- count(QTL_01, Trait)
+R <- str_subset(cc$Trait, '_R_')
+S <- str_subset(cc$Trait, '_S_')
+
+QTL_03 <- QTL_01
+
+
 
 save(FD_data_3.3, file = "~/Documents/Cesar/git/big_files/FD_data_3.3.RData")
-save(FD_data_4.3, file = "~/Documents/Cesar/git/big_files/FD_data_4.3.RData")
+save(FD_data_4.3, file = "~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/FD_data_4.3.RData")
 
 
 load("~/Documents/Cesar/git/big_files/data_3.3.RData")
 # load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.3.RData")
 
-data_5 <- set.threshold(MS_data_3.3, method= "Bonferroni", level=0.05)
-
-
-QTL_01 <- get.QTL(data_5)
-QTL_01 <- QTL_01 %>% dplyr::filter(Score > 5) 
-QTL_01 <- QTL_01 %>% dplyr::filter(!Trait %in% c("ST1_He_OR_2019_2", "ST1_MS_WA_2020_2"))
 
 QTL_01 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
 cc1 <- count(QTL_01, Trait)
@@ -129,6 +152,13 @@ QTL_03 <- QTL_01 %>% group_by(Marker) %>% top_n(1, abs(Score)) %>% dplyr::select
 QTL_04 <- QTL_01 %>% group_by(Marker) %>% summarise(Trait = paste(Trait, collapse = ";")) 
 QTL_05 <- QTL_01 %>% group_by(Marker) %>% summarise(Model = paste(Model, collapse = ";")) 
 QTL_06 <- QTL_01 %>% dplyr::select(Marker, Chrom, Position, Ref, Alt) %>% distinct(Marker, .keep_all = TRUE) %>% unite(col = "SNP", 5:4, sep = "/", remove = T) %>% unite(col = "Marker1", 2:3, sep = "_", remove = T) %>% inner_join(., QTL_03, by = "Marker")
+
+QTL_07 <-  QTL_01 %>% dplyr::select(Marker, Score, Trait) %>% slice(-c(1,7)) %>% spread(key = Trait, value = Score, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+
+colnames(QTL_07) 
+QTL_07 <- QTL_07[,c(1,2,4,3,5,6,8,7,9,10,12,11,13)]
+write.table(QTL_07, "~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/markers1.5.tsv", row.names = F, quote = F, sep = "\t")
+
 
 ################
 # Generate a binary matrix for reduntant markers
