@@ -72,25 +72,20 @@ data_3.4 <- GWASpoly(data = data_2.2, models = models_1, traits = trait1, params
 pheno <- read.csv("pheno_fa.csv", row.names = 1)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
 trait1
-
-
-
 data_1.1 <- read.GWASpoly(ploidy=4,
-                        pheno.file="pheno_fa.csv",
+                        pheno.file="Y",
                         geno.file="Norberg_2.txt",
                         format="numeric", n.traits=length(trait1), delim=",")
 data_2.1 <- set.K(data = data_1.1, LOCO = T, n.core = 30)
 data_3.3 <- GWASpoly(data = data_2.1, models = models_1, traits = trait1, params = params, n.core = 30)
+
+FD_data_3.3 <- data_3.3
 ST0_data_3.3 <- data_3.3
 # data_3.3 <- GWASpoly(data = data_2.1, models = models_1, traits =c("BLUP_ST3_FD_WA"), params = params, n.core = 30)
 
-# FD_data_3.3 <- data_3.3
-# MS_data_3.3 <- data_3.3
-save(ST0_data_3.3, file = "~/Documents/Cesar/git/big_files/ST0_data_3.3.RData")
 
 # data_4 <- set.K(data = data_1, LOCO = F, n.core = 30)
 # data_4.3 <- GWASpoly(data = data_4, models = models_1, traits = trait1, params = params, n.core = 30)
-FD_data_4.3 <- data_3.3
 
 hist(pheno$ST1_MS_WA_2020_5)
 boxplot(pheno$ST1_MS_WA_2020_5)
@@ -108,17 +103,6 @@ cc <- count(QTL_02, Trait)
 
 
 
-for (i in 1:length()) {
-  
-}
-
-fit.ans <- fit.QTL(data=data2,trait="vine.maturity",
-                   qtl=qtl[,c("Marker","Model")],
-                   fixed=data.frame(Effect="env",Type="factor"))
-
-
-
-
 data_5.2 <- set.threshold(PH_data_3.3, method= "Bonferroni", level=0.05)
 QTL_01 <- get.QTL(data_5.2)
 QTL_01 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
@@ -127,25 +111,90 @@ cc <- count(QTL_01, Trait)
 R <- str_subset(cc$Trait, '_R_')
 S <- str_subset(cc$Trait, '_S_')
 
-QTL_03 <- QTL_01
 
 
-
-save(FD_data_3.3, file = "~/Documents/Cesar/git/big_files/FD_data_3.3.RData")
-save(FD_data_4.3, file = "~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/FD_data_4.3.RData")
-
-
-load("~/Documents/Cesar/git/big_files/data_3.3.RData")
-# load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/data_3.3.RData")
+load("/home/hawkins/Documents/Cesar/git/big_files/Yi_data_3.3.RData")
+load("/home/hawkins/Documents/Cesar/git/big_files/DM_data_3.3.RData")
+load("/home/hawkins/Documents/Cesar/git/big_files/MS_data_3.3.RData")
+load("/home/hawkins/Documents/Cesar/git/big_files/FD_data_3.3.RData")
+load("/home/hawkins/Documents/Cesar/git/big_files/PH_data_3.3.RData")
 
 
+data_5.1 <- set.threshold(MS_data_3.3, method= "Bonferroni", level=0.05)
+data_5.2 <- set.threshold(DM_data_3.3, method= "Bonferroni", level=0.05)
+data_5.3 <- set.threshold(PH_data_3.3, method= "Bonferroni", level=0.05)
+data_5.3 <- set.threshold(PH1_data_3.3, method= "Bonferroni", level=0.05)
+data_5.4 <- set.threshold(Yi_data_3.3, method= "Bonferroni", level=0.05)
+data_5.5 <- set.threshold(FD_data_3.3, method= "Bonferroni", level=0.05)
+
+QTL_1 <- get.QTL(data_5.1)
+QTL_2 <- get.QTL(data_5.2)
+QTL_3 <- get.QTL(data_5.3)
+QTL_4 <- get.QTL(data_5.4)
+QTL_5 <- get.QTL(data_5.5)
+
+
+QTL_01 <- rbind(QTL_1, QTL_2, QTL_3, QTL_4, QTL_5)
+
+QTL_02 <- QTL_01 %>% dplyr::filter(Trait %in% "^ST0_")
+QTL_02 <- QTL_01 %>% dplyr::filter(str_detect(Trait, "^ST0_"))
+
+QTL_1 <- QTL_1 %>% distinct(Marker, .keep_all = T) 
+QTL_2 <- QTL_2 %>% distinct(Marker, .keep_all = T) 
+QTL_3 <- QTL_3 %>% distinct(Marker, .keep_all = T) 
+QTL_4 <- QTL_4 %>% distinct(Marker, .keep_all = T) 
+QTL_5 <- QTL_5 %>% distinct(Marker, .keep_all = T) 
+
+QTL_01 <- QTL_5
 QTL_01 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
-cc1 <- count(QTL_01, Trait)
-cc1$Trait
+cc2 <- count(QTL_01, Trait)
+cc2 <- count(QTL_5, Trait) %>% separate(1, c("st", "trans", "trait"), sep = "_", remove = T, convert = FALSE, extra = "merge") %>% unite(col = "trait", 1,3, sep = "_", remove = T) %>% spread(key = trans, value = n, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+colnames(cc2) <- c("trait", "raw", "scaled")
+write.table(cc2, "~/Documents/Cesar/git/big_files/markers1.3.tsv", row.names = F, quote = F, sep = "\t")
 
-QTL_02.1 <- QTL_02 %>% distinct(Marker, .keep_all = T) 
-cc2 <- count(QTL_02, Trait)
 
+################
+cc <- count(QTL_3,Trait)
+lev4 <- cc$Trait
+lev4
+cc1 <- count(QTL_3, Model)
+cc1$Model
+
+QTL_3 <- QTL_3 %>% dplyr::filter(!Model %in% c("diplo-general", "diplo-additive"))
+
+"ST1_PH_OR_2020_2"
+"ST1_PH_OR_2019_2"
+
+
+fit_05 <- fit.QTL(data=data_5.3, trait = "ST1_PH_OR_2020_2",
+                  qtl=QTL_3[,c("Marker","Model")])
+
+
+
+fit_06 <- list()
+for (i in 1:length(lev4)) {
+  fit_05 <- fit.QTL(data=data_5.4, trait = lev4[i],
+                    qtl=QTL_4[,c("Marker","Model")])
+  fit_05 <- fit_05 %>% group_by(Marker) %>% top_n(1, abs(R2))
+  fit_06[[length(fit_06) + 1]] <- fit_05
+}
+names(fit_06) <- lev4
+fit_06 <-rbindlist(fit_06, use.names=TRUE, fill=TRUE, idcol="trait")
+fit_06 <- fit_06 %>% group_by(Marker) %>% top_n(1, abs(R2))
+colnames(fit_06)
+fit_06 <- fit_06[,c(2,6)]
+
+fit_06$trait <- "Yi"
+
+PH_fit_06 <- fit_06
+MS_fit_06 <- fit_06
+DM_fit_06 <- fit_06
+Yi_fit_06 <- fit_06
+FD_fit_06 <- fit_06
+
+PH_fit_06 <- PH_fit_06 %>% distinct(Marker, .keep_all = T)
+
+fit_07 <- rbind(MS_fit_06,DM_fit_06,Yi_fit_06,FD_fit_06,PH_fit_06)
 ################
 
 QTL_03 <- QTL_01 %>% group_by(Marker) %>% top_n(1, abs(Score)) %>% dplyr::select(Marker, Score) %>% distinct(Marker, .keep_all = TRUE)
@@ -165,34 +214,36 @@ write.table(QTL_07, "~/OneDrive - Washington State University (email.wsu.edu)/Se
 
 S1 <- QTL_01 %>% dplyr::select(2,4) %>% distinct(Marker, Model, .keep_all = T) 
 S1 <- dcast(S1, formula = Marker ~ Model, fun.aggregate = length)
+colnames(S1)
 
 S2 <- QTL_01 %>% dplyr::select(1,4) %>% distinct(Marker, Trait, .keep_all = T) 
 S2 <- dcast(S2, formula = Marker ~ Trait, fun.aggregate = length)
 colnames(S2)
+S2 <- S2[,c(1,2,4,6,8,10,12,3,5,7,9,11,13)]
 
-colSums(S2[2:length(S2)])
 QTL_07 <- QTL_06
+
 QTL_07$totalM <- rowSums(S3[13:length(S3)])
 
-colnames(S3)
 QTL_08 <- QTL_01 %>% separate(1, c("stage", "trait", "loc", "year", "cut"), sep = "_", remove = T, convert = FALSE, extra = "merge")  %>% dplyr::select(3,4,5,8)  %>% distinct(Marker, .keep_all = T) 
 
-QTL_08 <- QTL_01 %>% dplyr::select(3,4,5,8)  %>% distinct(Marker, .keep_all = T) write.csv(S4, "GWAS_results/markers_FDcor.csv")
-
+QTL_08 <- QTL_01 %>% dplyr::select(3,4,5,8)  %>% distinct(Marker, .keep_all = T) 
 
 QTL_07 <- right_join(QTL_07, QTL_08, by = "Marker") 
 
-S3 <- inner_join(QTL_06, S1, by = "Marker") %>% inner_join(., S2, by = "Marker")
+S3 <- inner_join(QTL_06, S1, by = "Marker") %>% inner_join(., S2, by = "Marker") 
+S3 <- inner_join(QTL_06, S1, by = "Marker") %>% left_join(., fit_07, by = "Marker") 
+colnames(S3)
+S3 <- S3[,c(1:4,11:18,5:9,19,20)]
 
-write.table(S3, "~/Documents/Cesar/git/big_files/markers1.tsv", row.names = F, quote = F, sep = "\t")
+write.table(S3, "~/Documents/Cesar/git/big_files/markers1.4.tsv", row.names = F, quote = F, sep = "\t")
 
-S2 <- dcast(S2, formula = Marker ~ Trait, fun.aggregate = length)
+
 col_headings_3 <- c("stage", "trait", "loc", "year", "cut")
 S4 <- as.data.frame(colnames(S2)) %>% separate(1, col_headings_3, sep = "_", remove = TRUE, convert = FALSE, extra = "warn") %>% dplyr::filter(!row_number() %in% c(1))
+write.csv(S4, "GWAS_results/markers_FDcor.csv")
 
-write.table(S3, "~/Documents/git/Norberg_2020/GWAS_results/FD_marker.csv", row.names = F, quote = F, sep = "\t")
-
-write.table(S4, "~/Documents/Cesar/git/Norberg_2020/spatial_distribution/header.tsv", row.names = F, quote = F, sep = "\t")
+write.table(S4, "~/Documents/Cesar/git/big_files/markers1.2.tsv", row.names = F, quote = F, sep = "\t")
 
 ##############
 # To annotate markers
@@ -220,13 +271,19 @@ df2 <- unite(data = df2, col = "Marker1", 1:2, sep = "_", remove = F) %>% distin
 head(df2)
 df3 <- df2 %>% separate(5, col_headings_1, sep = ";", remove = TRUE, convert = FALSE, extra = "warn") %>% separate(5, col_headings_2, sep = "\\.", remove = TRUE, convert = FALSE, extra = "warn") %>% dplyr::select(1,5,7) %>% inner_join(., i_5.2.8, by = "gene_id")
 
-QTL_08 <- inner_join(QTL_06, QTL_04, by = "Marker") %>% inner_join(., QTL_05, by = "Marker") %>% left_join(., df3, by = "Marker1") 
+QTL_08 <- inner_join(QTL_06, QTL_04, by = "Marker") %>% inner_join(., QTL_05, by = "Marker") %>% left_join(., df3, by = "Marker1") %>% left_join(., fit_07, by = "Marker")
+colnames(QTL_08)
+QTL_08.1 <- QTL_08[,c(5,7)]
+QTL_08.1 <- na.omit(QTL_08.1)
+QTL_08.1 <- QTL_08.1 %>% distinct(gene_id, .keep_all = T) %>% separate(1, c("st", "trait", "loc"), sep = "_", remove = F, convert = FALSE, extra = "merge") %>% dplyr::select(3,5)
 
 nrow(QTL_08 %>% distinct(gene_id, .keep_all = TRUE))
 sum(!is.na(QTL_08$gene_id)) # 72 annotated in Uniprot
-sum(is.na(QTL_08$gene_id)) # 42 annotated in Uniprot
+sum(is.na(QTL_08$gene_id)) # 42 no annotated in Uniprot
+
 colnames(QTL_08)
-write.table(QTL_08, "~/Documents/Cesar/git/big_files/markers3.tsv", row.names = F, quote = F, sep = "\t")
+write.table(QTL_08, "~/Documents/Cesar/git/big_files/markers2.4.tsv", row.names = F, quote = F, sep = "\t")
+write.table(QTL_08.1, "~/Documents/Cesar/git/big_files/markers2.2.tsv", row.names = F, quote = F, sep = "\t")
 
 QTL_09 <- QTL_08 %>% group_by(gene_id) %>% summarise(Marker1 = paste(Marker1, collapse = ";")) 
 QTL_10 <- QTL_08 %>% distinct(gene_id, .keep_all = TRUE) %>% dplyr::select(7:9)
@@ -234,7 +291,7 @@ QTL_10 <- QTL_08 %>% distinct(gene_id, .keep_all = TRUE) %>% dplyr::select(7:9)
 QTL_10 <- inner_join(QTL_09, QTL_10, by = "gene_id")
 QTL_10 <- na.omit(QTL_10)
 head(QTL_10)
-write.table(QTL_10, "~/Documents/Cesar/git/big_files/markers2.tsv", row.names = F, quote = F, sep = "\t")
+write.table(QTL_10, "~/Documents/Cesar/git/big_files/markers2.1.tsv", row.names = F, quote = F, sep = "\t")
 
 # save image 
 save.image(file = "~/Documents/Cesar/git/big_files/data_4.RData")
@@ -243,34 +300,24 @@ rm(list = c("data_1", "data_2", "data_3", "data_3.1", "data_5"))
 save.image(file = "~/Documents/Cesar/git/big_files/data_5.RData")
 
 ####################
-library(GWASpoly)
-pheno <- read.csv("~/Documents/Cesar/git/big_files/5_FD_1stage.csv")
-head(pheno)
-g1 <- file.path("~/Documents/Cesar/git/big_files/Norberg_1.txt")
 
-geno <- read_geno(filename=g1, ploidy=4, map=TRUE, min.minor.allele=5)
-class(geno)
+P1 <- read.csv("~/Documents/Cesar/git/big_files/pheno_MSC.csv")
+P2 <- read.csv("~/Documents/Cesar/git/big_files/pheno_DM.csv")
+P3 <- read.csv("~/Documents/Cesar/git/big_files/PH.csv")
+P4 <- read.csv("~/Documents/Cesar/git/big_files/yield.csv")
+P5 <- read.csv("~/Documents/Cesar/git/big_files/FD.csv")
+colnames(P5)
+R <- str_subset(colnames(P5), "_R_")
+R1 <- c("gen", R)
+P5 <- P5[,R1]
+colnames(P1)
+P1 <- P1[1:(length(P1)-3)]
+P2 <- P2[1:(length(P2)-3)]
+P3 <- P3[1:(length(P3)-3)]
+P4 <- P4[1:(length(P4)-3)]
 
-
-D1 <- read.GWASpoly(ploidy=4, pheno.file="5_FD_1stage.csv", 
-                      geno.file="Norberg_1.txt",
-                      format="numeric", n.traits=1, delim=",")
-
-data.loco <- set.K(data = D1, LOCO=TRUE, n.core=32)
-
-N <- 189 #Population size
-params <- set.params(geno.freq = 1 - 5/N, fixed = "env", fixed.type = "factor")
-
-data.loco.scan <- GWASpoly(data=data.loco,
-                           models=c("additive","1-dom"),
-                           traits=c("predicted.value"), 
-                           params=params,
-                           n.core=30)
-
-class(data.loco.scan)
-class(data_3.2)
-data2 <- set.threshold(data.loco.scan,method="M.eff",level=0.05)
-
+P6 <- P1 %>% inner_join(., P2) %>% inner_join(., P3) %>% inner_join(., P4) %>% inner_join(., P5)
+P6$gen <- as.factor(P6$gen)
 
 ###########
 # end

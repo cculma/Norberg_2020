@@ -37,19 +37,19 @@ clnames <- c("cov1","cov2")
 M_MS <- list()
 BLUE_MS <- list()
 for (i in 1:length(data_ar1)) {
-  data <- read.csv(data_ar1[13])
+  data <- read.csv(data_ar1[i])
   data <- data[,c(3,6,7,8,11,16,21)]
   colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
   data[,lev1] <- lapply(data[,lev1], factor)
   data <- data[order(data$row, data$col), ]
   
-  m1 <- asreml::asreml(fixed = resp ~ 1 + (cov2 + cov1):gen,
-                       random = ~ + block , residual = ~sar(row):sar(col), 
+  m1 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
+                       random = ~ + block, residual = ~sar(row):sar(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
-  m2 <- asreml::asreml(fixed = resp ~ 1 + gen, 
-                       random = ~ + block + cov1 + cov2, residual = ~sar(row):sar(col), 
+  m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
+                       random = ~ + block, residual = ~ar1(row):id(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
@@ -84,16 +84,19 @@ for (i in 1:length(data_ar1)) {
 names(M_MS) <- list_1
 M_MS <-rbindlist(M_MS, use.names=TRUE, fill=TRUE, idcol="trait")
 M_MS[ , .SD[which.min(AIC)], by = trait]
-hist(blue$predicted.value)
-
-
 
 names(BLUE_MS) <- list_1
 BLUE_MS <-rbindlist(BLUE_MS, use.names=TRUE, fill=TRUE, idcol="trait")
 BLUE_MS1 <- BLUE_MS %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = trait, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
 BLUE_MS2 <- BLUE_MS %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
-BLUE_MS1 <- inner_join(BLUE_MS1, PCA, by = "gen")
-write.csv(BLUE_MS1, "~/Documents/Cesar/git/big_files/pheno_MSC.csv", quote = F, row.names = F)
+
+colnames(BLUE_MS1)[2:length(BLUE_MS1)] <- gsub("^", "ST0_MS_", colnames(BLUE_MS1)[2:length(BLUE_MS1)])
+
+data2$trait <- "MS"
+data2 <- data2[,c(8,1:7)]
+M_MS <- rbind(M_MS, data2)
+write.csv(M_MS, "~/Documents/Cesar/git/big_files/MSC_AIC.csv", quote = F, row.names = F)
+
 
 #################
 
@@ -107,30 +110,34 @@ for (i in 1:length(data_ar2)) {
   data <- data[order(data$row, data$col), ]
   
   m1 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~ + block, residual = ~sar(row):sar(col), 
+                       random = ~ + block,
+                       residual = ~sar(row):sar(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
   m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~ + block, residual = ~ar1(row):id(col), 
+                       random = ~ + block, 
+                       residual = ~ar1(row):id(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
   m3 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~ + block, residual = ~ar1(row):ar1(col), 
+                       random = ~ + block, 
+                       residual = ~ar1(row):ar1(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
+
   
   info1 <- infoCriteria.asreml(m1)
   info2 <- infoCriteria.asreml(m2)
   info3 <- infoCriteria.asreml(m3)
 
-  # info1$model <- "sar_sar"
-  # info2$model <- "ar1_id"
-  # info3$model <- "ar1_ar1"
-  # 
-  # data1 <- rbind(info1, info2, info3)
-  # M_DM[[length(M_DM)+1]] = data1
+  info1$model <- "sar_sar"
+  info2$model <- "ar1_id"
+  info3$model <- "ar1_ar1"
+
+  data1 <- rbind(info1, info2, info3)
+  M_DM[[length(M_DM)+1]] = data1
   
   ifelse(info1$AIC < info2$AIC && info1$AIC < info3$AIC, 
          blue <- predict.asreml(m1, classify='gen', vcov=TRUE)$pvals,
@@ -144,13 +151,18 @@ for (i in 1:length(data_ar2)) {
   BLUE_DM[[length(BLUE_DM)+1]] = blue
 }
 
-# names(M_DM) <- list_2
-# M_DM <-rbindlist(M_DM, use.names=TRUE, fill=TRUE, idcol="trait")
+names(M_DM) <- list_2
+M_DM <-rbindlist(M_DM, use.names=TRUE, fill=TRUE, idcol="trait")
+M_DM[, .SD[which.min(AIC)], by = trait]
+
 
 names(BLUE_DM) <- list_2
 BLUE_DM <-rbindlist(BLUE_DM, use.names=TRUE, fill=TRUE, idcol="trait")
 BLUE_DM1 <- BLUE_DM %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = trait, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
 BLUE_DM2 <- BLUE_DM %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
+
+colnames(BLUE_DM1)[2:length(BLUE_DM1)] <- gsub("^", "ST0_DM_", colnames(BLUE_DM1)[2:length(BLUE_DM1)])
+
 
 #################
 M_He <- list()
@@ -208,6 +220,14 @@ BLUE_He <-rbindlist(BLUE_He, use.names=TRUE, fill=TRUE, idcol="trait")
 BLUE_He1 <- BLUE_He %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = trait, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
 BLUE_He2 <- BLUE_He %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
 
+colnames(BLUE_He1)[2:length(BLUE_He1)] <- gsub("^", "ST0_PH_", colnames(BLUE_He1)[2:length(BLUE_He1)])
+
+data2$trait <- "PH"
+data2 <- data2[,c(8,1:7)]
+M_He <- rbind(M_He, data2)
+write.csv(M_He, "~/Documents/Cesar/git/big_files/PH_AIC.csv", quote = F, row.names = F)
+
+
 ######################
 
 M_Yi <- list()
@@ -218,19 +238,22 @@ for (i in 1:length(data_ar4)) {
   colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
   data[,lev1] <- lapply(data[,lev1], factor)
   data <- data[order(data$row, data$col), ]
-  
-  m1 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~ + block, residual = ~sar(row):sar(col), 
+    
+  m1 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2,  
+                       random = ~ + block + spl(row), 
+                       residual = ~sar(row):sar(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
   m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~ + block, residual = ~ar1(row):id(col), 
+                       random = ~ + block + spl(row), 
+                       residual = ~ar1(row):id(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
   m3 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~ + block, residual = ~ar1(row):ar1(col), 
+                       random = ~ + block + spl(row), 
+                       residual = ~ar1(row):ar1(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
@@ -256,6 +279,7 @@ for (i in 1:length(data_ar4)) {
   blue$weight <- (1/blue$std.error)^2
   BLUE_Yi[[length(BLUE_Yi)+1]] = blue
 }
+
 names(M_Yi) <- list_4
 M_Yi <-rbindlist(M_Yi, use.names=TRUE, fill=TRUE, idcol="trait")
 M_Yi[ , .SD[which.min(AIC)], by = trait]
@@ -265,6 +289,16 @@ BLUE_Yi <-rbindlist(BLUE_Yi, use.names=TRUE, fill=TRUE, idcol="trait")
 BLUE_Yi1 <- BLUE_Yi %>% dplyr::filter(!gen %in% c(201, 202)) %>% dplyr::select(1:3) %>% spread(key = trait, value = BLUE, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
 BLUE_Yi2 <- BLUE_Yi %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("loc", "year", "cut"), sep = "_", remove = F, convert = FALSE, extra = "merge")
 
+colnames(BLUE_Yi1)[2:length(BLUE_Yi1)] <- gsub("^", "ST0_Yi_", colnames(BLUE_Yi1)[2:length(BLUE_Yi1)])
+
+data2$trait <- "Yi"
+data2 <- data2[,c(8,1:7)]
+M_Yi <- rbind(M_Yi, data2)
+write.csv(M_Yi, "~/Documents/Cesar/git/big_files/Yi_AIC.csv", quote = F, row.names = F)
+
+
+save.image("~/Documents/Cesar/git/big_files/ST0_Yi.RData")
+load("~/Documents/Cesar/git/big_files/ST0_Yi.RData")
 ####################
 
 M_FD <- list()
@@ -277,17 +311,17 @@ for (i in 1:length(data_ar5)) {
   data <- data[order(data$row, data$col), ]
   
   m1 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~ + block, residual = ~sar(row):sar(col), 
+                       random = ~ + block + row:col, residual = ~sar(row):sar(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
   m2 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~ + block, residual = ~ar1(row):id(col), 
+                       random = ~ + block + row:col, residual = ~ar1(row):id(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
   m3 <- asreml::asreml(fixed = resp ~ 1 + gen + cov1 + cov2, 
-                       random = ~ + block, residual = ~ar1(row):ar1(col), 
+                       random = ~ + block + row:col, residual = ~ar1(row):ar1(col), 
                        data = data, 
                        na.action = list(x = "include", y = "include"))
   
@@ -296,12 +330,12 @@ for (i in 1:length(data_ar5)) {
   info2 <- infoCriteria.asreml(m2)
   info3 <- infoCriteria.asreml(m3)
 
-  # info1$model <- "sar_sar"
-  # info2$model <- "ar1_id"
-  # info3$model <- "ar1_ar1"
-  # 
-  # data1 <- rbind(info1, info2, info3)
-  # M_FD[[length(M_FD)+1]] = data1
+  info1$model <- "sar_sar"
+  info2$model <- "ar1_id"
+  info3$model <- "ar1_ar1"
+
+  data1 <- rbind(info1, info2, info3)
+  M_FD[[length(M_FD)+1]] = data1
   
   ifelse(info1$AIC < info2$AIC && info1$AIC < info3$AIC, 
          blue <- predict.asreml(m1, classify='gen', vcov=TRUE)$pvals,
@@ -315,9 +349,9 @@ for (i in 1:length(data_ar5)) {
   BLUE_FD[[length(BLUE_FD)+1]] = blue
 }
 
-# names(M_FD) <- list_5
-# M_FD <-rbindlist(M_FD, use.names=TRUE, fill=TRUE, idcol="trait")
-# M_FD[ , .SD[which.min(AIC)], by = trait]
+names(M_FD) <- list_5
+M_FD <-rbindlist(M_FD, use.names=TRUE, fill=TRUE, idcol="trait")
+M_FD[ , .SD[which.min(AIC)], by = trait]
 
 names(BLUE_FD) <- list_5
 BLUE_FD <-rbindlist(BLUE_FD, use.names=TRUE, fill=TRUE, idcol="trait")

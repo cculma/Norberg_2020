@@ -12,6 +12,11 @@ G1 <- as.matrix(G1 %>% remove_rownames() %>% column_to_rownames(var = "Chrom1"))
 G2 <- t(G1)
 G2[1:5,1:5]
 
+lev2 <- (QTL_06$Marker1)
+
+G2.1 <- G2[,lev2]
+str(G2.1)
+
 have.both = intersect(rownames(G2), lev2)
 G2
 G2.1 <- G2[have.both,]
@@ -21,6 +26,43 @@ class(G2)
 G3 <- as.data.frame(G2)
 numo <- atcg1234(data=G3, ploidy=4, maf=0.05); 
 G4 <- numo$M
+G4.2 <- G4[,lev2]
+lev3 <- colnames(G4.2)
+G4.2 <- as.data.frame(G4.2)
+G4.2[lev3] <- lapply(G4.2[lev3], as.numeric)  
+G4.2[lev3] <- lapply(G4.2[lev3], factor) 
+have.both = intersect(rownames(G4.2), rownames(pheno))
+G4.2 <- G4.2[have.both,]
+str(G4.2)
+dim(G4.2)
+G4.2[1:5,1:5]
+class(G4.2)
+G4.2 <- G4.2 %>% rownames_to_column(var = "gen")
+G4.2$gen <- as.factor(G4.2$gen)
+
+P7 <- inner_join(G4.2, P6)
+write.table(P7, "~/Documents/Cesar/git/big_files/markers2.3.tsv", row.names = F, quote = F, sep = "\t")
+
+
+summary(G4.2)
+G4.3 <- G4.2 %>% rownames_to_column(var = "gen") %>% gather (key = "marker", value = "SNP", 2:81) %>% group_by(marker) %>% count(SNP) %>% spread (SNP, n) %>% column_to_rownames(var = "marker")
+str(G4.3)
+G4.3$sum <- rowSums(G4.3, na.rm = T)
+G4.3 <- G4.3 %>% rownames_to_column(var = "Marker1")
+
+G4.1 <- numo$ref.alleles
+class(G4.1)
+G4.1 <- G4.1[,lev2]
+G4.2 <- t(G4.1)
+G4.2 <- as.data.frame(G4.2)
+G4.2 <- G4.2 %>% rownames_to_column(var = "Marker1") %>% unite(col = "SNP", 3:2, sep = "/", remove = T)
+
+QTL_06 <- QTL_01 %>% dplyr::select(Marker, Chrom, Position) %>% distinct(Marker, .keep_all = TRUE) %>% unite(col = "Marker1", 2:3, sep = "_", remove = T) %>% inner_join(., QTL_03, by = "Marker") %>% inner_join(., G4.2, by = "Marker1") %>% inner_join(., G4.3, by = "Marker1") %>% inner_join(., QTL_03, by = "Marker")
+
+
+QTL_06 <- QTL_06 %>% inner_join(., G4.2, by = "Marker1") %>% inner_join(., G4.3, by = "Marker1")
+
+
 dim(G4) # [1]   192 96996
 G4[1:5,1:5]
 
@@ -108,4 +150,13 @@ GBLUP3 <- GBLUP3 %>% spread(key = loc, value = predicted.value, fill = NA,
 colnames(GBLUP2)[2] <- "ST4_GFD"
 GBLUP4 <- inner_join(GBLUP3, GBLUP2, by = "gen") %>% left_join(., PCA, by = "gen") 
 write.csv(GBLUP4, "~/Documents/Cesar/git/big_files/GFD_cal.csv", quote = F, row.names = F)
+
+
+
+library(dplyr)
+set.seed(1)
+dat <- data.frame(ID = sample(letters,100,rep=TRUE))
+dat %>% 
+  group_by(ID) %>%
+  summarise(no_rows = length(ID))
 
