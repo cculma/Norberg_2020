@@ -251,9 +251,7 @@ ggcorrplot(P2[,ncol(P2):1], hc.order = F, type = "full", lab = T, lab_col = "gre
 
 ggcorrplot(P3[,ncol(P3):1], hc.order = F, type = "full", lab = T, lab_col = "grey3", lab_size = 2, show.diag = T) + scale_fill_gradient(low = "white", high = "orangered") + theme_ipsum(base_family = "Arial", base_size = 8) + theme(axis.text.x = element_text(angle = 90, hjust = 0.95, vjust = 0.2), axis.title.x=element_blank(), axis.title.y = element_blank())
 
-
 # 6X6
-
 
 # Melt the correlation matrix
 library(reshape2)
@@ -522,8 +520,6 @@ ggpaired(ToothGrowth, x = "supp", y = "len",
 
 ##################
 
-
-
 library(ggplot2)
 library(ggrepel)
 
@@ -654,5 +650,23 @@ corr_simple <- function(data=df,sig=0.5){
 }
 corr_simple(data = a2, sig = 0.5)
 
+A1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/original_data/DM_Yi_WA_2018_1.csv")
+head(A1)
+colnames(A1)
+A2 <- A1[,c(9:17)]
+head(A2)
+colnames(A2)
+A3 <- A2 %>% dplyr::filter(!Treatment %in% c(201, 202))
+summary(A3)
+A3 <- A3[,-3]
+A3 <- A3 %>% column_to_rownames(var = "Treatment")
+colnames(A3)
+A3$moist <- ((A3$ClipWet - A3$ClipDryCorrected)/A3$ClipDryCorrected)*100
+A3$DM <- 100 - A3$moist
+P3 <- cor(A3, use = "complete.obs")
+
+ggcorrplot(P3[,ncol(P3):1], hc.order = F, type = "full", lab = T, lab_col = "grey3", lab_size = 2, show.diag = T) + scale_fill_gradient(low = "white", high = "orangered") + theme_classic(base_family = "Arial", base_size = 8) + theme(axis.text.x = element_text(angle = 90, hjust = 0.95, vjust = 0.2), axis.title.x=element_blank(), axis.title.y = element_blank())
 
 
+plot(A3$ClipWet, A3$ClipDryCorrected)
+plot(A3$ClipWet, A3$ClipDryCorrected)

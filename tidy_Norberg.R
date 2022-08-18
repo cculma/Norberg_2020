@@ -4,8 +4,11 @@ library(tidyverse)
 
 a1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/spatial_distribution/cols_rows1.csv", check.names = F)
 a1 <- read.csv("~/Documents/git/Norberg_2020/spatial_distribution/cols_rows1.csv", check.names = F)
-a2 <- read.csv("Y_PH_FD.csv", check.names = F)
 
+a2 <- read.csv("~/Documents/Cesar/git/Norberg_2020/Y_PH_FD.csv", check.names = F)
+
+head(a1)
+head(a2)
 colnames(a1)
 colnames(a2)
 
@@ -20,7 +23,7 @@ lev1 <- append(colnames(a1), c("Year", "Cut"))
 a3[,lev1] <- lapply(a3[,lev1], factor)
 summary(a3)
 colnames(a3)
-
+str(a3)
 b1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/original_data/Guojie_2020.csv")
 b1 <- read.csv("~/Documents/git/Norberg_2020/original_data/Guojie_2Years_Yield_Height_FD.csv", check.names = F)
 

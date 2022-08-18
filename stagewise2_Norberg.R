@@ -355,6 +355,12 @@ f1 <- inner_join(pred.id, PCA, by = "gen")
 write.csv(f1, "~/Documents/Cesar/git/big_files/pheno_fa2.csv", quote = F, row.names = F)
 
 
+prep <- blup_prep(data=ans1$blue,vcov=ans1$vcov,geno=geno1,vars=ans2$vars)
+pred.marker <- blup(data=prep,geno=geno1,what="marker",gwas.ncore=2)
+
+?blup_prep
+?blup
+
 ####################
 # MET FA
 head(Yield_BLUE)

@@ -16,10 +16,11 @@ lev2 <- (QTL_06$Marker1)
 
 G2.1 <- G2[,lev2]
 str(G2.1)
+dim(G2.1)
 
-have.both = intersect(rownames(G2), lev2)
+have.both = intersect(colnames(G2), lev2)
 G2
-G2.1 <- G2[have.both,]
+G2.1 <- G2[,have.both]
 dim(G2.1)
 dim(G2) # [1]   192 97316
 class(G2)
@@ -45,7 +46,7 @@ write.table(P7, "~/Documents/Cesar/git/big_files/markers2.3.tsv", row.names = F,
 
 
 summary(G4.2)
-G4.3 <- G4.2 %>% rownames_to_column(var = "gen") %>% gather (key = "marker", value = "SNP", 2:81) %>% group_by(marker) %>% count(SNP) %>% spread (SNP, n) %>% column_to_rownames(var = "marker")
+G4.3 <- G4.2 %>% rownames_to_column(var = "gen") %>% gather (key = "marker", value = "SNP", 2:6) %>% group_by(marker) %>% count(SNP) %>% spread (SNP, n) %>% column_to_rownames(var = "marker")
 str(G4.3)
 G4.3$sum <- rowSums(G4.3, na.rm = T)
 G4.3 <- G4.3 %>% rownames_to_column(var = "Marker1")

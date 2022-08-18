@@ -115,6 +115,7 @@ for (i in 1:length(J1)) {
   data_new <- data_new %>% group_by(env) %>% summarise_at(vars(resp), list(min = min, max = max, mean = mean, sd = sd, cv = cv), na.rm = TRUE)
   data_201 <- data_201 %>% group_by(env) %>% summarise_at(vars(resp), list(min = min, max = max, mean = mean, sd = sd, cv = cv), na.rm = TRUE)
   data_202 <- data_202 %>% group_by(env) %>% summarise_at(vars(resp), list(min = min, max = max, mean = mean, sd = sd, cv = cv), na.rm = TRUE)
+
   
   J2_new[[length(J2_new)+1]] <- data_new
   J2_201[[length(J2_201)+1]] <- data_201

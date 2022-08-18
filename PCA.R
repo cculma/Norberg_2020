@@ -1,6 +1,5 @@
 # PCA generation of GWASpoly file
 
-
 library(sommer)
 
 

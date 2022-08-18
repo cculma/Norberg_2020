@@ -36,6 +36,8 @@ data <- BLUE_He2
 data <- BLUE_MS2
 data <- FD4.2
 data <- BLUE_FD4
+levels(data$loc)
+
 
 hist(BLUE_Yi2$BLUE)
 for (i in 1:(length(T2))) {
@@ -64,7 +66,7 @@ for (i in 1:(length(T2))) {
                        data = data1, na.action = list(x = "include", y = "include"),
                        weights = weight, family = asreml::asr_gaussian(dispersion = 1))
   
-  FA_1 <- asreml::asreml(fixed = BLUE ~ 1 +  loc, 
+  FA_1 <- asreml::asreml(fixed = BLUE ~ 1 +  loc + gen, 
                          random = ~ + fa(env, 1):id(gen),
                          data = data1, na.action = list(x = "include", y = "include"), 
                          weights = weight, family = asreml::asr_gaussian(dispersion = 1))
@@ -156,5 +158,6 @@ names(T4) <- c("MS","DM","He","Yi","FD")
 BLUP6 <- full_join(T4[[1]], T4[[2]], by = "gen") %>% full_join(., T4[[3]], by = "gen")  %>% full_join(., T4[[4]], by = "gen")  %>% full_join(., T4[[5]], by = "gen")  %>% left_join(., PCA, by = "gen") 
 write.csv(BLUP6, "~/Documents/Cesar/git/big_files/pheno_fa1.csv", quote = F, row.names = F)
 
-
-
+FA_1
+summary(FA_1)$varcomp
+BLUP3$p.differences

@@ -335,9 +335,10 @@ FA_1 <- update.asreml(FA_1)
 BLUP2 <- predict.asreml(FA_2, classify='env:gen', sed = F)
 BLUP2 <- BLUP2$pvals
 
-BLUP3 <- predictPlus(classify = "loc:gen", asreml.obj = FA_2, 
+BLUP3 <- predictPlus(classify = "loc:gen", asreml.obj = Diag, 
                      wald.tab = NULL, 
                      present = c("env", "loc", "gen"))$predictions
+
 BLUP4 <- predictPlus(classify = "gen", asreml.obj = FA_2, 
                      wald.tab = Diag$wald.tab, 
                      present = c("env", "loc", "gen"))$predictions

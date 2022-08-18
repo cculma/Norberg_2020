@@ -37,7 +37,7 @@ clnames <- c("cov1","cov2")
 M_MS <- list()
 BLUE_MS <- list()
 for (i in 1:length(data_ar1)) {
-  data <- read.csv(data_ar1[i])
+  data <- read.csv(data_ar1[1])
   data <- data[,c(3,6,7,8,11,16,21)]
   colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
   data[,lev1] <- lapply(data[,lev1], factor)
@@ -99,11 +99,11 @@ write.csv(M_MS, "~/Documents/Cesar/git/big_files/MSC_AIC.csv", quote = F, row.na
 
 
 #################
-
+head(data)
 M_DM <- list()
 BLUE_DM <- list()
 for (i in 1:length(data_ar2)) {
-  data <- read.csv(data_ar2[i])
+  data <- read.csv(data_ar2[1])
   data <- data[,c(3,6,7,8,12,17,22)]
   colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
   data[,lev1] <- lapply(data[,lev1], factor)
@@ -361,11 +361,14 @@ BLUE_FD2 <- BLUE_FD %>% dplyr::filter(!gen %in% c(201, 202)) %>% separate(1, c("
 #######################
 
 
-M_DM[ , .SD[which.min(AIC)], by = trait]
-M_He[ , .SD[which.min(AIC)], by = trait]
-M_MS[ , .SD[which.min(AIC)], by = trait]
-M_Yi[ , .SD[which.min(AIC)], by = trait]
-M_FD[ , .SD[which.min(AIC)], by = trait]
+cc1 <- M_DM[ , .SD[which.min(AIC)], by = trait]
+cc2 <- M_He[ , .SD[which.min(AIC)], by = trait]
+cc3 <- M_MS[ , .SD[which.min(AIC)], by = trait]
+cc4 <- M_Yi[ , .SD[which.min(AIC)], by = trait]
+cc5 <- M_FD[ , .SD[which.min(AIC)], by = trait]
+
+cc6 <- rbind(cc1,cc2,cc3,cc4,cc5)
+cc7 <- count(cc6, model, trait1)
 
 M_DM$trait1 <- "DM"
 M_He$trait1 <- "He"
@@ -374,6 +377,9 @@ M_Yi$trait1 <- "Yi"
 M_FD$trait1 <- "FD"
 
 J1 <- rbind(M_DM,M_He,M_MS,M_Yi,M_FD)
+J1[ , .SD[which.min(AIC)], by = trait]
+
+
 write.csv(J1, "~/Documents/Cesar/git/Norberg_2020/BLUE_values/ST1_AIC.csv", quote = F, row.names = F)
 save.image("~/Documents/Cesar/git/big_files/AIC_ST1.RData")
 load("~/Documents/Cesar/git/big_files/AIC_ST1.RData")

@@ -4,7 +4,8 @@ library(ggplot2)
 library(hrbrthemes)
 library(viridis)
 library(ggpubr)
-library(brew)
+library(RColorBrewer)
+
 a1 <- read.table("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/markers2.3.tsv", row.names = 1, sep = "\t", header = T)
 
 colnames(a1)
@@ -57,7 +58,6 @@ a2[,1] <- as.factor(a2[,1])
 a2[,2] <- as.factor(a2[,2])
 
 ggplot(a2, aes(x = a2[,1], y = a2[,3], fill = a2[,2])) + geom_boxplot(alpha = 0.6, outlier.shape = NA)  + scale_fill_manual(values = mycolors) + theme_ipsum(base_family = "Arial", base_size = 12) + theme(legend.position = "none", panel.spacing = unit(0.1, "lines"), strip.text.x = element_text(size = 12), axis.text.x = element_text(angle = 0, hjust = 0.95, vjust = 0.2)) + facet_grid( ~ a2[,2], scales = "free", space = "free") + labs(y = "FD_raw WA", x = "Allele dosage") + theme(panel.spacing = unit(0.3, "lines"))
-
 
 
 a2[,2] <- as.factor(a2[,2])
