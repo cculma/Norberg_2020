@@ -296,7 +296,6 @@ data2 <- data2[,c(8,1:7)]
 M_Yi <- rbind(M_Yi, data2)
 write.csv(M_Yi, "~/Documents/Cesar/git/big_files/Yi_AIC.csv", quote = F, row.names = F)
 
-
 save.image("~/Documents/Cesar/git/big_files/ST0_Yi.RData")
 load("~/Documents/Cesar/git/big_files/ST0_Yi.RData")
 ####################

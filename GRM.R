@@ -5,7 +5,10 @@ library(sommer)
 library(e1071)
 library(caret)
 
-G <- read.csv("~/Documents/Cesar/git/big_files/AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt", header = TRUE, row.names = 1, check.names = F) 
+setwd("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/")
+G <- read.csv("AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt", header = TRUE, row.names = 1, check.names = F) 
+
+# G <- read.csv("~/Documents/Cesar/git/big_files/AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt", header = TRUE, row.names = 1, check.names = F) 
 dim(G)# [1] 97316   194
 G1 <- G %>% unite(Chrom1, 1:2, remove = T)
 G1 <- as.matrix(G1 %>% remove_rownames() %>% column_to_rownames(var = "Chrom1"))
@@ -18,9 +21,7 @@ G2.1 <- G2[,lev2]
 str(G2.1)
 
 have.both = intersect(rownames(G2), lev2)
-G2
-G2.1 <- G2[have.both,]
-dim(G2.1)
+
 dim(G2) # [1]   192 97316
 class(G2)
 G3 <- as.data.frame(G2)
@@ -30,23 +31,22 @@ G4.2 <- G4[,lev2]
 lev3 <- colnames(G4.2)
 G4.2 <- as.data.frame(G4.2)
 G4.2[lev3] <- lapply(G4.2[lev3], as.numeric)  
-G4.2[lev3] <- lapply(G4.2[lev3], factor) 
-have.both = intersect(rownames(G4.2), rownames(pheno))
-G4.2 <- G4.2[have.both,]
-str(G4.2)
-dim(G4.2)
+# G4.2[lev3] <- lapply(G4.2[lev3], factor) 
+# have.both = intersect(rownames(G4.2), rownames(pheno))
+# G4.2 <- G4.2[have.both,]
+# str(G4.2)
+# dim(G4.2)
 G4.2[1:5,1:5]
-class(G4.2)
-G4.2 <- G4.2 %>% rownames_to_column(var = "gen")
-G4.2$gen <- as.factor(G4.2$gen)
+dim(G4.2)
+# G4.2 <- G4.2 %>% rownames_to_column(var = "gen")
+# G4.2$gen <- as.factor(G4.2$gen)
 
-P7 <- inner_join(G4.2, P6)
-write.table(P7, "~/Documents/Cesar/git/big_files/markers2.3.tsv", row.names = F, quote = F, sep = "\t")
 
 
 summary(G4.2)
-G4.3 <- G4.2 %>% rownames_to_column(var = "gen") %>% gather (key = "marker", value = "SNP", 2:81) %>% group_by(marker) %>% count(SNP) %>% spread (SNP, n) %>% column_to_rownames(var = "marker")
+G4.3 <- G4.2 %>% rownames_to_column(var = "gen") %>% gather (key = "marker", value = "SNP", 2:15) %>% group_by(marker) %>% count(SNP) %>% spread (SNP, n) %>% column_to_rownames(var = "marker")
 str(G4.3)
+dim(G4.3)
 G4.3$sum <- rowSums(G4.3, na.rm = T)
 G4.3 <- G4.3 %>% rownames_to_column(var = "Marker1")
 
@@ -57,7 +57,7 @@ G4.2 <- t(G4.1)
 G4.2 <- as.data.frame(G4.2)
 G4.2 <- G4.2 %>% rownames_to_column(var = "Marker1") %>% unite(col = "SNP", 3:2, sep = "/", remove = T)
 
-QTL_06 <- QTL_01 %>% dplyr::select(Marker, Chrom, Position) %>% distinct(Marker, .keep_all = TRUE) %>% unite(col = "Marker1", 2:3, sep = "_", remove = T) %>% inner_join(., QTL_03, by = "Marker") %>% inner_join(., G4.2, by = "Marker1") %>% inner_join(., G4.3, by = "Marker1") %>% inner_join(., QTL_03, by = "Marker")
+QTL_06 <- QTL_01 %>% dplyr::select(Marker, Chrom, Position) %>% distinct(Marker, .keep_all = TRUE) %>% unite(col = "Marker1", 2:3, sep = "_", remove = T) %>% inner_join(., G4.2, by = "Marker1") %>% inner_join(., G4.3, by = "Marker1") %>% inner_join(., QTL_03, by = "Marker")
 
 
 QTL_06 <- QTL_06 %>% inner_join(., G4.2, by = "Marker1") %>% inner_join(., G4.3, by = "Marker1")
