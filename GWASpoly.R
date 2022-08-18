@@ -2,6 +2,8 @@ rm(list = ls()) # clean Global Environment
 # setwd("~/Documents/Cesar/blup_data/Roza2019/Analysis_2021/GWAS/")
 # setwd("~/OneDrive - Washington State University (email.wsu.edu)/Roza_2019/git/Roza2019/")
 
+session_info()
+
 library(GWASpoly)
 library(tidyverse)
 library(vcfR)
@@ -19,6 +21,7 @@ library(ggthemes)
 library(hrbrthemes)
 library(VennDiagram)
 
+library(parallel)
 #################
 params <- set.params(fixed=c("PC1","PC2","PC3"),
                      fixed.type=rep("numeric",3), n.PC = 3)
@@ -36,37 +39,54 @@ setwd("~/Documents/git/Norberg_2020/GWAS_results/")
 setwd("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/")
 # FA1
 
+
 pheno <- read.csv("~/Documents/Cesar/git/big_files/Sum_yield.csv", row.names = 1)
 pheno <- read.csv("PH.csv", row.names = 1)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
+pheno <- read.csv("Sum_yield.csv")
+pheno <- read.csv("Yi_WA.csv")
+head(pheno)
+str(pheno)
+pheno$env <- as.factor(pheno$env)
+levels(pheno$env)
+
+trait1 <- colnames(pheno)[2:(length(colnames(pheno))-3)]
 trait1
+length(trait1)
 
 data_1.1 <- read.GWASpoly(ploidy=4,
-                          pheno.file="PH.csv",
+                          pheno.file="PH_WA.csv",
                           geno.file="Norberg_2.txt",
-                          format="numeric", n.traits=length(trait1), delim=",")
+                          format="numeric", n.traits=1, delim=",")
 
 data_2.1 <- set.K(data = data_1.1, LOCO = F, n.core = 10)
-data_3.3 <- GWASpoly(data = data_2.1, models = models_1, traits = trait1, params = params, n.core = 10)
+data_3.3 <- GWASpoly(data = data_2.1, models = models_1, traits = "PH_WA", params = params, n.core = 10)
 
+PH_WA_HC_data_3.3 <- data_3.3
+FD1_HC_data_3.3 <- data_3.3
+FD_OR_HC_data_3.3 <- FD1_HC_data_3.3
 PH1_data_3.3 <- data_3.3
 Yi_HC_data_3.3 <- data_3.3
 Yi_HC_OR_data_3.3 <- data_3.3
 PH_FD_HC_data_3.3 <- data_3.3
-save(PH_FD_HC_data_3.3, file = "~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/PH_FD_HC_data_3.3.RData")
+save(FD_OR_HC_data_3.3, file = "~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/FD_OR_HC_data_3.3.RData")
 
-save(PH1_data_3.3, file = "~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/PH1_data_3.3.RData")
+save(PH_WA_HC_data_3.3, file = "~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/PH_WA_HC_data_3.3.RData")
 
 pheno <- read.csv("pheno_fa2.csv", row.names = 1)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
 trait1
 
 data_1.2 <- read.GWASpoly(ploidy=4,
-                          pheno.file="pheno_fa2.csv",
+                          pheno.file="Sum_yield.csv",
                           geno.file="Norberg_2.txt",
                           format="numeric", n.traits=length(trait1), delim=",")
 data_2.2 <- set.K(data = data_1.2, LOCO = T, n.core = 10)
 data_3.4 <- GWASpoly(data = data_2.2, models = models_1, traits = trait1, params = params, n.core = 10)
+
+SumYi_data_3.3 <- GWASpoly(data = data_2.2, models = models_1, traits = trait1, params = params, n.core = 10)
+save(SumYi_data_3.3, file = "/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity(email.wsu.edu)/Sen_2020/yield_FD/RData/SumYi_data_3.3.RData")
+
 
 
 pheno <- read.csv("pheno_fa.csv", row.names = 1)
@@ -89,21 +109,24 @@ ST0_data_3.3 <- data_3.3
 
 hist(pheno$ST1_MS_WA_2020_5)
 boxplot(pheno$ST1_MS_WA_2020_5)
+data_5.1 <- set.threshold.2(PH_WA_HC_data_3.3,  method= "Bonferroni", level=0.05)
 
+data_5.2 <- set.threshold.1(PH_WA_HC_data_3.3, method = "M.eff", level=0.05, n.core = 6)
 
-data_5.1 <- set.threshold(PH1_data_3.3, method= "Bonferroni", level=0.05)
-
+data_5.1 <- set.threshold(data_3.3, method= "Bonferroni", level=0.05)
+?set.threshold
 QTL_02 <- get.QTL(data_5.1)
+QTL_03 <- get.QTL(data_5.2)
+
 QTL_02 <- QTL_02 %>% distinct(Marker, .keep_all = T) 
 
 QTL_02 <- QTL_02 %>% dplyr::filter(!Model %in% c("diplo-additive", "diplo-general"))
 cc <- count(QTL_02, Model)
 cc$Model
-cc <- count(QTL_02, Trait)
+cc <- count(QTL_03, Trait)
 
 
-
-data_5.2 <- set.threshold(PH_data_3.3, method= "Bonferroni", level=0.05)
+data_5.2 <- set.threshold(Yi_HC_OR_data_3.3, method= "Bonferroni", level=0.05)
 QTL_01 <- get.QTL(data_5.2)
 QTL_01 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
 
@@ -120,6 +143,27 @@ load("/home/hawkins/Documents/Cesar/git/big_files/FD_data_3.3.RData")
 load("/home/hawkins/Documents/Cesar/git/big_files/PH_data_3.3.RData")
 load("/home/hawkins/Documents/Cesar/git/big_files/SumYi_data_3.3.RData") # sum (total) yield by year
 
+load("/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity(email.wsu.edu)/Sen_2020/yield_FD/RData/Yi_data_3.3.RData")
+load("/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity(email.wsu.edu)/Sen_2020/yield_FD/RData/DM_data_3.3.RData")
+load("/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity(email.wsu.edu)/Sen_2020/yield_FD/RData/MS_data_3.3.RData")
+load("/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity(email.wsu.edu)/Sen_2020/yield_FD/RData/FD_data_3.3.RData")
+load("/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity(email.wsu.edu)/Sen_2020/yield_FD/RData/PH_data_3.3.RData")
+
+
+data_5.1 <- set.threshold(MS_data_3.3, method= "Bonferroni", level=0.05, n.permute = 1)
+data_5.2 <- set.threshold(DM_data_3.3, method= "Bonferroni", level=0.05, n.permute = 1)
+data_5.3 <- set.threshold(PH_data_3.3, method= "Bonferroni", level=0.05, n.permute = 1)
+data_5.3 <- set.threshold(PH1_data_3.3, method= "Bonferroni", level=0.05, n.permute = 1)
+data_5.4 <- set.threshold(Yi_data_3.3, method= "Bonferroni", level=0.05, n.permute = 1)
+data_5.5 <- set.threshold(FD_data_3.3, method= "Bonferroni", level=0.05, n.permute = 1)
+
+
+# data_5.1 <- set.threshold.1(MS_data_3.3, method = "M.eff", level=0.05, n.core = 8, n.permute = 1)
+# data_5.2 <- set.threshold.1(DM_data_3.3, method = "M.eff", level=0.05, n.core = 8, n.permute = 1)
+# data_5.3 <- set.threshold.1(PH_data_3.3, method = "M.eff", level=0.05, n.core = 8, n.permute = 1)
+# data_5.4 <- set.threshold.1(Yi_data_3.3, method = "M.eff", level=0.05, n.core = 8, n.permute = 1)
+# data_5.5 <- set.threshold.1(FD_data_3.3, method = "M.eff", level=0.05, n.core = 8, n.permute = 1)
+
 
 data_5.1 <- set.threshold(MS_data_3.3, method= "Bonferroni", level=0.05)
 data_5.2 <- set.threshold(DM_data_3.3, method= "Bonferroni", level=0.05)
@@ -128,7 +172,6 @@ data_5.3 <- set.threshold(PH1_data_3.3, method= "Bonferroni", level=0.05)
 data_5.4 <- set.threshold(Yi_data_3.3, method= "Bonferroni", level=0.05)
 data_5.5 <- set.threshold(FD_data_3.3, method= "Bonferroni", level=0.05)
 data_5.6 <- set.threshold(SumYi_data_3.3, method= "Bonferroni", level=0.05)
-
 
 QTL_1 <- get.QTL(data_5.1)
 QTL_2 <- get.QTL(data_5.2)

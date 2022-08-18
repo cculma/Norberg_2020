@@ -50,6 +50,8 @@ a1 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_202
 
 a1 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/pheno_fa.csv")
 
+
+
 a01 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/yield.csv")
 a02 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/pheno_MSC.csv")
 a03 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/pheno_DM.csv")
