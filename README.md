@@ -16,3 +16,15 @@ Single loc	3_stage	3
 All	4_stage	1
 
 It is therefore important to accurately evaluate the developmental stage of forage crops in order to precisely establish the appropriate harvest time and to optimize their yield, nutritive value and persistence. This guide illustrates and explains the developmental stages of timothy and alfalfa, the two main forage species cultivated in Quebec. It also describes two methods used to determine the mean stage of such forage: the Mean Stage by Count (MSC) and the Mean Stage by Weight (MSW).
+
+## Pearson Correlation
+
+There are some problematic env with yield:
+
+Yi_ID_2018_1
+Yi_ID_2018_2
+Yi_OR_2018_1
+Yi_OR_2018_2
+Yi_OR_2019_1
+Yi_OR_2020_1
+Yi_WA_2018_1

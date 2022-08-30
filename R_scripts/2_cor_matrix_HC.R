@@ -16,8 +16,6 @@ library(wesanderson)
 library(ggdendro)
 library(factoextra)
 
-
-
 a1 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/markers2.3.tsv", sep = '\t', row.names = 1)
 colnames(a1)
 colnames(a1)[239:254] <- gsub("_R_", "_", colnames(a1)[239:254])
@@ -25,6 +23,16 @@ colnames(a1)[135] <- gsub("_4", "_3", colnames(a1)[135])
 colnames(a1)[154] <- gsub("_4", "_3", colnames(a1)[154])
 
 
+a1 <- read.csv("~/Documents/git/big_files/pheno_fa.csv")
+a2 <- read.csv("~/Documents/git/big_files/pheno.csv")
+
+a1 <- read.csv("~/Documents/git/big_files/yield.csv")
+a2 <- read.csv("~/Documents/git/big_files/Sum_yield.csv")
+colnames(a1)
+colnames(a2)
+a1 <- a1[1:(length(colnames(a1))-3)]
+a1 <- inner_join(a1, a2, by = "gen")
+colnames(a1)
 
 # lev1 <- subset(colnames(a06),  grepl("ID_2019_1$", colnames(a2)))
 lev0 <- subset(colnames(a1),  grepl("^ST0_", colnames(a1)))
@@ -32,13 +40,26 @@ lev1 <- subset(colnames(a1),  grepl("^ST1_", colnames(a1)))
 
 a00 <- a1[,lev0]
 a01 <- a1[,lev1]
+colnames(a00)
+colnames(a01)
+
+
+colnames(a00) <- gsub("ST0_", "", colnames(a00))
+colnames(a01) <- gsub("ST1_", "", colnames(a01))
+a00 <- a00[ , order(names(a00))]
+a01 <- a01[ , order(names(a01))]
 
 
 P00 <- cor(a00, use = "complete.obs")
 P01 <- cor(a01, use = "complete.obs")
 
-P00[lower.tri(P00, diag=TRUE)] <- NA
-P01[lower.tri(P01, diag=TRUE)] <- NA
+# P00[lower.tri(P00, diag=TRUE)] <- NA
+# P01[lower.tri(P01, diag=TRUE)] <- NA
+
+P00[lower.tri(P00)] <- P01[lower.tri(P01)]
+
+P1 <- ggcorrplot(P00[,ncol(P00):1], hc.order = F, type = "full", lab = T, lab_col = "grey3", lab_size = 2, show.diag = T) + theme_classic(base_family = "Arial", base_size = 12) + theme(axis.text.x = element_text(angle = 90, hjust = 0.95, vjust = 0.2), axis.title.x=element_blank(), axis.title.y = element_blank()) + labs(title = "Single-Stage vs Stage-Wise")
+
 
 P02 <- na.omit(c(P00))
 P03 <- na.omit(c(P01))

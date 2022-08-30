@@ -2,8 +2,6 @@
 rm(list = ls())
 library(tidyverse)
 library(data.table)
-
-install.packages("goeveg")
 library(goeveg)
 
 # 1 stage results
@@ -14,7 +12,7 @@ library(goeveg)
 # FD = 5_FD
 
 # model in for loop
-setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/")
+
 setwd("~/Documents/git/Norberg_2020/BLUE_values/split_data/")
 data_ar <- list.files(pattern = ".csv", full.names = T)
 data_ar1 <- data_ar[c(1,4,8,11,15,19,22,23,27:31)] # 1_MSC
@@ -69,9 +67,9 @@ R_He <-rbindlist(R_He, use.names=TRUE, fill=TRUE, idcol="env")
 # Yi = 4_Yield
 R_Yi <- list()
 for (i in 1:length(data_ar4)) {
-  data <- read.csv(data_ar4[i])
-  data <- data[,c(3,6,7,8,14,19,24)]
-  colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
+  data <- read.csv(data_ar4[1])
+  data <- data[,c(3,5,6,7,8,14,19,24)]
+  colnames(data) <- c("block", "ID", "gen", "row", "col", "resp", "cov1", "cov2")
   R_Yi[[length(R_Yi)+1]] = data
 }
 names(R_Yi) <- list_4

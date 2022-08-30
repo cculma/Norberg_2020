@@ -15,7 +15,7 @@ library(asremlPlus)
 # FD = 5_FD
 
 # model in for loop
-setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/")
+setwd("~/Documents/git/Norberg_2020/BLUE_values/split_data/")
 data_ar <- list.files(pattern = ".csv", full.names = T)
 data_ar1 <- data_ar[c(1,4,8,11,15,19,22,23,27:31)] # 1_MSC
 data_ar2 <- data_ar[c(1,4,8,11,15,19,22,27)] # 2_DM
@@ -31,7 +31,7 @@ list_4 <- gsub(".csv", "", gsub("./", "", data_ar4))
 list_5 <- gsub(".csv", "", gsub("./", "", data_ar5))
 
 lev1 <- c("block", "gen", "row", "col")
-clnames <- c("cov1","cov2")
+cvnames <- c("cov1","cov2")
 ####################
 
 M_MS <- list()
