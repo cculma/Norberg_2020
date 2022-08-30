@@ -1,3 +1,5 @@
+# script to get R2
+
 library(tidyverse)
 library(GWASpoly)
 library(data.table)
@@ -30,14 +32,6 @@ fit.ans$trait <- trait4.2
 knitr::kable(fit.ans,digits=3)
 
 data_7.0 <- data_6.1 %>% dplyr::filter(Trait %in% "ST3_Yi_OR")
-
-
-
-
-
-
-
-
 
 trait4 <- levels(as.factor(data_6.0$Trait))
 trait4
