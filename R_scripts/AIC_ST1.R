@@ -1,6 +1,6 @@
 # stagewise
 rm(list = ls())
-library(StageWise)
+
 library(asreml)
 library(data.table)
 library(tidyverse)

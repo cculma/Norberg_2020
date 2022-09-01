@@ -6,15 +6,15 @@ library(data.table)
 library(tidyverse)
 library(asremlPlus)
 
-setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/")
+setwd("~/Documents/git/Norberg_2020/BLUE_values/split_data/")
 data_ar4 <- data_ar # 4_Yield
 list_4 <- gsub(".csv", "", gsub("./", "", data_ar4))
 lev1 <- c("block", "gen", "row", "col")
 
 
-a1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/spatial_distribution/cols_rows1.csv", check.names = F)
+a1 <- read.csv("~/Documents/git/Norberg_2020/spatial_distribution/cols_rows1.csv", check.names = F)
 head(a1)
-b1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/original_data/Guojie_2020.csv")
+b1 <- read.csv("~/Documents/git/Norberg_2020/Raw_data/Guojie_2020.csv")
 a3 <- inner_join(a1, b1, by = c("Location", "Block", "Position", "ID", "Treatment"))
 
 colnames(a3)
@@ -37,13 +37,16 @@ for (i in 1:(length(a4))) {
   b1_201 <- a5 %>% dplyr::filter(Treatment %in% c(201))
   head(b1_201)
   b1_201 <- b1_201[,c(1,2,8)]
-  colnames(b1_201)[3] <- "C_201"
+  colnames(b1_201)[3] <- "cov1"
   b1_202 <- a5 %>% dplyr::filter(Treatment %in% c(202))
   head(b1_202)
   b1_202 <- b1_202[,c(1,2,8)]
-  colnames(b1_202)[3] <- "C_202"
+  colnames(b1_202)[3] <- "cov2"
   a5 <- a5 %>% inner_join(., b1_201, by = c("Location", "Block")) %>% inner_join(., b1_202, by = c("Location", "Block"))
   a5$yield [a5$yield == 0] <- NA
+  head(a5)
+  a5 <- a5[,c(2,4:10)]
+  colnames(a5) <- c("block", "ID", "gen", "row", "col", "resp", "cov1", "cov2")
   Y1[[length(Y1)+1]] = a5
 }
 names(Y1) <- names(a4)

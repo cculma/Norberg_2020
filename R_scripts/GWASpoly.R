@@ -33,14 +33,14 @@ models_1 <- c("general", "additive", "1-dom", "2-dom",  "diplo-additive", "diplo
 #################
 
 # workstation
-setwd("~/Documents/Cesar/git/big_files/")
+setwd("~/Documents/git/big_files/")
 # mac
 setwd("~/Documents/git/Norberg_2020/GWAS_results/")
 setwd("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/")
 # FA1
 
 
-pheno <- read.csv("~/Documents/Cesar/git/big_files/Sum_yield.csv", row.names = 1)
+pheno <- read.csv("~/Documents/git/big_files/Sum_yield.csv", row.names = 1)
 pheno <- read.csv("PH.csv", row.names = 1)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
 pheno <- read.csv("Sum_yield.csv")
@@ -84,7 +84,7 @@ data_1.2 <- read.GWASpoly(ploidy=4,
 data_2.2 <- set.K(data = data_1.2, LOCO = T, n.core = 10)
 data_3.4 <- GWASpoly(data = data_2.2, models = models_1, traits = trait1, params = params, n.core = 10)
 
-SumYi_data_3.3 <- GWASpoly(data = data_2.2, models = models_1, traits = trait1, params = params, n.core = 10)
+SumYi_data_3.3 <- GWASpoly(data = data_2.2, models = models_1, traits = trait1, params = params, n.core = 30)
 save(SumYi_data_3.3, file = "/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity(email.wsu.edu)/Sen_2020/yield_FD/RData/SumYi_data_3.3.RData")
 
 

@@ -43,12 +43,10 @@ a01 <- a1[,lev1]
 colnames(a00)
 colnames(a01)
 
-
 colnames(a00) <- gsub("ST0_", "", colnames(a00))
 colnames(a01) <- gsub("ST1_", "", colnames(a01))
 a00 <- a00[ , order(names(a00))]
 a01 <- a01[ , order(names(a01))]
-
 
 P00 <- cor(a00, use = "complete.obs")
 P01 <- cor(a01, use = "complete.obs")
