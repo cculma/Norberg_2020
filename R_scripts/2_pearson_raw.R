@@ -34,18 +34,20 @@ for (i in 1:length(data_ar4)) {
 names(R_Yi) <- list_4
 head(R_Yi[[1]])
 
-R_Yi <-rbindlist(R_Yi, use.names=TRUE, fill=TRUE, idcol="env")
-head(R_Yi)
+R_Yi.1 <-rbindlist(Y2, use.names=TRUE, fill=TRUE, idcol="env")
+head(R_Yi.1)
 
-a4 <- R_Yi %>% dplyr::filter(!gen %in% c(201, 202)) %>% select(c(1,4,7))
-a5 <- R_Yi %>% dplyr::filter(gen %in% c(201, 202)) %>% unite("gen", c(gen, block), sep = "_", remove = T) %>% select(c(1,2,6))
+a4 <- R_Yi.1 %>% dplyr::filter(!gen %in% c(201, 202)) %>% select(c(1,4,7))
+a5 <- R_Yi.1 %>% dplyr::filter(gen %in% c(201, 202)) %>% unite("gen", c(gen, block), sep = "_", remove = T) %>% select(c(1,2,6))
 
 a6 <- rbind(a4, a5) %>% spread(key = env, value = resp) %>% remove_rownames() %>% column_to_rownames("gen")
+head(a6)
 
 P00 <- cor(a6, use = "complete.obs")
 
 ggcorrplot(P00[,ncol(P00):1], hc.order = F, type = "full", lab = T, lab_col = "grey3", lab_size = 2, show.diag = T) + theme_classic(base_family = "Arial", base_size = 12) + theme(axis.text.x = element_text(angle = 90, hjust = 0.95, vjust = 0.2), axis.title.x=element_blank(), axis.title.y = element_blank()) + labs(title = "raw data")
 
+ggplot(a6, aes(x = env, y = resp)) + geom_boxplot(alpha = 0.6, width=0.6, position = position_dodge(width=0.8, preserve = "single")) + theme_bw(base_family = "Arial") + theme(legend.position = "none", panel.spacing = unit(0.3, "lines"), strip.text.x = element_text(size = 10), axis.text.x = element_text(angle = 90, hjust = 0.95, vjust = 0.2), axis.title = element_text(size = 12))
 
 #################
 # MetaN to find outliers

@@ -86,7 +86,7 @@ data_3.4 <- GWASpoly(data = data_2.2, models = models_1, traits = trait1, params
 
 SumYi_data_3.3 <- GWASpoly(data = data_2.2, models = models_1, traits = trait1, params = params, n.core = 30)
 save(SumYi_data_3.3, file = "/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity(email.wsu.edu)/Sen_2020/yield_FD/RData/SumYi_data_3.3.RData")
-
+save(SumYi_data_3.3, file = "~/Documents/git/big_files/SumYi_data_3.4.RData")
 
 
 pheno <- read.csv("pheno_fa.csv", row.names = 1)

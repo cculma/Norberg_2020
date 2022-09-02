@@ -151,3 +151,21 @@ PCA <- PCA[,c(1,109:111)]
 head(PCA)
 PCA$gen <- as.factor(PCA$gen)
 ##########
+
+BLUE_Yi2
+
+ggplot(BLUE_Yi2, aes(x = trait, y = BLUE)) + geom_boxplot(alpha = 0.6, width=0.6, position = position_dodge(width=0.8, preserve = "single")) + theme_bw(base_family = "Arial") + theme(legend.position = "none", panel.spacing = unit(0.3, "lines"), strip.text.x = element_text(size = 10), axis.text.x = element_text(angle = 90, hjust = 0.95, vjust = 0.2), axis.title = element_text(size = 12)) 
+
+box1 <- list()
+for (i in 1:length(ST1)) {
+  a6 <- ST1[[i]] %>% separate(2, c("loc", "year"), sep = "_", remove = F, convert = FALSE, extra = "merge")
+  lev3 <- names(ST1)[i]
+  g1 <- ggplot(a6, aes(x = env, y = predicted.value)) + geom_boxplot(alpha = 0.6, width=0.6, position = position_dodge(width=0.8, preserve = "single")) + theme_bw(base_family = "Arial") + theme(legend.position = "none", panel.spacing = unit(0.3, "lines"), strip.text.x = element_text(size = 10), axis.text.x = element_text(angle = 90, hjust = 0.95, vjust = 0.2), axis.title = element_text(size = 12)) + labs(title = paste(lev3, "ST1"), y = "", x = "")
+  box1[[length(box1)+1]] <-  g1
+}
+names(box1) <- names(ST1)
+
+box1[[7]] + box1[[6]] + box1[[1]] + box1[[3]] + plot_layout(ncol = 2)
+box1[[4]] + box1[[9]] + box1[[11]] + box1[[15]] + plot_layout(ncol = 2)
+box1[[5]] + box1[[14]] + box1[[10]] + box1[[12]] + plot_layout(ncol = 2)
+box1[[8]] + box1[[16]] + box1[[2]] + box1[[13]] + plot_layout(ncol = 2)
