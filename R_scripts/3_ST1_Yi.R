@@ -4,6 +4,10 @@ BLUE_Yi <- list()
 
 Y2 <- c(R_Yi, Y1)
 
+data <- Y2[[1]] 
+head(data)
+str(data)
+
 for (i in 1:length(Y2)) {
   data <- Y2[[i]]
   data[,lev2] <- lapply(data[,lev2], factor)

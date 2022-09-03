@@ -6,22 +6,28 @@ library(ggcorrplot)
 library(metan)
 library(asreml)
 library(asremlPlus)
+library(ASRtriala)
+library(ASRgenomics)
+
+
+# load("/home/hawkins/Documents/git/big_files/SumYi_data_3.4.RData")
+# load("/home/hawkins/Documents/git/big_files/tidy_Norberg_Yi.RData")
 
 # model in for loop
 setwd("~/Documents/git/Norberg_2020/BLUE_values/split_data/")
 data_ar <- list.files(pattern = ".csv", full.names = T)
-data_ar1 <- data_ar[c(1,4,8,11,15,19,22,23,27:31)] # 1_MSC
-data_ar2 <- data_ar[c(1,4,8,11,15,19,22,27)] # 2_DM
-# data_ar3 <- data_ar[c(4,8,10:14,16:19,21:31)] # 3_Height
-data_ar3 <- data_ar[c(4,8,11,12,14,16,17,19,21:31)] # 3_Height removing OR FD
+# data_ar1 <- data_ar[c(1,4,8,11,15,19,22,23,27:31)] # 1_MSC
+# data_ar2 <- data_ar[c(1,4,8,11,15,19,22,27)] # 2_DM
+# # data_ar3 <- data_ar[c(4,8,10:14,16:19,21:31)] # 3_Height
+# data_ar3 <- data_ar[c(4,8,11,12,14,16,17,19,21:31)] # 3_Height removing OR FD
 data_ar4 <- data_ar # 4_Yield
-data_ar5 <- data_ar[c(7,21,26)] # 5_FD
+# data_ar5 <- data_ar[c(7,21,26)] # 5_FD
 
-list_1 <- gsub(".csv", "", gsub("./", "", data_ar1))
-list_2 <- gsub(".csv", "", gsub("./", "", data_ar2))
-list_3 <- gsub(".csv", "", gsub("./", "", data_ar3))
+# list_1 <- gsub(".csv", "", gsub("./", "", data_ar1))
+# list_2 <- gsub(".csv", "", gsub("./", "", data_ar2))
+# list_3 <- gsub(".csv", "", gsub("./", "", data_ar3))
 list_4 <- gsub(".csv", "", gsub("./", "", data_ar4))
-list_5 <- gsub(".csv", "", gsub("./", "", data_ar5))
+# list_5 <- gsub(".csv", "", gsub("./", "", data_ar5))
 
 # Yi = 4_Yield
 R_Yi <- list()
