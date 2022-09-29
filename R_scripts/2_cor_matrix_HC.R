@@ -144,11 +144,8 @@ ggdendrogram(hc0) + theme_ipsum(base_family = "Arial", base_size = 8) + theme(ax
 
 ggdendrogram(hc1, segments = T) + theme_ipsum(base_family = "Arial", base_size = 8) + theme(axis.text.x = element_text(angle = 90, hjust = 0.95, vjust = 0.2), axis.title.x=element_blank(), axis.title.y = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + abline(v=0.35)
 
-
-
 fviz_dend(hc1, cex = 0.3, k = 12, k_colors ="black", color_labels_by_k = FALSE, rect = TRUE) 
 fviz_dend(hc0, cex = 0.3, k = 12, k_colors ="black", color_labels_by_k = FALSE, rect = TRUE)
-
 
 
 lev4 <- c("ST1_FD_OR_2019_4","ST1_PH_OR_2019_3","ST1_FD_OR_2020_4",
@@ -158,8 +155,6 @@ lev5 <- c("ST1_Yi_OR_2019_2","ST1_Yi_OR_2020_4","ST1_Yi_OR_2020_2")
 lev6 <- c("ST1_PH_WA_2019_5","ST1_PH_WA_2019_4","ST1_PH_WA_2019_3",
           "ST1_PH_WA_2020_3","ST1_PH_WA_2020_2","ST1_PH_WA_2019_1",
           "ST1_FD_WA_2019_5","ST1_PH_WA_2020_5")
-
-
 
 
 a09 <- a1[,lev4]

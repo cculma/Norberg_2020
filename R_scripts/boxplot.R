@@ -7,13 +7,12 @@ library(ggpubr)
 library(hrbrthemes)
 library(viridis)
 library(ggpubr)
-<<<<<<< HEAD
+
 library(RColorBrewer)
-=======
+
 library(brew)
 library(ggstatsplot)
 library(ggcorrplot)
->>>>>>> bbc17f4932d804956f355ea1ccfd1c0d577369b5
 
 a1 <- read.table("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/markers2.3.tsv", row.names = 1, sep = "\t", header = T)
 a3 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/FD.csv")
@@ -92,9 +91,6 @@ levels(a2$marker)
 levels(a2$dosage)
 cc <- count(a2, dosage, marker)
 
-statistics <- grouped_ggbetweenstats(data = mtcars1, x = cyl, y = mpg, grouping.var = am,
-  output = "subtitle"
-)
 
 grouped_ggbetweenstats(data = a2, x = dosage, y = ST3_FD_OR,
                        grouping.var = marker,
@@ -197,7 +193,6 @@ lev0 <- gsub("DM", "Yi", lev1)
 lev2 <- c(lev0, lev1)
 
 qual_BLUP9 <- a1[,lev2]
-qual_BLUP9 <- qual_BLUP9 %>% rownames_to_column(var = "gen") %>% gather()
 
 qual_BLUP9$gen <- as.factor(qual_BLUP9$gen)
 str(qual_BLUP9)
