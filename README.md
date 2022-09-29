@@ -71,3 +71,11 @@ There are different approached to improve Norberg paper:
 - Check descritptive statistics in order to find and remove ourliers. **Done with metaN**.
 - How to fix error in m.eff GWASpoly R pakage.
 - Generate a variance covariance matrix to Yi.
+
+## Notes Norberg
+
+*This is confusing.  Talk about total yield from all cuttings.  Then talk about each individual cuttings.  WA should have the highest total yield.*
+
+### How is the total yield:
+
+The average total yield is 20-35 tons per hectare (or 8-14 tons per acre) per year (distributed in 5-6 cuts). Top yields (intensive farming) can exceed 40 tons per hectare (16 tons per acre) per year.

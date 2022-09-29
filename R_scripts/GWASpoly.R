@@ -148,6 +148,7 @@ load("/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity
 load("/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity(email.wsu.edu)/Sen_2020/yield_FD/RData/MS_data_3.3.RData")
 load("/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity(email.wsu.edu)/Sen_2020/yield_FD/RData/FD_data_3.3.RData")
 load("/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity(email.wsu.edu)/Sen_2020/yield_FD/RData/PH_data_3.3.RData")
+load("/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity(email.wsu.edu)/Sen_2020/yield_FD/RData/SumYi_data_3.3.RData")
 
 
 data_5.1 <- set.threshold(MS_data_3.3, method= "Bonferroni", level=0.05, n.permute = 1)
@@ -180,9 +181,15 @@ QTL_4 <- get.QTL(data_5.4)
 QTL_5 <- get.QTL(data_5.5)
 QTL_6 <- get.QTL(data_5.6)
 
-QTL_01 <- rbind(QTL_1, QTL_2, QTL_3, QTL_4, QTL_5)
+QTL_01 <- rbind(QTL_1, QTL_2, QTL_3, QTL_4, QTL_5, QTL_6)
 
-QTL_02 <- QTL_01 %>% dplyr::filter(Trait %in% "^ST0_")
+QTL_ST0 <- QTL_01 %>% dplyr::filter(str_detect(Trait, "^ST0_"))
+QTL_ST1 <- QTL_01 %>% dplyr::filter(str_detect(Trait, "^ST1_"))
+
+QTL_ST0 <- QTL_ST0 %>% distinct(Marker, .keep_all = T) 
+QTL_ST1 <- QTL_ST1 %>% distinct(Marker, .keep_all = T) 
+
+
 QTL_02 <- QTL_01 %>% dplyr::filter(str_detect(Trait, "^ST0_"))
 
 QTL_1 <- QTL_1 %>% distinct(Marker, .keep_all = T) 
