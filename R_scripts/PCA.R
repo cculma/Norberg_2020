@@ -1,10 +1,13 @@
 # PCA generation of GWASpoly file
 
 library(sommer)
+library(tidyverse)
+library(AGHmatrix)
+library(caret)
 
 
 # MPP_Ms2_GWASPoly.txt
-G <- read.csv('~/Documents/Cesar/git/big_files/AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt', header = TRUE, row.names = 1, check.names = F)
+G <- read.csv('~/Documents/git/big_files/AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt', header = TRUE, row.names = 1, check.names = F)
 G[1:5,1:5]
 dim(G)
 
@@ -26,13 +29,50 @@ marks <- numo$M
 marks[1:5,1:5]
 dim(marks)
 str(marks)
+class(marks)
+marks.2 <- marks
+marks.2[1:10,1:10]
+marks.2[marks.2 == 0] <- -1 # AAAA
+marks.2[marks.2 == 1] <- 0  # AAAB
+marks.2[marks.2 == 2] <- 0
+marks.2[marks.2 == 3] <- 0
+marks.2[marks.2 == 4] <- 1
+
+nzv <- nearZeroVar(marks.2)
+marks.2 <- marks.2[, -nzv]
+marks.2 <- as.data.frame(t(marks.2))
+dim(marks.2)
+marks.2 <- marks.2[,have.both]
+colnames(marks.2)
+colnames(marks.2) <- paste0("Ind-", colnames(marks.2))
+
 marks.1 <- as.data.frame(t(marks))
 marks.1[1:5,1:5]
 dim(marks.1)
-marks.2 <- tibble::rownames_to_column(marks.1, "Marker1") %>% separate(1, c("Chrom", "Position"), sep = "_", remove = T, convert = F, extra = "warn")
-marks.2[1:5,1:5]
-write.table(marks.2, "~/Documents/Cesar/git/big_files/Norberg_1.txt", col.names = T, row.names = F, quote = FALSE, na = "", sep=",")
+# marks.2 <- tibble::rownames_to_column(marks.1, "Marker1") %>% separate(1, c("Chrom", "Position"), sep = "_", remove = T, convert = F, extra = "warn")
+# marks.2[1:5,1:5]
+# write.table(marks.2, "~/Documents/Cesar/git/big_files/Norberg_1.txt", col.names = T, row.names = F, quote = FALSE, na = "", sep=",")
 
+
+
+G4.1 <- numo$ref.alleles
+class(G4.1)
+G4.2 <- t(as.data.frame(G4.1))
+G4.2 <- G4.2[,-1, drop = F]
+head(G4.2)
+
+G4.3 <- merge(G4.2, marks.2, by = "row.names")
+class(G4.3)
+G4.3 <- G4.3 %>% separate(1, c("Chrom", "Position"), sep = "_", remove = T, convert = F, extra = "warn")
+G4.3[1:5, 1:10]
+G4.3$rs <- 1:nrow(G4.3)
+G4.3 <- G4.3 %>% mutate(rs = 1:n()) %>% select(rs, everything())
+G4.3$Chrom <- gsub("Chr", "", G4.3$Chrom)
+dim(G4.3)
+G4.4 <- G4.3[1:100,]
+colnames(G4.4)
+dim(G4.4)
+write.csv(G4.3, "~/Documents/git/big_files/G4.3.csv", row.names = F, quote = F)
 
 ############
 # PCA

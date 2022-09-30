@@ -15,9 +15,9 @@ library(data.table)
 library(plotly)
 
 # workstation
-setwd("~/Documents/Cesar/git/big_files/")
+setwd("~/Documents/git/big_files/")
 
-pheno <- read.csv("~/Documents/Cesar/git/big_files/pheno_fa.csv", row.names = 1)
+pheno <- read.csv("~/Documents/git/big_files/pheno_fa.csv", row.names = 1)
 head(pheno)
 trait1 <- colnames(pheno)[1:(length(colnames(pheno))-3)]
 trait1
