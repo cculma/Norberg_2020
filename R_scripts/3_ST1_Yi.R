@@ -35,6 +35,8 @@ for (i in 1:length(Y2)) {
   info2 <- infoCriteria.asreml(m2)
   info3 <- infoCriteria.asreml(m3)
   
+  REMLRT(m1, m2, m3, positive.zero = FALSE, bound.test.parameters = "none", DF = NULL)
+  
   info1$model <- "sar_sar"
   info2$model <- "ar1_id"
   info3$model <- "ar1_ar1"

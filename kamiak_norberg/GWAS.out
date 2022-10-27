@@ -1,0 +1,1111 @@
+ [1] "ST1_MS_ID_2018_1" "ST1_MS_ID_2019_1" "ST1_MS_OR_2018_1" "ST1_MS_OR_2019_1"
+ [5] "ST1_MS_OR_2020_1" "ST1_MS_WA_2018_1" "ST1_MS_WA_2019_1" "ST1_MS_WA_2019_2"
+ [9] "ST1_MS_WA_2020_1" "ST1_MS_WA_2020_2" "ST1_MS_WA_2020_3" "ST1_MS_WA_2020_4"
+[13] "ST1_MS_WA_2020_5" "ST1_DM_ID_2018_1" "ST1_DM_ID_2019_1" "ST1_DM_OR_2018_1"
+[17] "ST1_DM_OR_2019_1" "ST1_DM_OR_2020_1" "ST1_DM_WA_2018_1" "ST1_DM_WA_2019_1"
+[21] "ST1_DM_WA_2020_1" "ST1_He_ID_2019_1" "ST1_He_OR_2018_1" "ST1_He_OR_2018_3"
+[25] "ST1_He_OR_2019_1" "ST1_He_OR_2019_2" "ST1_He_OR_2019_3" "ST1_He_OR_2019_4"
+[29] "ST1_He_OR_2020_2" "ST1_He_OR_2020_3" "ST1_He_OR_2020_4" "ST1_He_WA_2018_1"
+[33] "ST1_He_WA_2018_3" "ST1_He_WA_2019_1" "ST1_He_WA_2019_2" "ST1_He_WA_2019_3"
+[37] "ST1_He_WA_2019_4" "ST1_He_WA_2019_5" "ST1_He_WA_2020_1" "ST1_He_WA_2020_2"
+[41] "ST1_He_WA_2020_3" "ST1_He_WA_2020_4" "ST1_He_WA_2020_5" "ST1_Yi_ID_2018_1"
+[45] "ST1_Yi_ID_2018_2" "ST1_Yi_ID_2018_3" "ST1_Yi_ID_2019_1" "ST1_Yi_ID_2019_2"
+[49] "ST1_Yi_ID_2019_3" "ST1_Yi_ID_2019_4" "ST1_Yi_OR_2018_1" "ST1_Yi_OR_2018_2"
+[53] "ST1_Yi_OR_2018_3" "ST1_Yi_OR_2019_1" "ST1_Yi_OR_2019_2" "ST1_Yi_OR_2019_3"
+[57] "ST1_Yi_OR_2019_4" "ST1_Yi_OR_2020_1" "ST1_Yi_OR_2020_2" "ST1_Yi_OR_2020_3"
+[61] "ST1_Yi_OR_2020_4" "ST1_Yi_WA_2018_1" "ST1_Yi_WA_2018_2" "ST1_Yi_WA_2018_3"
+[65] "ST1_Yi_WA_2019_1" "ST1_Yi_WA_2019_2" "ST1_Yi_WA_2019_3" "ST1_Yi_WA_2019_4"
+[69] "ST1_Yi_WA_2019_5" "ST1_Yi_WA_2020_1" "ST1_Yi_WA_2020_2" "ST1_Yi_WA_2020_3"
+[73] "ST1_Yi_WA_2020_4" "ST1_Yi_WA_2020_5" "ST1_FD_ID_2019_4" "ST1_FD_WA_2018_3"
+[77] "ST1_FD_WA_2019_5" "ST3_MS_ID"        "ST3_MS_OR"        "ST3_MS_WA"       
+[81] "ST3_DM_ID"        "ST3_DM_OR"        "ST3_DM_WA"        "ST3_He_OR"       
+[85] "ST3_He_WA"        "ST3_Yi_ID"        "ST3_Yi_OR"        "ST3_Yi_WA"       
+[89] "ST4_MS_Overall"   "ST4_DM_Overall"   "ST4_He_Overall"   "ST4_Yi_Overall"  
+[93] "ST4_FD_Overall"  
+ [1] "ST1_MS_ID_2018_1" "ST1_MS_ID_2019_1" "ST1_MS_OR_2018_1" "ST1_MS_OR_2019_1"
+ [5] "ST1_MS_OR_2020_1" "ST1_MS_WA_2018_1" "ST1_MS_WA_2019_1" "ST1_MS_WA_2019_2"
+ [9] "ST1_MS_WA_2020_1" "ST1_MS_WA_2020_2" "ST1_MS_WA_2020_3" "ST1_MS_WA_2020_4"
+[13] "ST1_MS_WA_2020_5" "ST1_DM_ID_2018_1" "ST1_DM_ID_2019_1" "ST1_DM_OR_2018_1"
+[17] "ST1_DM_OR_2019_1" "ST1_DM_OR_2020_1" "ST1_DM_WA_2018_1" "ST1_DM_WA_2019_1"
+[21] "ST1_DM_WA_2020_1" "ST1_He_ID_2019_1" "ST1_He_OR_2018_1" "ST1_He_OR_2018_3"
+[25] "ST1_He_OR_2019_1" "ST1_He_OR_2019_2" "ST1_He_OR_2019_3" "ST1_He_OR_2019_4"
+[29] "ST1_He_OR_2020_2" "ST1_He_OR_2020_3" "ST1_He_OR_2020_4" "ST1_He_WA_2018_1"
+[33] "ST1_He_WA_2018_3" "ST1_He_WA_2019_1" "ST1_He_WA_2019_2" "ST1_He_WA_2019_3"
+[37] "ST1_He_WA_2019_4" "ST1_He_WA_2019_5" "ST1_He_WA_2020_1" "ST1_He_WA_2020_2"
+[41] "ST1_He_WA_2020_3" "ST1_He_WA_2020_4" "ST1_He_WA_2020_5" "ST1_Yi_ID_2018_1"
+[45] "ST1_Yi_ID_2018_2" "ST1_Yi_ID_2018_3" "ST1_Yi_ID_2019_1" "ST1_Yi_ID_2019_2"
+[49] "ST1_Yi_ID_2019_3" "ST1_Yi_ID_2019_4" "ST1_Yi_OR_2018_1" "ST1_Yi_OR_2018_2"
+[53] "ST1_Yi_OR_2018_3" "ST1_Yi_OR_2019_1" "ST1_Yi_OR_2019_2" "ST1_Yi_OR_2019_3"
+[57] "ST1_Yi_OR_2019_4" "ST1_Yi_OR_2020_1" "ST1_Yi_OR_2020_2" "ST1_Yi_OR_2020_3"
+[61] "ST1_Yi_OR_2020_4" "ST1_Yi_WA_2018_1" "ST1_Yi_WA_2018_2" "ST1_Yi_WA_2018_3"
+[65] "ST1_Yi_WA_2019_1" "ST1_Yi_WA_2019_2" "ST1_Yi_WA_2019_3" "ST1_Yi_WA_2019_4"
+[69] "ST1_Yi_WA_2019_5" "ST1_Yi_WA_2020_1" "ST1_Yi_WA_2020_2" "ST1_Yi_WA_2020_3"
+[73] "ST1_Yi_WA_2020_4" "ST1_Yi_WA_2020_5" "ST1_FD_ID_2019_4" "ST1_FD_WA_2018_3"
+[77] "ST1_FD_WA_2019_5" "ST3_MS_ID"        "ST3_MS_OR"        "ST3_MS_WA"       
+[81] "ST3_DM_ID"        "ST3_DM_OR"        "ST3_DM_WA"        "ST3_He_ID"       
+[85] "ST3_He_OR"        "ST3_He_WA"        "ST3_Yi_ID"        "ST3_Yi_OR"       
+[89] "ST3_Yi_WA"        "ST3_FD_ID"        "ST3_FD_WA"        "ST4_DM"          
+[93] "ST4_He"           "ST4_MS"           "ST4_Yi"           "ST4_FD"          
+Number of polymorphic markers: 97316 
+N = 190 individuals with phenotypic and genotypic information 
+Detected following fixed effects:
+PC1
+PC2
+PC3
+Detected following traits:
+ST1_MS_ID_2018_1
+ST1_MS_ID_2019_1
+ST1_MS_OR_2018_1
+ST1_MS_OR_2019_1
+ST1_MS_OR_2020_1
+ST1_MS_WA_2018_1
+ST1_MS_WA_2019_1
+ST1_MS_WA_2019_2
+ST1_MS_WA_2020_1
+ST1_MS_WA_2020_2
+ST1_MS_WA_2020_3
+ST1_MS_WA_2020_4
+ST1_MS_WA_2020_5
+ST1_DM_ID_2018_1
+ST1_DM_ID_2019_1
+ST1_DM_OR_2018_1
+ST1_DM_OR_2019_1
+ST1_DM_OR_2020_1
+ST1_DM_WA_2018_1
+ST1_DM_WA_2019_1
+ST1_DM_WA_2020_1
+ST1_He_ID_2019_1
+ST1_He_OR_2018_1
+ST1_He_OR_2018_3
+ST1_He_OR_2019_1
+ST1_He_OR_2019_2
+ST1_He_OR_2019_3
+ST1_He_OR_2019_4
+ST1_He_OR_2020_2
+ST1_He_OR_2020_3
+ST1_He_OR_2020_4
+ST1_He_WA_2018_1
+ST1_He_WA_2018_3
+ST1_He_WA_2019_1
+ST1_He_WA_2019_2
+ST1_He_WA_2019_3
+ST1_He_WA_2019_4
+ST1_He_WA_2019_5
+ST1_He_WA_2020_1
+ST1_He_WA_2020_2
+ST1_He_WA_2020_3
+ST1_He_WA_2020_4
+ST1_He_WA_2020_5
+ST1_Yi_ID_2018_1
+ST1_Yi_ID_2018_2
+ST1_Yi_ID_2018_3
+ST1_Yi_ID_2019_1
+ST1_Yi_ID_2019_2
+ST1_Yi_ID_2019_3
+ST1_Yi_ID_2019_4
+ST1_Yi_OR_2018_1
+ST1_Yi_OR_2018_2
+ST1_Yi_OR_2018_3
+ST1_Yi_OR_2019_1
+ST1_Yi_OR_2019_2
+ST1_Yi_OR_2019_3
+ST1_Yi_OR_2019_4
+ST1_Yi_OR_2020_1
+ST1_Yi_OR_2020_2
+ST1_Yi_OR_2020_3
+ST1_Yi_OR_2020_4
+ST1_Yi_WA_2018_1
+ST1_Yi_WA_2018_2
+ST1_Yi_WA_2018_3
+ST1_Yi_WA_2019_1
+ST1_Yi_WA_2019_2
+ST1_Yi_WA_2019_3
+ST1_Yi_WA_2019_4
+ST1_Yi_WA_2019_5
+ST1_Yi_WA_2020_1
+ST1_Yi_WA_2020_2
+ST1_Yi_WA_2020_3
+ST1_Yi_WA_2020_4
+ST1_Yi_WA_2020_5
+ST1_FD_ID_2019_4
+ST1_FD_WA_2018_3
+ST1_FD_WA_2019_5
+ST3_MS_ID
+ST3_MS_OR
+ST3_MS_WA
+ST3_DM_ID
+ST3_DM_OR
+ST3_DM_WA
+ST3_He_ID
+ST3_He_OR
+ST3_He_WA
+ST3_Yi_ID
+ST3_Yi_OR
+ST3_Yi_WA
+ST3_FD_ID
+ST3_FD_WA
+ST4_DM
+ST4_He
+ST4_MS
+ST4_Yi
+ST4_FD
+Analyzing trait: ST1_MS_ID_2018_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_MS_ID_2019_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_MS_OR_2018_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_MS_OR_2019_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_MS_OR_2020_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_MS_WA_2018_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_MS_WA_2019_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_MS_WA_2019_2 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_MS_WA_2020_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_MS_WA_2020_2 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_MS_WA_2020_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_MS_WA_2020_4 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_MS_WA_2020_5 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_DM_ID_2018_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_DM_ID_2019_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_DM_OR_2018_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_DM_OR_2019_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_DM_OR_2020_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_DM_WA_2018_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_DM_WA_2019_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_DM_WA_2020_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_ID_2019_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_OR_2018_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_OR_2018_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_OR_2019_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_OR_2019_2 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_OR_2019_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_OR_2019_4 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_OR_2020_2 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_OR_2020_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_OR_2020_4 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_WA_2018_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_WA_2018_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_WA_2019_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_WA_2019_2 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_WA_2019_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_WA_2019_4 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_WA_2019_5 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_WA_2020_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_WA_2020_2 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_WA_2020_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_WA_2020_4 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_He_WA_2020_5 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_ID_2018_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_ID_2018_2 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_ID_2018_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_ID_2019_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_ID_2019_2 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_ID_2019_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_ID_2019_4 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_OR_2018_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_OR_2018_2 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_OR_2018_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_OR_2019_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_OR_2019_2 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_OR_2019_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_OR_2019_4 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_OR_2020_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_OR_2020_2 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_OR_2020_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_OR_2020_4 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_WA_2018_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_WA_2018_2 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_WA_2018_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_WA_2019_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_WA_2019_2 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_WA_2019_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_WA_2019_4 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_WA_2019_5 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_WA_2020_1 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_WA_2020_2 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_WA_2020_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_WA_2020_4 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_Yi_WA_2020_5 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_FD_ID_2019_4 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_FD_WA_2018_3 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST1_FD_WA_2019_5 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST3_MS_ID 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST3_MS_OR 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST3_MS_WA 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST3_DM_ID 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST3_DM_OR 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST3_DM_WA 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST3_He_ID 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST3_He_OR 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST3_He_WA 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST3_Yi_ID 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST3_Yi_OR 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST3_Yi_WA 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST3_FD_ID 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST3_FD_WA 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST4_DM 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST4_He 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST4_MS 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST4_Yi 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 
+Analyzing trait: ST4_FD 
+P3D approach: Estimating variance components...Completed 
+Testing markers for model: general 
+Testing markers for model: additive 
+Testing markers for model: diplo-additive 
+Testing markers for model: diplo-general 
+Testing markers for model: 1-dom-alt 
+Testing markers for model: 1-dom-ref 
+Testing markers for model: 2-dom-alt 
+Testing markers for model: 2-dom-ref 

@@ -6,27 +6,42 @@ library(e1071)
 library(caret)
 
 setwd("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/")
+setwd("~/Documents/git/big_files/")
 G <- read.csv("AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt", header = TRUE, row.names = 1, check.names = F) 
 
-# G <- read.csv("~/Documents/Cesar/git/big_files/AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt", header = TRUE, row.names = 1, check.names = F) 
+# G <- read.csv("~/Documents/git/big_files/AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt", header = TRUE, row.names = 1, check.names = F) 
 dim(G)# [1] 97316   194
 G1 <- G %>% unite(Chrom1, 1:2, remove = T)
 G1 <- as.matrix(G1 %>% remove_rownames() %>% column_to_rownames(var = "Chrom1"))
 G2 <- t(G1)
 G2[1:5,1:5]
+data$gen
+have.both = intersect(data$gen, rownames(G2))
+G3 <- as.data.frame(G3)
+G3 <- t(G3)
+numo <- atcg1234(data=G3, ploidy=4) 
 
-lev2 <- (QTL_06$Marker1)
+G4 <- numo$M
+dim(G4)
+G4[1:5,1:5]
+which(apply(G4, 2, var) == 0)
 
-G2.1 <- G2[,lev2]
-str(G2.1)
-dim(G2.1)
+order1 <- match(rownames(pheno), rownames(G4))
+G4  <- G4[order1,]
 
 
-have.both = intersect(colnames(G2), lev2)
-G2
-G2.1 <- G2[,have.both]
-dim(G2.1)
+# lev2 <- (QTL_06$Marker1)
+# 
+# G2.1 <- G2[,lev2]
+# str(G2.1)
+# dim(G2.1)
 
+
+# have.both = intersect(colnames(G2), lev2)
+# G2
+# G2.1 <- G2[,have.both]
+# dim(G2.1)
+# 
 
 
 dim(G2) # [1]   192 97316
@@ -34,10 +49,17 @@ class(G2)
 G3 <- as.data.frame(G2)
 numo <- atcg1234(data=G3, ploidy=4, maf=0.05); 
 G4 <- numo$M
-G4.2 <- G4[,lev2]
-lev3 <- colnames(G4.2)
-G4.2 <- as.data.frame(G4.2)
-G4.2[lev3] <- lapply(G4.2[lev3], as.numeric)  
+have.both = intersect(data$gen, rownames(G4))
+G4.1 <- G4[have.both,]
+order1 <- match(data$gen, rownames(G4))
+G4.1  <- G4.1[order1,]
+
+G5 <- Gmatrix(G4, method="VanRaden", ploidy=4, ploidy.correction = T)
+# 
+# G4.2 <- G4[,lev2]
+# lev3 <- colnames(G4.2)
+# G4.2 <- as.data.frame(G4.2)
+# G4.2[lev3] <- lapply(G4.2[lev3], as.numeric)  
 # G4.2[lev3] <- lapply(G4.2[lev3], factor) 
 # have.both = intersect(rownames(G4.2), rownames(pheno))
 # G4.2 <- G4.2[have.both,]

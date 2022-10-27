@@ -241,8 +241,11 @@ for (i in 1:length(data_ar5)) {
   colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
   data[,lev1] <- lapply(data[,lev1], factor)
   
-  data1 <- inner_join(data, S_FD1, by = "gen")
+  data1 <- inner_join(data, S_FD4, by = "gen")
+  head(data1)
+  str(data1)
   data2 <- lm(FD ~ resp, data = data1)
+  
   data$resp <- data2$coefficients[2] * data$resp + data2$coefficients[1]
   data$cov1 <- data2$coefficients[2] * data$cov1 + data2$coefficients[1]
   data$cov2 <- data2$coefficients[2] * data$cov2 + data2$coefficients[1]
