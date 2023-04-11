@@ -1,6 +1,6 @@
 library(ggplot2)
 library(tidyverse)
-library(asreml)
+# library(asreml)
 
 a5 <- read.csv("~/Documents/Cesar/git/Norberg_2020/BLUE_values/BLUE2/5_FD_1stage.csv")
 head(a5)
