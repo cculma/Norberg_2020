@@ -5,6 +5,7 @@ library(asreml)
 library(data.table)
 library(tidyverse)
 library(asremlPlus)
+library(goeveg)
 
 setwd("~/Documents/git/Norberg_2020/BLUE_values/split_data/")
 data_ar4 <- data_ar # 4_Yield

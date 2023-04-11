@@ -8,7 +8,7 @@ library(asremlPlus)
 
 ################
 
-directory <- "~/Documents/Cesar/git/Norberg_2020/BLUE_values"
+directory <- "~/Documents/git/Norberg_2020/BLUE_values"
 P5 <- file.path(directory, "assay1.csv")
 
 ################
@@ -30,7 +30,7 @@ str(P1.1)
 # FD = 5_FD
 
 # model in for loop
-setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/")
+setwd("~/Documents/git/Norberg_2020/BLUE_values/split_data/")
 data_ar <- list.files(pattern = ".csv", full.names = T)
 data_ar1 <- data_ar[c(1,4,8,11,15,19,22,23,27:31)] # 1_MSC
 data_ar2 <- data_ar[c(1,4,8,11,15,19,22,27)] # 2_DM

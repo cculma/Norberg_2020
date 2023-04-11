@@ -133,14 +133,16 @@ QTL_01 <- QTL_01 %>% distinct(Marker, .keep_all = T)
 cc <- count(QTL_01, Trait)
 R <- str_subset(cc$Trait, '_R_')
 S <- str_subset(cc$Trait, '_S_')
-
+R <- str_subset(colnames(P5), "_R_")
+R1 <- c("gen", R)
 
 
 load("/home/hawkins/Documents/Cesar/git/big_files/Yi_data_3.3.RData")
 load("/home/hawkins/Documents/Cesar/git/big_files/DM_data_3.3.RData")
 load("/home/hawkins/Documents/Cesar/git/big_files/MS_data_3.3.RData")
-load("/home/hawkins/Documents/Cesar/git/big_files/FD_data_3.3.RData")
-load("/home/hawkins/Documents/Cesar/git/big_files/PH_data_3.3.RData")
+load("~/Documents/git/big_files/FD_data_3.3.RData")
+
+load("~/Documents/git/big_files/PH_data_3.3.RData")
 load("/home/hawkins/Documents/Cesar/git/big_files/SumYi_data_3.3.RData") # sum (total) yield by year
 
 load("/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity(email.wsu.edu)/Sen_2020/yield_FD/RData/Yi_data_3.3.RData")
@@ -154,7 +156,7 @@ load("/Users/cesarmedina/Library/CloudStorage/OneDrive-WashingtonStateUniversity
 data_5.1 <- set.threshold(MS_data_3.3, method= "Bonferroni", level=0.05, n.permute = 1)
 data_5.2 <- set.threshold(DM_data_3.3, method= "Bonferroni", level=0.05, n.permute = 1)
 data_5.3 <- set.threshold(PH_data_3.3, method= "Bonferroni", level=0.05, n.permute = 1)
-data_5.3 <- set.threshold(PH1_data_3.3, method= "Bonferroni", level=0.05, n.permute = 1)
+# data_5.3 <- set.threshold(PH1_data_3.3, method= "Bonferroni", level=0.05, n.permute = 1)
 data_5.4 <- set.threshold(Yi_data_3.3, method= "Bonferroni", level=0.05, n.permute = 1)
 data_5.5 <- set.threshold(FD_data_3.3, method= "Bonferroni", level=0.05, n.permute = 1)
 
@@ -169,7 +171,7 @@ data_5.5 <- set.threshold(FD_data_3.3, method= "Bonferroni", level=0.05, n.permu
 data_5.1 <- set.threshold(MS_data_3.3, method= "Bonferroni", level=0.05)
 data_5.2 <- set.threshold(DM_data_3.3, method= "Bonferroni", level=0.05)
 data_5.3 <- set.threshold(PH_data_3.3, method= "Bonferroni", level=0.05)
-data_5.3 <- set.threshold(PH1_data_3.3, method= "Bonferroni", level=0.05)
+# data_5.3 <- set.threshold(PH1_data_3.3, method= "Bonferroni", level=0.05)
 data_5.4 <- set.threshold(Yi_data_3.3, method= "Bonferroni", level=0.05)
 data_5.5 <- set.threshold(FD_data_3.3, method= "Bonferroni", level=0.05)
 data_5.6 <- set.threshold(SumYi_data_3.3, method= "Bonferroni", level=0.05)
@@ -180,6 +182,8 @@ QTL_3 <- get.QTL(data_5.3)
 QTL_4 <- get.QTL(data_5.4)
 QTL_5 <- get.QTL(data_5.5)
 QTL_6 <- get.QTL(data_5.6)
+
+QTL_5 <- QTL_5 %>% dplyr::filter(str_detect(Trait, "_R_"))
 
 QTL_01 <- rbind(QTL_1, QTL_2, QTL_3, QTL_4, QTL_5, QTL_6)
 
@@ -202,6 +206,10 @@ QTL_6 <- QTL_6 %>% distinct(Marker, .keep_all = T)
 QTL_01 <- QTL_6
 # QTL_01 <- QTL_01 %>% distinct(Marker, .keep_all = T) 
 cc2 <- count(QTL_01, Trait)
+cc3 <- count(QTL_01, Model)
+sum(cc3$n)
+sum(cc2$n)
+
 cc2 <- count(QTL_6, Trait) %>% separate(1, c("st", "trans", "trait"), sep = "_", remove = T, convert = FALSE, extra = "merge") %>% unite(col = "trait", 1,3, sep = "_", remove = T) %>% spread(key = trans, value = n, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
 colnames(cc2) <- c("trait", "raw", "scaled")
 write.table(cc2, "~/Documents/Cesar/git/big_files/markers1.3.tsv", row.names = F, quote = F, sep = "\t")
@@ -308,14 +316,22 @@ write.table(S4, "~/Documents/Cesar/git/big_files/markers1.2.tsv", row.names = F,
 ##############
 # To annotate markers
 # load gene annotation Medicago sativa Zhongmu No1
-load("~/Documents/Cesar/RNA/globus/lordec_reports/lordec_trim/bed_Shen/ORF_NMD/i_5.2.8.RData")
+load("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/i_5.2.8.RData")
+
 i_5.2.8 <- i_5.2.8 %>% dplyr::select(1,3)
 head(i_5.2.8)
 
+length(unique(cpms.3.2$gene_id))
+
 # GRanges
-file <- ("~/Documents/Cesar/RNA/globus/lordec_reports/lordec_trim/bed_Shen/ORF_NMD/blast_corrected_shen.bed")
+
+file <- ("~/OneDrive - Washington State University (email.wsu.edu)/RNA/Ms_Shen/blast_corrected_shen.bed")
+
 txdb <- readBed(file, track.line = FALSE, remove.unusual = FALSE,
                 zero.based = TRUE)
+
+head(txdb)
+mean(txdb$thickEnd-txdb$thickStart)
 
 col_headings_1 <- c('gene_id',	'uniprot', 'gene_name',	'trans_length_flag',	'blastp_match_flag',	'nmd_flag',	'frame')
 col_headings_2 <- c('gene_id',	'isoform')

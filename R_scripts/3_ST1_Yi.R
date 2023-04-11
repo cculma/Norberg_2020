@@ -1,3 +1,20 @@
+
+# 4_Yield
+
+Y2 <- list()
+
+for (i in 1:length(data_ar4)) {
+  data <- read.csv(data_ar4[i])
+  data <- data[,c(3,6,7,8,14,19,24)]
+  colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
+  data[,lev1] <- lapply(data[,lev1], factor)
+  data <- data[order(data$row, data$col), ]
+  Y2[[length(Y2)+1]] = data
+
+}
+names(Y2) <- list_4
+
+
 lev2 <- c("block", "ID", "gen", "row", "col")
 M_Yi <- list()
 BLUE_Yi <- list()
@@ -59,6 +76,14 @@ for (i in 1:length(Y2)) {
 names(M_Yi) <- names(Y2)
 M_Yi <-rbindlist(M_Yi, use.names=TRUE, fill=TRUE, idcol="trait")
 M_Yi[ , .SD[which.min(AIC)], by = trait]
+
+REMLRT.asreml(m1, m2)
+REMLRT.asreml(m1, m3)
+REMLRT.asreml(m2, m3)
+
+lrt.asreml(m1, m2)
+lrt.asreml(m1, m3)
+lrt.asreml(m2, m3)
 
 names(BLUE_Yi) <- names(Y2)
 

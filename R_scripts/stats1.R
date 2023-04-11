@@ -59,6 +59,9 @@ for (i in 1:length(data_ar3)) {
   data <- read.csv(data_ar3[i])
   data <- data[,c(3,6,7,8,13,18,23)]
   colnames(data) <- c("block", "gen", "row", "col", "resp", "cov1", "cov2")
+  data$resp <- data$resp * 2.54
+  data$cov1 <- data$cov1 * 2.54
+  data$cov2 <- data$cov2 * 2.54
   R_He[[length(R_He)+1]] = data
 }
 names(R_He) <- list_3

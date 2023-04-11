@@ -12,8 +12,13 @@ library(brew)
 library(ggstatsplot)
 library(ggcorrplot)
 
-a1 <- read.table("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/markers2.3.tsv", row.names = 1, sep = "\t", header = T)
+a1 <- read.table("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/markers2.3.tsv", sep = "\t", header = T)
 a3 <- read.csv("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/FD.csv")
+
+a5 <- read.csv("~/Documents/git/big_files/FD_cal.csv")
+colnames(a5)
+a5 <- a5 %>% dplyr::select(gen, ST1_FD_WA_2018_3)
+a5 <- a5 %>% dplyr::select(-c("PC1","PC2","PC3"))
 
 
 colnames(a3)
@@ -21,6 +26,7 @@ a3 <- a3[,c(1,30,32)]
 a3 <- a3[,c(1,30:33)]
 colnames(a3)[2:5] <- gsub("_S_", "_", colnames(a3)[2:5])
 hist(a3$ST0_S_FD_ID_2019_4)
+
 summary(a3$ST0_S_FD_ID_2019_4)
 summary(a3$ST0_S_FD_WA_2019_5)
 cor(a3$ST1_S_FD_ID_2019_4, a3$ST1_S_FD_WA_2019_5, use = "complete.obs")
@@ -33,7 +39,6 @@ a3$gen <- as.character(a3$gen)
 colnames(a1)
 a2 <- a1 %>% dplyr::select(Chr5_16888172, ST1_R_FD_WA_2018_3)
 
-
 a2 <- a1 %>% dplyr::select(Chr5_16888158, ST1_R_FD_WA_2018_3)
 a2 <- a1 %>% dplyr::select(Chr3_5642102, ST0_Yi_OR_2020_1) # FHY3
 
@@ -43,6 +48,8 @@ a2 <- a1 %>% dplyr::select(Chr5_81433854, ST0_Yi_ID_2019_1)
 
 a2 <- a1 %>% dplyr::select(Chr5_16888158,ST3_R_FD_WA)
 
+
+colnames(a1)
 
 str(a2)
 levels(a2$loc)
@@ -76,11 +83,7 @@ ggbetweenstats(data = a2, x = Chr3_5642102, y = ST0_Yi_OR_2020_1,
                ggtheme = ggplot2::theme_classic(),
                outlier.tagging = TRUE,  outlier.label = gen)
 
-
-
 ggplot(a2, aes(x=a2[,1], y=a2[,2])) + geom_boxplot()
-
-
 
 str(a2)
 a2$marker <- as.factor(a2$marker)
@@ -120,7 +123,7 @@ ggpaired(a2, x = "dosage", y = "response", color = "dosage", line.color = "gray"
 Chr5_16888172
 Chr5_16888195
 
-a2 <- a1 %>% dplyr::select(Chr5_16888158,
+a2 <- a1 %>% dplyr::select(gen, Chr5_16888158,
 Chr5_16888160,
 Chr5_16888161,
 Chr5_16888163,
@@ -149,6 +152,40 @@ colnames(a2)
 head(a2)
 a2 <- a2 %>% gather(key = "marker", value = "dosage", 2:11) %>% gather(key = "loc", value = "FD", 2:3)
 
+
+a2 <- a1 %>% dplyr::select(gen, Chr5_16888158,
+                           Chr5_16888160,
+                           Chr5_16888161,
+                           Chr5_16888163,
+                           Chr5_16888169,
+                           Chr5_16888170,
+                           Chr5_16888188,
+                           Chr5_16888190)
+
+a4 <- inner_join(a2, a5, by = "gen")
+write.csv(a4, "Documents/git/Norberg_2020/BLUE_values/Markers_FD.csv", row.names = F, quote = F)
+
+setwd("~/OneDrive - Washington State University (email.wsu.edu)/Sen_2020/yield_FD/RData/")
+G <- read.csv("AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt", header = TRUE, row.names = 1, check.names = F) 
+G[1:5,1:5]
+G1 <- G %>% unite(Chrom1, 1:2, remove = T)
+G1 <- as.matrix(G1 %>% remove_rownames() %>% column_to_rownames(var = "Chrom1"))
+G2 <- t(G1)
+G2[1:5,1:5]
+G2 <- as.data.frame(G2)
+G2 <- G2 %>% rownames_to_column("gen")
+G2 <- G2 %>% dplyr::select(gen, Chr5_16888158,
+                           Chr5_16888160,
+                           Chr5_16888161,
+                           Chr5_16888163,
+                           Chr5_16888169,
+                           Chr5_16888170,
+                           Chr5_16888188,
+                           Chr5_16888190,
+                           Chr5_16888195)
+G2$gen <- as.integer(G2$gen)
+a4 <- inner_join(G2, a5, by = "gen")
+write.csv(a4, "~/Documents/git/Norberg_2020/BLUE_values/Markers_FD.csv", row.names = F, quote = F)
 
 
 ggplot(a2, aes(x = a2[,1], y = a2[,3], fill = a2[,2])) + geom_boxplot(alpha = 0.6, outlier.shape = NA)  + scale_fill_manual(values = mycolors) + theme_ipsum(base_family = "Arial", base_size = 12) + theme(legend.position = "none", panel.spacing = unit(0.1, "lines"), strip.text.x = element_text(size = 12), axis.text.x = element_text(angle = 0, hjust = 0.95, vjust = 0.2)) + facet_grid( ~ a2[,2], scales = "free", space = "free") + labs(y = "FD_raw WA", x = "Allele dosage") + theme(panel.spacing = unit(0.3, "lines"))
@@ -250,8 +287,91 @@ grouped_ggbetweenstats(data = qual_BLUP9, x = year, y = BLUP,
 
 
 
+# DM ----------------------------------------------------------------------
+
+a4 <- read.csv("~/Documents/git/big_files/pheno_fa2.csv")
+colnames(a4)
+a5 <- a4 %>% dplyr::select("gen","ST1_DM_ID_2019_1")
+colnames(a1)
+
+a2 <- a1 %>% dplyr::select("gen","Chr4_62801591")
+a5 <- inner_join(a2, a5, by = "gen")
+
+colnames(a5) <- c("gen","dosage", "DM")
+
+a5$dosage <- as.factor(a5$dosage)
+
+a5 %>% dplyr::count(dosage)
+
+
+compare_means(DM ~ dosage, data = a6,
+              method = "t.test")
+
+
+hist(a5$DM)
+
+a6 <- a5 %>% dplyr::filter(DM < 20.8 & DM > 12)
+a6 <- a6 %>% dplyr::filter(!gen == "60")
+
+ggplot(a6, aes(x = a6[,2], y = a6[,3], fill = a6[,2])) + geom_boxplot(alpha = 0.6, outlier.shape = 1) 
+
+ggboxplot(a6, x = "dosage", y = "DM", short.panel.labs = FALSE) + stat_compare_means(method = "anova", label.y = 40) + stat_compare_means(label = "p.signif", method = "t.test", ref.group = "2")  
+
+
+# compare_traits ----------------------------------------------------------
+
+a7 <- read.csv("~/Documents/git/big_files/pheno_fa.csv")
+
+colnames(a7)
+
+a7 <- a7 %>% dplyr::select(gen, ST0_Yi_ID_2019_1, ST0_Yi_ID_2019_4, ST0_PH_ID_2019_1, ST0_R_FD_ID_2019_4)
+
+a7 <- a7 %>% dplyr::select(gen, ST1_Yi_ID_2019_1, ST1_Yi_ID_2019_4, ST1_PH_ID_2019_1, ST1_R_FD_ID_2019_4)
+
+a7 <- a7 %>% dplyr::select(gen, ST1_Yi_ID_2019_1, ST1_Yi_ID_2019_4, ST1_PH_ID_2019_1, ST1_R_FD_ID_2019_4)
+
+a7 <- a7 %>% column_to_rownames("gen")
+cor(a7, use = "complete.obs")
+
+
+a8 <- read.csv("~/Documents/git/Norberg_2020/Raw_data/ID_2019_1.csv")
+a8 <- a8 %>% unite("gen_block", c(Treatment, Block), sep = "_", remove = T) %>% select(c(4,9,10))
+a8 <- a8 %>% column_to_rownames("gen_block")
+cor(a8, use = "complete.obs")
+
+
+lev0 <- subset(colnames(a7), grepl("^ST1_PH", colnames(a7)))
+lev1 <- subset(colnames(a7), grepl("^ST1_R_FD", colnames(a7)))
+lev2 <- subset(colnames(a7), grepl("^ST1_Yi", colnames(a7)))
+lev3 <- subset(colnames(a7), grepl("^ST1_DM", colnames(a7)))
+lev4 <- subset(colnames(a7), grepl("^ST1_MS", colnames(a7)))
+
+
+lev0 <- c("gen", lev0)
+lev0 <- lev0[-6]
+
+lev1 <- c("gen", lev1)
+lev2 <- c("gen", lev2)
+lev3 <- c("gen", lev3)
+lev4 <- c("gen", lev4)
+
+a8 <- a7[,lev0]
+a8 <- a7[,lev1]
+a8 <- a7[,lev2]
+a8 <- a7[,lev3]
+a8 <- a7[,lev4]
+
+a8 <- a8 %>% column_to_rownames("gen")
+a8 <- cor(a8, use = "complete.obs")
+a8 <- round(a8, 2)
+a8[upper.tri(a8)] <- NA
+
+write.csv(a8, "~/Documents/git/Norberg_2020/BLUE_values/Cor_MS.csv", row.names = T, quote = F)
+
+
 library(RColorBrewer)
 # Define the number of colors you want
 nb.cols <- length(unique(a2[,4]))
+nb.cols <- 7
 mycolors <- colorRampPalette(brewer.pal(8, "Dark2"))(nb.cols)
 # scale_fill_manual(values = mycolors)

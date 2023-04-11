@@ -6,19 +6,20 @@ library(data.table)
 library(tidyverse)
 library(asremlPlus)
 
-setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/")
+
+setwd("~/Documents/git/Norberg_2020/BLUE_values/split_data/")
 data_ar <- list.files(pattern = ".csv", full.names = T)
-data_ar5 <- data_ar[c(7,21,26)] # 5_FD
+data_ar5 <- data_ar[c(7,21,26,31)] # 5_FD
 list_5 <- gsub(".csv", "", gsub("./", "", data_ar5))
 lev1 <- c("block", "gen", "row", "col")
 
-S_FD4 <- read.csv("~/Documents/Cesar/git/big_files/FD_scores.csv")
+S_FD4 <- read.csv("~/Documents/git/big_files/FD_scores.csv")
 S_FD1 <- S_FD4 %>% dplyr::filter(!gen %in% c(201,202))
-S_FD1$gen <- as.factor(S_FD1$gen)
+S_FD4$gen <- as.factor(S_FD4$gen)
 
-setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/")
+setwd("~/Documents/git/Norberg_2020/BLUE_values/split_data/")
 data_ar <- list.files(pattern = ".csv", full.names = T)
-data_ar5 <- data_ar[c(7,21,26)] # 5_FD
+data_ar5 <- data_ar[c(7,21,26,31)] # 5_FD
 data_ar6 <- data_ar[c(10,14,18)] # OR Height to FD
 
 # raw_data

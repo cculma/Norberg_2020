@@ -2,10 +2,9 @@
 rm(list = ls())
 library(tidyverse)
 
-a1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/spatial_distribution/cols_rows1.csv", check.names = F)
 a1 <- read.csv("~/Documents/git/Norberg_2020/spatial_distribution/cols_rows1.csv", check.names = F)
 
-a2 <- read.csv("~/Documents/Cesar/git/Norberg_2020/Y_PH_FD.csv", check.names = F)
+a2 <- read.csv("~/Documents/git/Norberg_2020/Y_PH_FD.csv", check.names = F)
 
 head(a1)
 head(a2)
@@ -24,8 +23,8 @@ a3[,lev1] <- lapply(a3[,lev1], factor)
 summary(a3)
 colnames(a3)
 str(a3)
-b1 <- read.csv("~/Documents/Cesar/git/Norberg_2020/original_data/Guojie_2020.csv")
-b1 <- read.csv("~/Documents/git/Norberg_2020/original_data/Guojie_2Years_Yield_Height_FD.csv", check.names = F)
+b1 <- read.csv("~/Documents/git/Norberg_2020/Raw_data/Guojie_2020.csv")
+b1 <- read.csv("~/Documents/git/Norberg_2020/Raw_data/Guojie_2Years_Yield_Height_FD.csv", check.names = F)
 
 colnames(b1)
 head(b1)
@@ -34,6 +33,23 @@ lev2 <- c("Location", "Year", "Cut", "Block", "Position", "ID", "Treatment")
 b1[,lev2] <- lapply(b1[,lev2], factor)
 str(b1)
 head(b1)
+
+b2 <- read.csv("~/Documents/git/Norberg_2020/Raw_data/FD_WA_2020.csv")
+head(b2)
+lev3 <- c("Location","ID","Year","Cut")
+b2[,lev3] <- lapply(b2[,lev3], factor)
+str(b2)
+b3 <- b1 %>% dplyr::filter(Location == "WA") %>% dplyr::filter(Year == "2020") %>% dplyr::filter(Cut == "5")
+b3 <- b3[,-12]
+colnames(b3)
+colnames(b2)
+b4 <- inner_join(b3, b2, by = c("Location","ID","Year","Cut"))
+
+# b3$FallDormancy_cm[b3$ID %in% b2$ID] <- b2$FallDormancy_cm[b2$ID %in% b3$ID]
+
+b1.1 <- b4 %>% dplyr::filter(Treatment %in% c(201))
+b1.2 <- b4 %>% dplyr::filter(Treatment %in% c(202))
+
 
 b1.1 <- b1 %>% dplyr::filter(Treatment %in% c(201))
 head(b1.1)
@@ -45,7 +61,7 @@ head(b1.2)
 colnames(b1.2) <- c("Location", "Year", "Cut", "Block", "Position", "ID", "Treatment", "MSC_202", "DM_202", "Height_202", "Yield_202", "FD_202")
 b1.2 <- b1.2[,-c(5,6,7)]
 
-b1.3 <- left_join(b1, b1.1, by= c("Location", "Year", "Cut", "Block")) %>% left_join(., b1.2, by= c("Location", "Year", "Cut", "Block"))
+b1.3 <- left_join(b4, b1.1, by= c("Location", "Year", "Cut", "Block")) %>% left_join(., b1.2, by= c("Location", "Year", "Cut", "Block"))
 summary(b1.3)
 a3 <- inner_join(a1, b1.3, by = c("Location", "Block", "Position", "ID", "Treatment"))
 str(a3)
@@ -65,7 +81,6 @@ str(a4)
 a5 <- split(a4, a4$merged)
 names(a5)
 
-setwd("~/Documents/Cesar/git/Norberg_2020/BLUE_values/split_data/")
 setwd("~/Documents/git/Norberg_2020/BLUE_values/split_data/")
 
 for (i in names(a5)) {

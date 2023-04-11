@@ -11,6 +11,9 @@ G <- read.csv("AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt", hea
 
 # G <- read.csv("~/Documents/git/big_files/AllSamples_Ms_filter_q30_imputed_GWASPoly_contigRemoved.txt", header = TRUE, row.names = 1, check.names = F) 
 dim(G)# [1] 97316   194
+G[1:5,1:5]
+
+G %>% dplyr::count(Chrom)
 G1 <- G %>% unite(Chrom1, 1:2, remove = T)
 G1 <- as.matrix(G1 %>% remove_rownames() %>% column_to_rownames(var = "Chrom1"))
 G2 <- t(G1)
@@ -21,6 +24,8 @@ G3 <- as.data.frame(G3)
 G3 <- t(G3)
 numo <- atcg1234(data=G3, ploidy=4) 
 
+<<<<<<< HEAD
+=======
 G4 <- numo$M
 dim(G4)
 G4[1:5,1:5]
@@ -30,25 +35,35 @@ order1 <- match(rownames(pheno), rownames(G4))
 G4  <- G4[order1,]
 
 
+>>>>>>> cf9dfbe753df8353dc700ea9fbfae44a66446a38
 # lev2 <- (QTL_06$Marker1)
 # 
 # G2.1 <- G2[,lev2]
 # str(G2.1)
 # dim(G2.1)
+<<<<<<< HEAD
+=======
 
 
+>>>>>>> cf9dfbe753df8353dc700ea9fbfae44a66446a38
 # have.both = intersect(colnames(G2), lev2)
 # G2
 # G2.1 <- G2[,have.both]
 # dim(G2.1)
+<<<<<<< HEAD
+=======
 # 
 
+>>>>>>> cf9dfbe753df8353dc700ea9fbfae44a66446a38
 
 dim(G2) # [1]   192 97316
 class(G2)
 G3 <- as.data.frame(G2)
 numo <- atcg1234(data=G3, ploidy=4, maf=0.05); 
 G4 <- numo$M
+<<<<<<< HEAD
+
+=======
 have.both = intersect(data$gen, rownames(G4))
 G4.1 <- G4[have.both,]
 order1 <- match(data$gen, rownames(G4))
@@ -56,6 +71,7 @@ G4.1  <- G4.1[order1,]
 
 G5 <- Gmatrix(G4, method="VanRaden", ploidy=4, ploidy.correction = T)
 # 
+>>>>>>> cf9dfbe753df8353dc700ea9fbfae44a66446a38
 # G4.2 <- G4[,lev2]
 # lev3 <- colnames(G4.2)
 # G4.2 <- as.data.frame(G4.2)
@@ -65,12 +81,10 @@ G5 <- Gmatrix(G4, method="VanRaden", ploidy=4, ploidy.correction = T)
 # G4.2 <- G4.2[have.both,]
 # str(G4.2)
 # dim(G4.2)
-G4.2[1:5,1:5]
-dim(G4.2)
+# G4.2[1:5,1:5]
+# dim(G4.2)
 # G4.2 <- G4.2 %>% rownames_to_column(var = "gen")
 # G4.2$gen <- as.factor(G4.2$gen)
-
-
 
 summary(G4.2)
 G4.3 <- G4.2 %>% rownames_to_column(var = "gen") %>% gather (key = "marker", value = "SNP", 2:6) %>% group_by(marker) %>% count(SNP) %>% spread (SNP, n) %>% column_to_rownames(var = "marker")
@@ -112,11 +126,20 @@ Marker <- seq(1:nrow(G4))
 G6 <- cbind(Marker, G4)
 dim(G6) # [1] 92465   196
 G6 <- G6[,-2]
-G6[1:5,1:5]
+G6[1:5,1:7]
 write.csv(G6, "~/Documents/Cesar/git/big_files/Norberg_2.txt", row.names = F, quote = F)
 
-dim(G5) # [1]   192 92657
-class(G5)
+G5 <- G6[,1:3]
+
+
+G7 <- G5 %>% dplyr::filter(Chrom == "Chr5")
+str(G7)
+G7$Position <- as.numeric(G7$Position)
+summary(G7$Position)
+G8 <- diff(G7$Position)
+G8 <- c(0, G8)
+G7$diff <- G8
+
 
 
 # Generate G matrix for GBLUP
@@ -185,3 +208,39 @@ dat %>%
   group_by(ID) %>%
   summarise(no_rows = length(ID))
 
+
+G4 <- as.data.frame(G4)
+
+
+lev1 <- colnames(G4)
+
+a1 <- dplyr::count(G4, Chr1_6265411)
+a1 <- dplyr::count(G4, lev1[i])
+dim(G4)
+DT <- 192 * 96996
+D0 <- sum(G4==0)
+D1 <- sum(G4==1)
+D2 <- sum(G4==2)
+D3 <- sum(G4==3)
+D4 <- sum(G4==4)
+D0/DT
+D1/DT
+D2/DT
+D3/DT
+D4/DT
+
+sum(D0, D1, D2, D3, D4)
+
+first_column <- c("AAAA", "AAAB", "AABB", "ABBB", "BBBB")
+second_column <- c((D0/DT)*100, (D1/DT)*100, (D2/DT)*100, (D3/DT)*100, (D4/DT)*100)
+second_column <- c(D0, D1, D2, D3, D4)
+
+dt <- data.frame(first_column, second_column)
+
+sum( (D1/DT)*100, (D2/DT)*100, (D3/DT)*100)
+plot1 <- ggplot(data=dt, aes(x=first_column, y=second_column)) +
+  geom_bar(stat="identity", width=0.7, fill="steelblue") + theme_classic(base_family = "Arial", base_size = 12) + labs(y = "% markers", x = "Allele dosage") + geom_text(aes(label= round(second_column, 2)), vjust=-0.3, size=3.5)
+
+setwd("~/Documents/git/Norberg_2020/LD_decay/")
+ggsave(filename = "Allele_dosage.jpg", plot = plot1, width = 4, height = 4)
+ggsave(filename = "Allele_dosage.pdf", plot = plot1, width = 4, height = 4, device = cairo_pdf)

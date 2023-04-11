@@ -1,5 +1,12 @@
+rm(list = ls())
 
 
+a1 <- read.csv("~/Documents/git/Norberg_2020/BLUE_values/BLUPs_all.csv")
+a1 <- read.csv("~/Documents/git/big_files/pheno_fa2.csv")
+a2 <- read.csv("~/Documents/git/big_files/FD_cal.csv")
+
+
+colnames(a1)
 lev0 <- subset(colnames(a1),  grepl("^ST1_FD", colnames(a1)))
 lev1 <- subset(colnames(a1),  grepl("^ST1_DM", colnames(a1)))
 lev3 <- subset(colnames(a1),  grepl("^ST3", colnames(a1)))
@@ -42,6 +49,7 @@ ggsave(filename = "~/OneDrive - Washington State University (email.wsu.edu)/Sen_
 
 library(GGally)
 library(ggplot2)
+library(tidyverse)
 data(iris)
 
 lowerFn <- function(data, mapping, method = "lm", ...) {
@@ -58,12 +66,13 @@ ggpairs(
 )
 
 
-
-
-
 head(a00)
 colnames(a00)
 a01 <- a00 %>% rownames_to_column("gen") %>% gather(key = "trait", "BLUP", 2:16) %>% separate(col = 2, into = c("trait", "loc"), sep = "_", remove = T, convert = FALSE, extra = "merge") %>% spread(key = trait, value = BLUP)
+
+
+a01 <- a00 %>% gather(key = "trait", "BLUP", 2:15) %>% separate(col = 2, into = c("stage","trait", "loc"), sep = "_", remove = T, convert = FALSE, extra = "merge") %>% spread(key = trait, value = BLUP)
+
 
 a03 <- aggregate(a01$BLUP ~ a01$trait, FUN=mean)
 a04 <- aggregate(a01$BLUP ~ a01$trait, FUN=sd)
