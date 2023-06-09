@@ -13,7 +13,7 @@ rm(list = ls())
 library(asreml)
 asreml.license.activate()
 
-devtools::install_github("AparicioJohan/MrBeanApp")
+# devtools::install_github("AparicioJohan/MrBeanApp")
 library(MrBean)
 run_app()
 dev.off()
