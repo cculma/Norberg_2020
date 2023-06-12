@@ -8,6 +8,8 @@ library(asremlPlus)
 library(goeveg)
 
 setwd("~/Documents/git/Norberg_2020/BLUE_values/split_data/")
+data_ar <- list.files(pattern = ".csv", full.names = T)
+
 data_ar4 <- data_ar # 4_Yield
 list_4 <- gsub(".csv", "", gsub("./", "", data_ar4))
 lev1 <- c("block", "gen", "row", "col")
@@ -28,6 +30,7 @@ str(a3)
 levels(a3$env)
 a4 <- split(a3[-1], a3$env)
 
+levels(a3$Cut)
 a1$ID <- as.factor(a1$ID)
 names(a4)
 
@@ -81,6 +84,15 @@ write.csv(J2_sum, "~/Documents/Cesar/git/big_files/Sum_Stat.csv", quote = F, row
 M_Y2 <- list()
 B_Y2 <- list()
 lev1 <- c("loc","block","pos","ID","gen","row","col")
+# gen = treatment (factor with 200 levels)
+# cov1 = 201
+# cov2 = 202
+# ar auto regressive (order 1, 2, 3)
+# symetric AR (sar)
+
+# ST1 ---------------------------------------------------------------------
+
+
 
 for (i in 1:length(Y1)) {
   data <- Y1[[1]]
@@ -136,6 +148,9 @@ head(M_Y2)
 B_Y3 <- B_Y3 %>% separate(1, c("loc", "year"), sep = "_", remove = F, convert = FALSE, extra = "merge")
 
 
+# ST2 ---------------------------------------------------------------------
+
+
 M_Y2[ , .SD[which.min(AIC)], by = env]
 
 list_5.1 <- c("env","loc","year","gen")
@@ -148,23 +163,28 @@ data <- data[order(data$gen, data$env), ]
 data1 <- na.omit(data)
 head(data1)
 
+# 1 is used in lme4. You can remove in ASReml and the result could be the same. 
+# focus on variance-covariance matrix: diag(env): ID_2018, ID_2019, WA_2018, WA_2019
+# 4 by 4 matrix 
+
+
 Diag <- asreml::asreml(fixed = BLUE ~ 1 + loc, 
                        random = ~ + diag(env):id(gen),
                        data = data1, na.action = list(x = "include", y = "include"), 
                        weights = weight, family = asreml::asr_gaussian(dispersion = 1))
 
 US <- asreml::asreml(fixed = BLUE ~ 1 + loc,
-                     random = ~ + idv(env):id(gen),
+                     random = ~ idv(env):id(gen),
                      data = data1, na.action = list(x = "include", y = "include"),
                      weights = weight, family = asreml::asr_gaussian(dispersion = 1))
 
 CORGH <- asreml::asreml(fixed = BLUE ~ 1 +  loc,
-                        random = ~ + corgh(env):id(gen),
+                        random = ~ corgh(env):id(gen),
                         data = data1, na.action = list(x = "include", y = "include"),
                         weights = weight, family = asreml::asr_gaussian(dispersion = 1))
 
 FA_1 <- asreml::asreml(fixed = BLUE ~ 1 +  loc + gen, 
-                       random = ~ + fa(env, 1):id(gen),
+                       random = ~ fa(env, 1):id(gen),
                        data = data1, na.action = list(x = "include", y = "include"), 
                        weights = weight, family = asreml::asr_gaussian(dispersion = 1))
 FA_1 <- update.asreml(FA_1)
@@ -238,6 +258,8 @@ head(BLUE1)
 head(BLUP2) 
 head(BLUP3)
 head(BLUP4)
+
+# tidy
 
 BLUP2 <- BLUP2 %>% spread(key = env, value = predicted.value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
 BLUP3 <- BLUP3 %>% spread(key = loc, value = predicted.value, fill = NA, convert = FALSE, drop = TRUE, sep = NULL)

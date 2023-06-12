@@ -4,7 +4,7 @@ library(tidyverse)
 
 a1 <- read.csv("~/Documents/git/Norberg_2020/spatial_distribution/cols_rows1.csv", check.names = F)
 
-a2 <- read.csv("~/Documents/git/Norberg_2020/Y_PH_FD.csv", check.names = F)
+a2 <- read.csv("~/Documents/git/Norberg_2020/Raw_data/Y_PH_FD.csv", check.names = F)
 
 head(a1)
 head(a2)
